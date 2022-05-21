@@ -3,8 +3,7 @@ import {
   purple, deepPurple, indigo, blue, teal,
   green, yellow, orange, tangerine, pink, red, brown,
 } from '@vikadata/components';
-import { t } from '@vikadata/widget-sdk';
-import { Strings } from './i18n';
+import { Strings, t } from './i18n';
 
 // 内置的 4 套主题配色
 export const theme1 = {

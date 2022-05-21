@@ -1,5 +1,17 @@
 {
     "strings": {
+        "aggregation_types": {
+            "zh_CN": "聚合类型",
+            "en_US": "Aggregation types"
+        },
+        "statistical_field": {
+            "zh_CN": "统计字段",
+            "en_US": "Statistical field"
+        },
+        "date_format": {
+            "zh_CN": "日期格式",
+            "en_US": "Date format"
+        },
         "aggregate_values": {
             "zh_CN": "聚合散点值",
             "en_US": "Aggregate values"
@@ -62,7 +74,7 @@
         },
         "count_records": {
             "zh_CN": "统计记录总数",
-            "en_US": "Count all records"
+            "en_US": "Count records"
         },
         "cout_records": {
             "zh_CN": "记录总数",
@@ -347,6 +359,50 @@
         "year_week_hyphen": {
             "zh_CN": "年-周",
             "en_US": "Year-Week"
+        },
+        "echarts_pie_chart": {
+            "zh_CN": "饼状图",
+            "en_US": "Pie Chart"
+        },
+        "echarts_donut_chart": {
+            "zh_CN": "环状图",
+            "en_US": "Donut Chart"
+        },
+        "echarts_line_chart": {
+            "zh_CN": "折线图",
+            "en_US": "Line Chart"
+        },
+        "echarts_stack_line_chart": {
+            "zh_CN": "堆叠折线图",
+            "en_US": "Stack Line Chart"
+        },
+        "echarts_column_chart": {
+            "zh_CN": "柱状图",
+            "en_US": "Column Chart"
+        },
+        "echarts_stack_column_chart": {
+            "zh_CN": "堆叠柱状图",
+            "en_US": "Stack Column Chart"
+        },
+        "echarts_percent_column_chart": {
+            "zh_CN": "百分比柱状图",
+            "en_US": "Percent Column Chart"
+        },
+        "echarts_bar_chart": {
+            "zh_CN": "条形图",
+            "en_US": "Bar Chart"
+        },
+        "echarts_stack_bar_chart": {
+            "zh_CN": "堆叠条形图",
+            "en_US": "Stack Bar Chart"
+        },
+        "echarts_percent_bar_chart": {
+            "zh_CN": "百分比条形图",
+            "en_US": "Percent Bar Chart"
+        },
+        "echarts_scatter_chart": {
+            "zh_CN": "散点图",
+            "en_US": "Scatter Chart"
         }
     }
 }

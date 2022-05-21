@@ -1,6 +1,7 @@
-import { getNumberBaseFieldPrecision, sortBy } from './../helper';
-import { Strings } from '../i18n';
-import { Field, Record, t } from '@vikadata/widget-sdk';
+import { sortBy } from 'lodash';
+import { getNumberBaseFieldPrecision } from './../helper';
+import { Strings, t } from '../i18n';
+import { Field, Record } from '@vikadata/widget-sdk';
 import sum from 'lodash/sum';
 import { processChartData, processRecords, guessNumberFieldPrecision } from '../helper';
 import { Chart } from './base';
