@@ -4,12 +4,6 @@ export enum ChartType {
   Bar = 'Bar', // 条形图
   Pie = 'Pie', // 饼状图
   Scatter = 'Scatter', // 散点图
-
-  EchartsPie = 'EchartsPie', // echarts 饼图
-  EchartsColumn = 'EchartsColumn', // echarts 柱状图
-  EchartsBar = 'EchartsBar', // echarts 条形图
-  EchartsLine = 'EchartsLine', // echarts 折线图
-  EchartsScatter = 'EchartsScatter', // echarts 散点图
 }
 
 export enum FormChatType {
@@ -25,19 +19,6 @@ export enum FormChatType {
   Pie = 'Pie', // 饼状图
   Donut = 'Donut', // 环状图图
   Scatter = 'Scatter', // 散点图
-
-  // echarts
-  EchartsPie = 'EchartsPie', // 饼图
-  EchartsDonut = 'EchartsDonut', // 环形饼图
-  EchartsLine = 'EchartsLine', // 折线图
-  EchartsStackLine = 'EchartsStackLine', // 堆叠折线图
-  EchartsColumn = 'EchartsColumn', // 柱状图
-  EchartsStackColumn = 'EchartsStackColumn', // 堆叠柱状图
-  EchartsPercentColumn = 'EchartsPercentColumn', // 百分比堆叠柱状图
-  EchartsBar = 'EchartsBar', // 条形图
-  EchartsStackBar = 'EchartsStackBar', // 堆叠条形图
-  EchartsPercentStackBar = 'EchartsPercentStackBar', // 百分比堆叠条形图
-  EchartsScatter = 'EchartsScatter', // 散点图
 }
 
 export enum AggregationType {
@@ -73,20 +54,4 @@ export interface IDimensionMetricsMap {
     title: string;
     key: string;
   },
-}
-
-export interface IFormProperties {
-  [propsname: string]: {
-    title: string;
-    type: string;
-    description?: string;
-    enum?: string[];
-  }
-}
-
-export interface IFormConfig {
-  title: string;
-  type: string;
-  description?: string;
-  properties: IFormProperties;
 }

@@ -1,6 +1,6 @@
 import { WidgetProps } from '@rjsf/core';
 import { applyDefaultTheme, ITheme, Select, IOption, useTheme } from '@vikadata/components';
-import { FieldType, Field, useFields, useField } from '@vikadata/widget-sdk';
+import { FieldType, useActiveViewId, Field, useFields, useField, t } from '@vikadata/widget-sdk';
 import React from 'react';
 import {
   ColumnAttachmentFilled,
@@ -30,7 +30,7 @@ import {
 } from '@vikadata/icons';
 import { SELECT_OPEN_SEARCH_COUNT } from '../const';
 import styled from 'styled-components';
-import { Strings, t } from '../i18n';
+import { Strings } from '../i18n';
 
 const FieldIconMap = {
   // [FieldType.DeniedField]: LockFilled,

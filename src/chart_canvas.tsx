@@ -1,95 +1,90 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { lightColors, darkColors } from '@vikadata/components';
-// import { useViewport } from '@vikadata/widget-sdk';
-import * as echarts from 'echarts/core';
-import { EChartsOption } from 'echarts';
-import { BarChart, PieChart, LineChart, ScatterChart } from 'echarts/charts';
+import { Bar, Column, G2, Line, Pie, Scatter } from '@antv/g2plot';
+import { ColumnOptions, LineOptions, PieOptions, ScatterOptions } from '@antv/g2plot/lib';
+import { useUpdateEffect } from '@vikadata/components';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { ChartType } from './model/interface';
 import { WarningAlert } from './sc';
 import { themesMap } from './theme';
-import { Strings, t } from './i18n';
-import {
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
-  DatasetComponent,
-  TransformComponent,
-  LegendComponent,
-  // DataZoomComponent,
-} from 'echarts/components';
-// 标签自动布局，全局过渡动画等特性
-import { LabelLayout, UniversalTransition } from 'echarts/features';
-// 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
-import { CanvasRenderer } from 'echarts/renderers';
-import { listenDOMSize } from './utils';
-import { EchartsBase } from 'model/echarts_base';
+import { t } from '@vikadata/widget-sdk';
+import { Strings } from './i18n';
+
+type ChartOptions = LineOptions | PieOptions | ColumnOptions | ScatterOptions;
 
 interface IWidgetChartCanvas {
-  chartInstance: EchartsBase,
   chartType: ChartType;
-  options: EChartsOption;
+  options: ChartOptions;
   isExpanded?: boolean;
   isPartOfData?: boolean;
-  theme: string;
-  formRefreshFlag: boolean;
 }
 
+const chartTypeMap = {
+  [ChartType.Line]: Line,
+  [ChartType.Column]: Column,
+  [ChartType.Pie]: Pie,
+  [ChartType.Scatter]: Scatter,
+  [ChartType.Bar]: Bar,
+};
+
 Object.keys(themesMap).forEach(key => {
-  const theme = themesMap[key];
-  echarts.registerTheme(key, {
-    color: theme.colors20,
+  G2.registerTheme(key, {
+    ...themesMap[key],
+    // styleSheet: {
+    //   fontFamily: "BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';"
+    // }
   });
 });
 
-export const WidgetChartCanvas: React.FC<IWidgetChartCanvas> = ({
-  chartType, chartInstance, options, isPartOfData, isExpanded, theme, formRefreshFlag }
-) => {
-  const [clear, setClear] = useState(false);
+export const WidgetChartCanvas: React.FC<IWidgetChartCanvas> = ({ chartType, options, isPartOfData, isExpanded }) => {
+  const plotRef = useRef<any>(null);
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const { addListen, removeListen } = listenDOMSize(chartContainerRef);
 
-  const renderEcharts = React.useCallback(({ width, height }) => {
-    // 判断表单配置是否已经更改，不一致需要清除上一次的绘制
-    if (clear !== formRefreshFlag) {
-      // console.log('clear: ', clear, ' formRefreshFlag: ', formRefreshFlag);
-      echarts.dispose(chartContainerRef.current!);
-      setClear(formRefreshFlag);
-    }
-    const myChart = echarts.init(chartContainerRef.current!, theme);
-    const mergeOptions = chartInstance.getMergeOption(
-      { chartInstance, options, lightColors, darkColors, width, height }
-    );
-
-    myChart.setOption(mergeOptions);
-    myChart.resize();
-  }, [options, theme, chartInstance.stackType, chartType, formRefreshFlag, clear]);
-
+  // 初始化渲染图表
   useEffect(() => {
-    // 注册必须的组件
-    echarts.use([
-      TitleComponent,
-      TooltipComponent,
-      GridComponent,
-      DatasetComponent,
-      TransformComponent,
-      LegendComponent,
-      // DataZoomComponent,
-      BarChart,
-      PieChart,
-      LineChart,
-      ScatterChart,
-      LabelLayout,
-      UniversalTransition,
-      CanvasRenderer
-    ]);
+    const PlotClass = chartTypeMap[chartType];
+    if (PlotClass) {
+      const plot = new PlotClass(chartContainerRef.current!, options as any);
+      plot.render();
+      plotRef.current = plot;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (chartContainerRef.current) {
-      addListen(renderEcharts);
+  const reRender = useCallback(() => {
+    const PlotClass = chartTypeMap[chartType];
+    if (plotRef.current) {
+      plotRef.current.destroy();
     }
-    return removeListen;
-  }, [chartContainerRef.current, clear, chartInstance.stackType, chartType, options, theme]);
+    if (PlotClass) {
+      const nextPlot = new PlotClass(chartContainerRef.current!, options as any);
+      nextPlot.render();
+      plotRef.current = nextPlot;
+    } else {
+      throw Error(`Not Support ${chartType}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chartType, options]);
+
+  useUpdateEffect(() => {
+    console.log('rerender');
+    reRender();
+    // 显示数据 tip，应该是 g2plot 的bug，update option 不会刷新，这里强制重新渲染。
+  },
+    [
+      chartType,
+      options.label,
+      (options as any).innerRadius,
+      (options as any).isGroup,
+      (options as any).isStack,
+      (options as any).isPercent,
+    ]);
+
+  // useWhyDidYouUpdate('Chart', { ...options });
+  // 数据源变化或者图表配置变化。更新图表。
+  useEffect(() => {
+    if (plotRef.current) {
+      plotRef.current.update(options);
+    }
+  }, [options]);
 
   return (
     <div style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }} >

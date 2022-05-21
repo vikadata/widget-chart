@@ -1,41 +1,37 @@
-import { Form } from '@vikadata/components';
+import { Form, ThemeProvider, defaultTheme } from '@vikadata/components';
+import { Strings } from './i18n';
 import {
-  BasicValueType, FieldType, useCloudStorage, useFields, useMeta, IMetaType,
-  useRecords, useViewsMeta, useViewport, useSettingsButton, useActiveViewId
+  BasicValueType, FieldType, useCloudStorage, useFields,
+  useRecords, useViewsMeta, useViewport, useSettingsButton, t
 } from '@vikadata/widget-sdk';
 import isEqual from 'lodash/isEqual';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { WidgetChartCanvas } from './chart_canvas';
 import { CHART_TYPES, DATETIME_FORMATTER_TYPES, DATETIME_FORMATTER_TYPES_NAMES } from './const';
-import { EchartsColumn } from './model';
-import { EchartsBase } from './model/echarts_base';
+import { ColumnChart } from './model';
+import { Chart } from './model/base';
 import { StackType } from './model/interface';
 import { getUiSchema } from './ui_schema';
 import { getGroupOrStackFormJSON } from './helper';
 import { ChartError } from './chart_error';
 import { FormWrapper } from './sc';
-import { Strings, t } from './i18n';
 
-interface INewMetaType extends IMetaType {
-  theme: 'dark' | 'light';
-}
-
-// const MAX_DIMENSION_SIZE = 300;
+const MAX_DIMENSION_SIZE = 300;
 const ChartMap = {};
 CHART_TYPES.forEach(item => ChartMap[item.id] = item);
 
-const useGetDefaultFormData = (meta) => {
-  const viewId = useActiveViewId() || '';
-  const fields = useFields(viewId);
+const useGetDefaultFormData = () => {
+  const views = useViewsMeta();
+  const fields = useFields(views[0].id);
 
   // 默认表单配置
   return useCallback(() => {
     // 分类维度 (附件不可以作为分类维度)
     const dimensions = fields.filter(field => {
-      if (
-        (field.type === FieldType.Attachment) || 
-        (field.type === FieldType.MagicLookUp && field.entityType === FieldType.Attachment)
-      ) {
+      if (field.type === FieldType.Attachment) {
+        return false;
+      }
+      if (field.type === FieldType.MagicLookUp && field.entityType === FieldType.Attachment) {
         return false;
       }
       return true;
@@ -43,8 +39,10 @@ const useGetDefaultFormData = (meta) => {
     // 统计指标 （只有数字字段可以作为统计指标）
     const metrics = fields.filter(field => field.basicValueType === BasicValueType.Number);
     return {
-      dataSource: { view: viewId },
-      ...new EchartsColumn(StackType.None, meta.theme).getDefaultFormData(dimensions, metrics),
+      dataSource: {
+        view: views[0].id,
+      },
+      ...new ColumnChart(StackType.None).getDefaultFormData(dimensions, metrics),
     };
     // 因为只在第一次使用，所以不需要更新
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,16 +58,19 @@ const useGetDefaultFormData = (meta) => {
  * FormData 表示表单的实际数据。
  */
 const WidgetChartBase: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
   // 新建图表需要的上下文
   const views = useViewsMeta();
-  const meta = useMeta() as INewMetaType;
+  const { viewIds, viewNames } = useMemo(() => {
+    const viewIds = views.map(view => view.id);
+    const viewNames = views.map(view => view.name);
+    return { viewIds, viewNames };
+  }, [views]);
 
   const { isFullscreen } = useViewport();
   const [isShowingSettings] = useSettingsButton();
-  const getDefaultFormData = useGetDefaultFormData(meta);
+
+  const getDefaultFormData = useGetDefaultFormData();
   const [formData, setFormData, editable] = useCloudStorage('FormData', getDefaultFormData);
-  const [formRefreshFlag, setFormRefreseFlag] = useState(false);
 
   const readOnly = !editable;
   const viewId = formData.dataSource.view;
@@ -77,41 +78,41 @@ const WidgetChartBase: React.FC = () => {
   const fields = useFields(viewId);
   const isPartOfDataRef = useRef(false);
 
-  // 获取图表类型并实例化
-  const chartType = ChartMap[formData.chartStructure.chartType];
-  const configChart = useMemo(() => new (chartType.class)(chartType.stackType, meta.theme) as EchartsBase, [chartType, meta.theme]);
-
-  const { viewIds, viewNames } = useMemo(() => {
-    const viewIds = views.map(view => view.id);
-    const viewNames = views.map(view => view.name);
-    return { viewIds, viewNames };
-  }, [views]);
-
-  // 获取可统计字段和分类维度
   const { dimensions, metrics } = useMemo(() => {
     return {
       dimensions: fields.filter(field => {
-        return !(
-          field.type === FieldType.Attachment ||
-          (FieldType.MagicLookUp && field.entityType === FieldType.Attachment)
-        );
+        if (field.type === FieldType.Attachment) {
+          return false;
+        }
+        if (field.type === FieldType.MagicLookUp && field.entityType === FieldType.Attachment) {
+          return false;
+        }
+        return true;
       }),
       metrics: fields.filter(field => field.basicValueType === BasicValueType.Number),
     };
   }, [fields]);
 
-  // 获取默认配置的表单字段
+  // const [hasError, setHasError] = useState(false);
+  // const { run: _setHasError } = useDebounceFn(setHasError, { wait: 300 });
+
+  // 获取图表类型
+  const chartType = ChartMap[formData.chartStructure.chartType];
+  const configChart = useMemo(() => new (chartType.class)(chartType.stackType) as Chart, [chartType]);
+
   const chartOptions = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { dataSource, ...options } = formData;
     return options;
   }, [formData]);
 
-  // 获取对应图表的表单配置 JSON
+  // useWhyDidYouUpdate('chartOptions', { chartOptions });
+
+  // 结合上下文配置表单 JSON
   const schema: any = useMemo(() => {
-    // 配置对应图表的表单结构 JSON
+    // 配置表单的图表结构 JSON
     const chartStructureFormJSON = configChart.getChartStructureFormJSON(dimensions, metrics);
-    // 配置对应图表的表单样式 JSON
+    // 配置表单的图表样式 JSON
     const chartStyleFormJSON = configChart.getChartStyleFormJSON([{ id: undefined, name: '  ' } as any, ...dimensions]);
     return {
       type: 'object',
@@ -124,7 +125,7 @@ const WidgetChartBase: React.FC = () => {
         },
         datetimeFormatter: {
           type: 'string',
-          title: t(Strings.date_format),
+          title: '日期格式',
           enum: DATETIME_FORMATTER_TYPES,
           enumNames: DATETIME_FORMATTER_TYPES_NAMES,
           default: DATETIME_FORMATTER_TYPES[0],
@@ -153,16 +154,28 @@ const WidgetChartBase: React.FC = () => {
       },
     };
   }, [configChart, dimensions, metrics, viewIds, viewNames, chartType]);
-
   // 图表样式相关的配置
   const plotOptions = useMemo(() => {
     const options = configChart.getChartOptions({
-      records: records.slice(0, 500),
+      records,
       fields,
       chartStructure: chartOptions.chartStructure,
       chartStyle: chartOptions.chartStyle,
     });
 
+    isPartOfDataRef.current = false;
+    const dimensionMetricsMap = configChart.getFormDimensionMetricsMap();
+
+    // 分类/分组 后分类项目超过 100 则截断数据，展示部分图表数据。
+    const dimensionKey = dimensionMetricsMap.dimension.key;
+    const dimensionSet = new Set(options.data.map(item => item[dimensionKey]));
+    const seriesField = options.seriesField;
+    const seriesSet = seriesField ?
+      new Set(options.data.map(item => item[seriesField])) : new Set();
+    if (dimensionSet.size > MAX_DIMENSION_SIZE || seriesSet.size > MAX_DIMENSION_SIZE) {
+      isPartOfDataRef.current = true;
+      options.data = options.data.slice(0, MAX_DIMENSION_SIZE);
+    }
     return options;
   }, [chartOptions, configChart, fields, records]);
 
@@ -175,12 +188,10 @@ const WidgetChartBase: React.FC = () => {
       return;
     }
 
-    setFormRefreseFlag((val) => !val);
-
     // 切换图表类型，merge 配置
     if (formData.chartStructure.chartType !== nextFormData.chartStructure.chartType) {
       const chartType = ChartMap[nextFormData.chartStructure.chartType];
-      const _defaultFormData = (new (chartType.class)(chartType.stackType, meta.theme) as EchartsBase).getDefaultFormData(dimensions, metrics);
+      const _defaultFormData = (new (chartType.class)(chartType.stackType) as Chart).getDefaultFormData(dimensions, metrics);
       const mergedFormData = {
         dataSource: formData.dataSource, // 数据源保持不变
         chartStructure: {
@@ -212,19 +223,15 @@ const WidgetChartBase: React.FC = () => {
       return error;
     });
   };
-
   return (
-    // <ThemeProvider theme={defaultTheme}>
-      <div ref={containerRef} style={{ display: 'flex', height: '100%' }}>
+    <ThemeProvider theme={defaultTheme}>
+      <div style={{ display: 'flex', height: '100%' }}>
         <ChartError hasError={false} isExpanded={isFullscreen} openSetting={isShowingSettings}>
           <WidgetChartCanvas
-            chartInstance={configChart}
             chartType={configChart.type}
             options={plotOptions}
             isExpanded={isFullscreen}
             isPartOfData={isPartOfDataRef.current}
-            theme={chartOptions.chartStyle.theme}
-            formRefreshFlag={formRefreshFlag}
           />
         </ChartError>
         <FormWrapper openSetting={isShowingSettings} readOnly={readOnly}>
@@ -241,7 +248,7 @@ const WidgetChartBase: React.FC = () => {
           </Form>
         </FormWrapper>
       </div>
-    // </ThemeProvider>
+    </ThemeProvider>
   );
 };
 

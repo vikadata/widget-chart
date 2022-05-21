@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { themesMap, themesTransMap } from '../theme';
 import styled, { css } from 'styled-components';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { Strings, t } from '../i18n';
+import { Strings } from '../i18n';
+import { t } from '@vikadata/widget-sdk';
 
 
 type ThemeSelectProps = {
@@ -16,6 +17,7 @@ const ThemeSelectWrapper = styled.div.attrs(applyDefaultTheme)`
   overflow: auto;
   padding: 8px;
   border-radius: 4px;
+  ${props => css`background: ${props.theme.palette.background.primary};`}
 `;
 
 const ThemeItemWrapper = styled.div.attrs(applyDefaultTheme) <{ isActive: boolean }>`
