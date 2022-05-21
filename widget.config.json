@@ -1,0 +1,20 @@
+{
+  "globalPackageId": "wpkCKtqGTjzM7",
+  "packageId": "wpkf5Ul97CY0q",
+  "spaceId": "spczdmQDfBAn5",
+  "entry": "./src/index.ts",
+  "name": {
+    "zh-CN": "图表（Chart）",
+    "en-US": "Chart"
+  },
+  "icon": "./package_icon.png",
+  "cover": "./cover.png",
+  "authorName": "vika",
+  "authorIcon": "./author_icon.png",
+  "authorLink": "https://vika.cn/developers",
+  "authorEmail": "developer@vikadata.com",
+  "description": {
+    "zh-CN": "将数据展示为柱状图、条形图、饼状图、折线图或散点图，帮助你概览数据的全貌，方便决策和会议汇报",
+    "en-US": "Display data as bar, column, pie, line, or scatter charts to help you get a holistic view of your data for decision making and meeting reporting"
+  }
+}

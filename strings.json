@@ -1,0 +1,352 @@
+{
+    "strings": {
+        "aggregate_values": {
+            "zh_CN": "聚合散点值",
+            "en_US": "Aggregate values"
+        },
+        "aggregate_values_describle": {
+            "zh_CN": "将散点值聚合统计",
+            "en_US": "Aggregate values by summary"
+        },
+        "bar_chart": {
+            "zh_CN": "条形图",
+            "en_US": "Bar Chart"
+        },
+        "chart_option_field_had_been_deleted": {
+            "zh_CN": "字段已失效，请重新选择",
+            "en_US": "The field is invalid, please select again"
+        },
+        "chart_option_view_had_been_deleted": {
+            "zh_CN": "视图已失效，请重新选择",
+            "en_US": "The view is invalid, please select again"
+        },
+        "chart_settings": {
+            "zh_CN": "图表配置",
+            "en_US": "Chart settings"
+        },
+        "chart_sort": {
+            "zh_CN": "设置排序",
+            "en_US": "Sort by"
+        },
+        "chart_sort_by_ascending": {
+            "zh_CN": "按正序排序",
+            "en_US": "Ascending"
+        },
+        "chart_sort_by_descending": {
+            "zh_CN": "按倒序排序",
+            "en_US": "Descending"
+        },
+        "chart_sort_by_x_axis": {
+            "zh_CN": "按 X 轴的值排序",
+            "en_US": "Sort by X axis"
+        },
+        "chart_sort_by_y_axis": {
+            "zh_CN": "按 Y 轴的值排序",
+            "en_US": "Sort by Y axis"
+        },
+        "chart_widget_setting_help_tips": {
+            "zh_CN": "配置教程",
+            "en_US": "Manual"
+        },
+        "chart_widget_setting_help_url": {
+            "zh_CN": "/help/intro-widget-chart/",
+            "en_US": "/help/intro-widget-chart/"
+        },
+        "colorful_theme": {
+            "zh_CN": "多色主题",
+            "en_US": "Multi-color theme"
+        },
+        "column_chart": {
+            "zh_CN": "柱状图",
+            "en_US": "Column Chart"
+        },
+        "count_records": {
+            "zh_CN": "统计记录总数",
+            "en_US": "Count all records"
+        },
+        "cout_records": {
+            "zh_CN": "记录总数",
+            "en_US": "All records"
+        },
+        "design_chart_structure": {
+            "zh_CN": "设计图表结构",
+            "en_US": "Design chart structure"
+        },
+        "design_chart_style": {
+            "zh_CN": "更多配置",
+            "en_US": "More settings"
+        },
+        "donut_chart": {
+            "zh_CN": "环状图",
+            "en_US": "Donut Chart"
+        },
+        "empty_data": {
+            "zh_CN": "空白数据",
+            "en_US": "No data"
+        },
+        "format_date": {
+            "zh_CN": "格式化日期",
+            "en_US": "Format date"
+        },
+        "group_blank": {
+            "zh_CN": "[无]",
+            "en_US": "[None]"
+        },
+        "group_by_field": {
+            "zh_CN": "按下方字段分组",
+            "en_US": "Group by"
+        },
+        "label_format_year_and_month_split_by_dash": {
+            "zh_CN": "年-月",
+            "en_US": "Year-Month"
+        },
+        "limit_chart_values": {
+            "zh_CN": "当前图形分类项过多，仅展示前 300 项数据的图形",
+            "en_US": "There are currently too many graphic categories, showing only the first 300 types of data"
+        },
+        "line_chart": {
+            "zh_CN": "折线图",
+            "en_US": "Line Chart"
+        },
+        "null": {
+            "zh_CN": "[空]",
+            "en_US": "[None]"
+        },
+        "percent_bar_chart": {
+            "zh_CN": "百分比条形图",
+            "en_US": "Percent Bar Chart"
+        },
+        "percent_column_chart": {
+            "zh_CN": "百分比柱状图",
+            "en_US": "Percent Column Chart"
+        },
+        "percent_line_chart": {
+            "zh_CN": "百分比折线图",
+            "en_US": "Percent Line Chart"
+        },
+        "percent_stacked_bar_chart": {
+            "zh_CN": "百分比堆叠条形图",
+            "en_US": "Percent Stacked Bar Chart"
+        },
+        "percent_stacked_by_field": {
+            "zh_CN": "按下方字段百分比堆叠",
+            "en_US": "100% Stacked by"
+        },
+        "percent_stacked_column_chart": {
+            "zh_CN": "百分比堆叠柱状图",
+            "en_US": "Percent Stacked Column Chart"
+        },
+        "pick_one_option": {
+            "zh_CN": "请选择一个选项",
+            "en_US": "Pick a field"
+        },
+        "pie_chart": {
+            "zh_CN": "饼状图",
+            "en_US": "Pie Chart"
+        },
+        "scatter_chart": {
+            "zh_CN": "散点图",
+            "en_US": "Scatter Chart"
+        },
+        "search": {
+            "zh_CN": "搜索",
+            "en_US": "Search"
+        },
+        "select_axis_sort": {
+            "zh_CN": "选择一个坐标轴排序",
+            "en_US": "Select an axis to sort by"
+        },
+        "select_bar_chart_x_axis": {
+            "zh_CN": "数值（X轴）",
+            "en_US": "select X-axis"
+        },
+        "select_bar_chart_y_axis": {
+            "zh_CN": "维度（Y轴）",
+            "en_US": "select X-axis"
+        },
+        "select_chart_category": {
+            "zh_CN": "维度",
+            "en_US": "Dimension"
+        },
+        "select_chart_type": {
+            "zh_CN": "选择图表类型",
+            "en_US": "Select chart type"
+        },
+        "select_chart_values": {
+            "zh_CN": "数值",
+            "en_US": "Values"
+        },
+        "select_column_chart_x_axis": {
+            "zh_CN": "维度（X 轴）",
+            "en_US": "Select X axis"
+        },
+        "select_column_chart_y_axis": {
+            "zh_CN": "数值（Y 轴）",
+            "en_US": "Select Y axis"
+        },
+        "select_data_source": {
+            "zh_CN": "功能配置",
+            "en_US": "Function settings"
+        },
+        "select_sort_rule": {
+            "zh_CN": "设置排序规则",
+            "en_US": "Select sort rule"
+        },
+        "select_theme_color": {
+            "zh_CN": "选择配色方案",
+            "en_US": "Select theme color"
+        },
+        "select_view": {
+            "zh_CN": "从下方视图读取数据",
+            "en_US": "Select a view as data source"
+        },
+        "select_y_axis_field": {
+            "zh_CN": "统计指定字段",
+            "en_US": "Count a field"
+        },
+        "show_data_tips": {
+            "zh_CN": "显示数值标签",
+            "en_US": "Show data labels"
+        },
+        "show_data_tips_describle": {
+            "zh_CN": "显示数值标签",
+            "en_US": "Show data labels"
+        },
+        "show_empty_values": {
+            "zh_CN": "显示维度空值",
+            "en_US": "Show empty values"
+        },
+        "show_empty_values_describle": {
+            "zh_CN": "显示维度空值",
+            "en_US": "Show empty values"
+        },
+        "show_smooth_line": {
+            "zh_CN": "开启平滑曲线",
+            "en_US": "Show smooth line"
+        },
+        "single_color_gradient_theme": {
+            "zh_CN": "单色渐变主题",
+            "en_US": "Monochrome gradient theme"
+        },
+        "split_multiple_values": {
+            "zh_CN": "分离多选值",
+            "en_US": "Split multiple values"
+        },
+        "stacked_bar_chart": {
+            "zh_CN": "堆叠条形图",
+            "en_US": "Stacked Bar Chart"
+        },
+        "stacked_by_field": {
+            "zh_CN": "按下方字段堆叠",
+            "en_US": "Stacked by"
+        },
+        "stacked_column_chart": {
+            "zh_CN": "堆叠柱状图",
+            "en_US": "Stacked Column Chart"
+        },
+        "stacked_line_chart": {
+            "zh_CN": "堆叠折线图",
+            "en_US": "Stacked Line Chart"
+        },
+        "theme_blue": {
+            "zh_CN": "蓝色",
+            "en_US": "Blue"
+        },
+        "theme_brown": {
+            "zh_CN": "棕色",
+            "en_US": "Brown"
+        },
+        "theme_color_1": {
+            "zh_CN": "配色一",
+            "en_US": "Theme Color 1"
+        },
+        "theme_color_2": {
+            "zh_CN": "配色二",
+            "en_US": "Theme Color 2"
+        },
+        "theme_color_3": {
+            "zh_CN": "配色三",
+            "en_US": "Theme Color 3"
+        },
+        "theme_color_4": {
+            "zh_CN": "配色四",
+            "en_US": "Theme Color 4"
+        },
+        "theme_deepPurple": {
+            "zh_CN": "深紫色",
+            "en_US": "Dark purple"
+        },
+        "theme_green": {
+            "zh_CN": "绿色",
+            "en_US": "Green"
+        },
+        "theme_indigo": {
+            "zh_CN": "靛青",
+            "en_US": "Indigo"
+        },
+        "theme_orange": {
+            "zh_CN": "橙色",
+            "en_US": "Orange"
+        },
+        "theme_pink": {
+            "zh_CN": "粉色",
+            "en_US": "Pink"
+        },
+        "theme_purple": {
+            "zh_CN": "紫色",
+            "en_US": "Purple"
+        },
+        "theme_red": {
+            "zh_CN": "红色",
+            "en_US": "Red"
+        },
+        "theme_tangerine": {
+            "zh_CN": "橘色",
+            "en_US": "Orange"
+        },
+        "theme_teal": {
+            "zh_CN": "蓝绿色",
+            "en_US": "Blue-green"
+        },
+        "theme_yellow": {
+            "zh_CN": "黄色",
+            "en_US": "Yellow"
+        },
+        "total": {
+            "zh_CN": "总计",
+            "en_US": "Total"
+        },
+        "y_axis_field_average": {
+            "zh_CN": "平均值",
+            "en_US": "AVERAGE"
+        },
+        "y_axis_field_max": {
+            "zh_CN": "最大值",
+            "en_US": "MAX"
+        },
+        "y_axis_field_min": {
+            "zh_CN": "最小值",
+            "en_US": "MIN"
+        },
+        "y_axis_field_sum": {
+            "zh_CN": "求和",
+            "en_US": "SUM"
+        },
+        "year": {
+            "zh_CN": "年",
+            "en_US": "Year"
+        },
+        "year_month_day_hyphen": {
+            "zh_CN": "年-月-日",
+            "en_US": "Year-Month-Day"
+        },
+        "year_season_hyphen": {
+            "zh_CN": "年-季度",
+            "en_US": "Year-Season"
+        },
+        "year_week_hyphen": {
+            "zh_CN": "年-周",
+            "en_US": "Year-Week"
+        }
+    }
+}
