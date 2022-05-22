@@ -152,6 +152,8 @@ export class EchartsPie extends EchartsBase {
       return angleValue;
     });
 
+    data = data.slice(0, 100);
+
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, data);
     const options = {
       ...styleOption.commonOption,

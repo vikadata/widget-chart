@@ -64,6 +64,7 @@ export class EchartsLine extends EchartsBase {
   getChartStyleOptions(chartStructure: any, chartStyle: any, { noFormatMetric, metricsField }) {
     const { showDataTips, smooth = false } = chartStyle;
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
+    const { property, type } = metricsField;
 
     // 区分普通配置和series配置
     const styleOption: any = {
@@ -79,7 +80,7 @@ export class EchartsLine extends EchartsBase {
           show: showDataTips,
           formatter: (params) => {
             const value = Array.isArray(params.value) ? params.value[1] : params.value;
-            return formatterValue(metricsField, value, noFormatMetric)
+            return formatterValue({ property, type }, value, noFormatMetric)
           }
         },
       },

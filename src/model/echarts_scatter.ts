@@ -83,6 +83,7 @@ export class EchartsScatter extends EchartsBase {
   getChartStyleOptions(chartStructure: any, chartStyle: any, { noFormatMetric, metricsField }) {
     const { showDataTips } = chartStyle;
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
+    const { property, type } = metricsField;
 
     const styleOption: any = {
       commonOption: {
@@ -100,7 +101,7 @@ export class EchartsScatter extends EchartsBase {
           show: showDataTips,
           position: 'outside',
           distance: 2,
-          formatter: (params) => formatterValue(metricsField, params.value[1], noFormatMetric)
+          formatter: (params) => formatterValue({ property, type }, params.value[1], noFormatMetric)
         },
         symbolSize: 8,
       },
@@ -212,7 +213,7 @@ export class EchartsScatter extends EchartsBase {
       yAxis: { ...subAxis },
       series: [{
         ...styleOption.series,
-        data: seriesData
+        data: seriesData.slice(0, 300)
       }]
     }
   }

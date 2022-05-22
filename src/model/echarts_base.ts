@@ -200,6 +200,8 @@ export abstract class EchartsBase {
     const { dimensionField, metricsField, mainAxisData, noFormatMetric, countTotalRecords } = props;
     const axisStyle = this.theme === 'dark' ? { color: '#fff' } : { color: '#333' };
 
+    const { property, type } = metricsField;
+
     return {
       mainAxis: {
         type: 'category',
@@ -229,7 +231,7 @@ export abstract class EchartsBase {
           width: Math.sqrt(2) / 2 * 90, // cos 45 = sqrt(2) / 2
           overflow: 'truncate',
           ...axisStyle,
-          formatter: (value) => formatterValue(metricsField!, value, noFormatMetric),
+          formatter: (value) => formatterValue({ property, type }, value, noFormatMetric),
         }
       }
     };

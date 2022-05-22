@@ -117,28 +117,42 @@ export const getValueByType = (value, field: Field) => {
   }
 }
 
-type SeriesValueType = string | number | { title?: string; name?: string[] };
+type SeriesValueType = string | number | { title?: string; name?: string };
 
-const getValueByType2 = (value, field: Field) => {
+/**
+ * 根据堆叠字段获取处理后的值
+ *  - 根据字段类型区分 23 种类型存在性能问题，所以做暴力区分，将 value 总结为 数组，对象，基本类型
+ *  - 然后按照文档罗列对象中可能出现的 key，直接枚举
+ * @param value 
+ * @param field 
+ * @returns 
+ */
+const getValueByType2 = (value, field) => {
   if (Array.isArray(value)) {
-    let list = value;
-    let res: SeriesValueType[] = [];
-    while (list.length > 0) {
-      const item = list.shift();
-      if (Array.isArray(item)) {
-        list.push(item);
-      } else {
-        res.push(item);
+    const res: SeriesValueType[] = [];
+    const dfs = (source) => {
+      for (let i = 0; i < source.length; i++) {
+        const item = source[i];
+        if (Array.isArray(item)) {
+          dfs(item);
+        } else {
+          res.push(item);
+        }
       }
     }
-    return res.map((v) => {
-      if (typeof v === 'object') {
-        return v.name || v.title || t(Strings.null);
+    dfs(value);
+    // // 存在 [price, null]，可以考虑是否过滤 null
+    return value.map((v) => {
+      if (v != null && typeof v === 'object') {
+        return formatterValue(field, v.name || v.title || t(Strings.null), false);
       }
-      return v || t(Strings.null);
+      return formatterValue(field, v || t(Strings.null), false);
     }).join(',');
   }
-  return value;
+  if (typeof value === 'object') {
+    return formatterValue(field, value.name || value.title || t(Strings.null), false);
+  }
+  return formatterValue(field, value.toString(), false);
 }
 
 /**
@@ -327,20 +341,26 @@ export const getFormatter = (field?: Field, times = 1) => {
 /**
  * 格式化数值
  */
-export const formatterValue = (field: Field, value, notFormatter = true): string | number => {
+export const formatterValue = (field, value, notFormatter = true): string | number => {
+  if (value === t(Strings.null)) {
+    return value;
+  }
+
   if (notFormatter) {
     return value;
   }
   const { property, type } = field;
-  if (type === FieldType.AutoNumber) {
+  if (!property || type === FieldType.AutoNumber) {
     return value;
   }
   const validType = (condition) => {
-    return Boolean(type === condition || (property.format && property.format.type === condition) || '');
+    return Boolean(type === condition || (property?.format?.type === condition) || '');
   };
-  const fieldSymbol = property.symbol || (property.format && property.format.format.symbol) || '';
+  const fieldSymbol = property.symbol || (property?.format?.format?.symbol) || '';
   const isCurrency = validType(FieldType.Currency);
   const isPercent = validType(FieldType.Percent);
+  const isDate = validType(FieldType.DateTime);
+  const isFomula = validType(FieldType.Formula);
   const isNumber = validType(FieldType.Number) && fieldSymbol;
   // 货币
   if (isCurrency) {
@@ -348,11 +368,14 @@ export const formatterValue = (field: Field, value, notFormatter = true): string
   }
   // 百分比，带单位的数字
   if (isPercent || isNumber) {
-    let suffixSymbol = fieldSymbol;
-    if (isPercent && !suffixSymbol) {
-      suffixSymbol = '%';
-    }
-    return ` ${value} ${suffixSymbol}`;
+    const suffixSymbol = isPercent ? '%' : fieldSymbol;
+    return `${value} ${suffixSymbol}`;
+  }
+
+  // 智能公式日期 - value 为时间戳
+  if (isFomula && isDate) {
+    const { dateFormat, timeFormat } = property.format.format;
+    return formatDatetime(Number(value), `${dateFormat} ${timeFormat}`);
   }
   return value;
 }
@@ -404,6 +427,7 @@ export const processRecords = (
 ): IOutputRecordData[] => {
   const { records, dimensionField, metricsField, metricsType, seriesField, isSplitMultiValue } = data;
   if (!dimensionField || !checkMetrics(metricsType, metricsField)) return [];
+  const start = Date.now();
   const res = records.map(record => {
     const shouldSplitDimensionValue = isSplitMultiValue && dimensionField?.basicValueType === BasicValueType.Array;
     const recordData: IOutputRecordData = {};
@@ -412,12 +436,12 @@ export const processRecords = (
     }
     if (seriesField) {
       // getCellValue 性能太差
-      // const start = new Date().valueOf();
-      // recordData.series = record._getCellValue(seriesField.id);
-      // console.log('old - _getCellValue takes time: ', new Date().valueOf() - start);
       // const start1 = new Date().valueOf();
-      record.getCellValue(seriesField.id);
-      // console.log('new - getCellValue takes time: ', new Date().valueOf() - start1);
+      recordData.series = record.getCellValue(seriesField.id);
+      // console.log('old - ', new Date().valueOf() - start1);
+      // const start2 = new Date().valueOf();
+      // recordData.series = record.getCellValue(seriesField.id);
+      // console.log('new - ', new Date().valueOf() - start2);
     }
     const dimensionValue = record.getCellValueString(dimensionField.id) || t(Strings.null);
 
@@ -433,6 +457,7 @@ export const processRecords = (
     recordData.dimension = dimensionValue.trim();
     return [recordData];
   }).flat();
+  console.log('takes time: ', Date.now() - start);
   return res;
 };
 
@@ -699,6 +724,7 @@ export const processChartDataSort = ({ axisSortType, dimensionMetricsMap, dimens
   return data;
 };
 
+const maxRenderNum = 100;
 export const sortSeries = (props: {
   axisSortType: { axis: string; sortType: string };
   dimensionMetricsMap: IDimensionMetricsMap;
@@ -721,8 +747,8 @@ export const sortSeries = (props: {
   const yKey = dimensionMetricsMap.metrics.key;
 
   const mainAxisName = dimensionMetricsMap.dimension.key;
-  const axisNames = new Set();
-  const legendNames = new Set();
+  const axisNames: string[] = [];
+  const legendNames = new Set<string>();
   let newData = [...data];
 
   if (axisSortType) {
@@ -735,10 +761,8 @@ export const sortSeries = (props: {
 
     // x 轴排序
     const commonSortFunc = getSortFuncByField(mainAxisName, dimensionField);
-    console.log('sort 1');
     if (sortByXaxis) {
       newData = sortBy(newData, [commonSortFunc], false);
-      console.log('sort 2');
     } else {
       // y 轴排序
       // 按分类维度分组
@@ -787,18 +811,32 @@ export const sortSeries = (props: {
     }
 
     if (seriesField) {
-      console.log('sort 3');
+      // 直接读取 seriesField 的属性存在问题，性能过低，每次链式调用一次 seriesField 的属性需要花费 20 - 40毫秒不等
+      let paramField = seriesField;
+      if (seriesField.type === FieldType.MagicLookUp) {
+        paramField = paramField.property.entityField.field;
+      }
+      let property = paramField.property;
+      let type = paramField.type;
 
       const seriesArr: { sortKey: string; series: number[][] }[] = [];
       for (let i = 0; i < newData.length; i++) {
         const list = newData[i];
         for (let j = 0; j < list.length; j++) {
           const item = list[j];
-          const seriesValue = getValueByType2(item[seriesField.id], seriesField!);
-          const coordinate = isColumn ? [i, item[yKey]] : [item[yKey], i];
+          const mainAxisIndex = axisNames.findIndex((v) => v === item[mainAxisName]);
+          let coordinateSaveIndex = mainAxisIndex;
+          // 查询是否存在对应的主轴项，没有则新增
+          if (mainAxisIndex < 0) {
+            coordinateSaveIndex = axisNames.length;
+            axisNames.push(item[mainAxisName]);
+          }
+          const start = Date.now();
+          const seriesValue = getValueByType2(item[seriesField.id], { property, type });
+          console.log('cals series value need takes time ', Date.now() - start);
+          const coordinate = isColumn ? [coordinateSaveIndex, item[yKey]] : [item[yKey], coordinateSaveIndex];
           const seriesItem = seriesArr.find((v) => v.sortKey === seriesValue);
-          axisNames.add(item[mainAxisName]);
-          legendNames.add(seriesValue);
+          legendNames.add(seriesValue.toString());
           if (seriesItem) {
             // 合并同类项
             const lastItem = seriesItem.series[seriesItem.series.length - 1];
@@ -810,22 +848,15 @@ export const sortSeries = (props: {
             } else {
               seriesItem.series.push(coordinate);
             }
-            // seriesItem.series = [...seriesItem.series];
+            seriesItem.series = [...seriesItem.series];
           } else {
-            seriesArr.push({ sortKey: seriesValue, series: [coordinate] });
+            seriesArr.push({ sortKey: seriesValue.toString(), series: [coordinate] });
           }
         }
       }
-      console.log('sort 4');
-      let property = seriesField.property;
-      let type = seriesField.type;
-      if (seriesField.type === FieldType.MagicLookUp) {
-        const field = seriesField.property.entityField.field;
-        property = field.property;
-        type = field.type;
-      }
+      // console.log('cals series value need takes time ', Date.now() - start);
       const canReplaceSymbol = [FieldType.Currency, FieldType.Percent, FieldType.Number].includes(type);
-        const result = sortBy(seriesArr, (item) => {
+      const result = sortBy(seriesArr, (item) => {
         // 应当按值排序？
         let key = item.sortKey;
         if (isNull(key)) {
@@ -843,19 +874,18 @@ export const sortSeries = (props: {
         key = key.replace(property.symbol || '', '').trim();
         return Number(key);
       });
-      console.log('sort 5');
       // 给标签排个序
       const sortedLegendNames = [...legendNames].sort((a, b) =>
-        (a as string).trim().localeCompare((b as string).trim())
-      );
-      return { axisNames: [...axisNames], legendNames: sortedLegendNames, sortedSeries: result };
+        a.trim().localeCompare(b.trim())
+      ).slice(0, maxRenderNum);
+      return { axisNames: [...axisNames].slice(0, maxRenderNum), legendNames: sortedLegendNames, sortedSeries: result.slice(0, maxRenderNum) };
     }
   }
 
   newData = newData.flat();
   for (let i = 0; i < newData.length; i++) {
-    axisNames.add(newData[i][mainAxisName]);
+    axisNames.push(newData[i][mainAxisName]);
   }
 
-  return { axisNames: [...axisNames], legendNames: [...legendNames], sortedSeries: newData };
+  return { axisNames: [...axisNames].slice(0, maxRenderNum), legendNames: [...legendNames].slice(0, maxRenderNum), sortedSeries: newData.slice(0, maxRenderNum) };
 };

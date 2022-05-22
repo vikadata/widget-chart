@@ -67,6 +67,7 @@ export class EchartsColumn extends EchartsBase {
     const isColumn = this.type === ChartType.EchartsColumn;
     const dataIndex = isColumn ? 1 : 0;
     const color = this.stackType === StackType.None && this.theme === 'dark' ? { color: '#fff' } : { color: '#333' };
+    const { property, type } = metricsField;
 
     // 区分普通配置和series配置
     const styleOption: any = {
@@ -82,7 +83,7 @@ export class EchartsColumn extends EchartsBase {
           position: 'inside',
           formatter: (params) => {
             const value = Array.isArray(params.value) ? params.value[dataIndex] : params.value;
-            return formatterValue(metricsField, value, noFormatMetric)
+            return formatterValue({ property, type }, value, noFormatMetric)
           }
         },
       },
@@ -130,8 +131,6 @@ export class EchartsColumn extends EchartsBase {
     // 是否需要格式化 y 轴文本字段
     const noFormatMetric = countTotalRecords || this.stackType === StackType.Percent;
 
-    console.log('calc 0');
-
     // 处理多选值分离
     const rows = processRecords({
       records,
@@ -141,7 +140,6 @@ export class EchartsColumn extends EchartsBase {
       seriesField: seriesFieldInstance,
       isSplitMultiValue: isSplitMultipleValue,
     });
-    console.log('calc 1');
 
     // 处理分组、空值、格式化
     let data = processChartData({
@@ -156,7 +154,6 @@ export class EchartsColumn extends EchartsBase {
       isFormatDatetime,
       datetimeFormatter,
     });
-    console.log('calc 2');
 
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { noFormatMetric, metricsField });
     const { axisNames, legendNames, sortedSeries } = sortSeries({
@@ -168,36 +165,30 @@ export class EchartsColumn extends EchartsBase {
       isColumn,
       isPercent,
     });
-    console.log('calc 3');
-
-    const max = 100;
-    const max2 = 20;
-    const results = [...sortedSeries].slice(0, max);
-    const resultsAxisData = [...axisNames].slice(0, max);
 
     const series: BarSeriesOption[] = [];
     if (seriesFieldInstance) {
-      for (let i = 0; i < results.length; i++) {
-        const item = results[i];
+      for (let i = 0; i < sortedSeries.length; i++) {
+        const item = sortedSeries[i];
         series.push({
           ...styleOption.series,
           name: item.sortKey,
-          data: item.series.slice(0, max2),
+          data: item.series,
         });
       }
     } else {
       series.push({
         ...styleOption.series,
-        data: results.map((v) => v[yKey]),
+        data: sortedSeries.map((v) => v[yKey]),
       });
     }
 
-    this.mainAxisLabels = [...resultsAxisData] as string[];
+    this.mainAxisLabels = [...axisNames] as string[];
 
     const { mainAxis: mainAxisOption, subAxis: subAxisOption } = this.getCommonGridStyleOptions({
       dimensionField,
       metricsField,
-      mainAxisData: [...resultsAxisData] as string[],
+      mainAxisData: [...axisNames] as string[],
       noFormatMetric,
       countTotalRecords,
     });
