@@ -45,15 +45,21 @@ export const WidgetChartCanvas: React.FC<IWidgetChartCanvas> = ({
   chartType, chartInstance, options, isPartOfData, isExpanded, theme, formRefreshFlag }
 ) => {
   const [clear, setClear] = useState(false);
+  const [saveOpts, setSaveOpts] = useState<string>();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const { addListen, removeListen } = listenDOMSize(chartContainerRef);
 
   const renderEcharts = React.useCallback(({ width, height }) => {
-    // 判断表单配置是否已经更改，不一致需要清除上一次的绘制
-    if (clear !== formRefreshFlag) {
+    const opts = JSON.stringify(options);
+    // 判断表单配置或者配置项是否已经更改，不一致需要清除上一次的绘制
+    if (
+      clear !== formRefreshFlag ||
+      saveOpts !== opts
+    ) {
       // console.log('clear: ', clear, ' formRefreshFlag: ', formRefreshFlag);
       echarts.dispose(chartContainerRef.current!);
       setClear(formRefreshFlag);
+      setSaveOpts(opts);
     }
     const myChart = echarts.init(chartContainerRef.current!, theme);
     const mergeOptions = chartInstance.getMergeOption(

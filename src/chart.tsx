@@ -4,7 +4,7 @@ import {
   useRecords, useViewsMeta, useViewport, useSettingsButton, useActiveViewId
 } from '@vikadata/widget-sdk';
 import isEqual from 'lodash/isEqual';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { WidgetChartCanvas } from './chart_canvas';
 import { CHART_TYPES, DATETIME_FORMATTER_TYPES, DATETIME_FORMATTER_TYPES_NAMES } from './const';
 import { EchartsColumn } from './model';
@@ -69,6 +69,7 @@ const WidgetChartBase: React.FC = () => {
   const [isShowingSettings] = useSettingsButton();
   const getDefaultFormData = useGetDefaultFormData(meta);
   const [formData, setFormData, editable] = useCloudStorage('FormData', getDefaultFormData);
+  const [init, setInit] = useState(true);
   const [formRefreshFlag, setFormRefreseFlag] = useState(false);
 
   const readOnly = !editable;
@@ -163,8 +164,6 @@ const WidgetChartBase: React.FC = () => {
       chartStyle: chartOptions.chartStyle,
     });
 
-    setFormRefreseFlag((val) => !val);
-
     return options;
   }, [chartOptions, configChart, fields, records]);
 
@@ -176,8 +175,6 @@ const WidgetChartBase: React.FC = () => {
     if (isEqual(formData, nextFormData)) {
       return;
     }
-
-    setFormRefreseFlag((val) => !val);
 
     // 切换图表类型，merge 配置
     if (formData.chartStructure.chartType !== nextFormData.chartStructure.chartType) {
@@ -216,34 +213,32 @@ const WidgetChartBase: React.FC = () => {
   };
 
   return (
-    // <ThemeProvider theme={defaultTheme}>
-      <div ref={containerRef} style={{ display: 'flex', height: '100%' }}>
-        <ChartError hasError={false} isExpanded={isFullscreen} openSetting={isShowingSettings}>
-          <WidgetChartCanvas
-            chartInstance={configChart}
-            chartType={configChart.type}
-            options={plotOptions}
-            isExpanded={isFullscreen}
-            isPartOfData={isPartOfDataRef.current}
-            theme={chartOptions.chartStyle.theme}
-            formRefreshFlag={formRefreshFlag}
-          />
-        </ChartError>
-        <FormWrapper openSetting={isShowingSettings} readOnly={readOnly}>
-          <Form
-            formData={formData}
-            uiSchema={getUiSchema(viewId)}
-            schema={schema}
-            onChange={onFormChange}
-            transformErrors={transformErrors}
-            onError={(e) => console.log('error', e)}
-            liveValidate
-          >
-            <div />
-          </Form>
-        </FormWrapper>
-      </div>
-    // </ThemeProvider>
+    <div ref={containerRef} style={{ display: 'flex', height: '100%' }}>
+      <ChartError hasError={false} isExpanded={isFullscreen} openSetting={isShowingSettings}>
+        <WidgetChartCanvas
+          chartInstance={configChart}
+          chartType={configChart.type}
+          options={plotOptions}
+          isExpanded={isFullscreen}
+          isPartOfData={isPartOfDataRef.current}
+          theme={chartOptions.chartStyle.theme}
+          formRefreshFlag={formRefreshFlag}
+        />
+      </ChartError>
+      <FormWrapper openSetting={isShowingSettings} readOnly={readOnly}>
+        <Form
+          formData={formData}
+          uiSchema={getUiSchema(viewId)}
+          schema={schema}
+          onChange={onFormChange}
+          transformErrors={transformErrors}
+          onError={(e) => console.log('error', e)}
+          liveValidate
+        >
+          <div />
+        </Form>
+      </FormWrapper>
+    </div>
   );
 };
 
