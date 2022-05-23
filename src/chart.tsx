@@ -1,7 +1,7 @@
 import { Form } from '@vikadata/components';
 import {
   BasicValueType, FieldType, useCloudStorage, useFields, useMeta, IMetaType,
-  useRecords, useViewsMeta, useViewport, useSettingsButton, useActiveViewId
+  useRecords, useViewsMeta, useViewport, useSettingsButton, useActiveViewId, useViewIds
 } from '@vikadata/widget-sdk';
 import isEqual from 'lodash/isEqual';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -25,7 +25,8 @@ const ChartMap = {};
 CHART_TYPES.forEach(item => ChartMap[item.id] = item);
 
 const useGetDefaultFormData = (meta) => {
-  const viewId = useActiveViewId() || '';
+  // useActiveViewId 存在在仪表盘下新建获取为空，所以需要拿到所有表的第一个
+  const viewId = useActiveViewId() || useViewIds()[0];
   const fields = useFields(viewId);
 
   // 默认表单配置
@@ -75,6 +76,7 @@ const WidgetChartBase: React.FC = () => {
   const viewId = formData.dataSource.view;
   const records = useRecords(viewId);
   const fields = useFields(viewId);
+  console.log(fields);
   const isPartOfDataRef = useRef(false);
 
   // 获取图表类型并实例化
