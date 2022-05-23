@@ -176,6 +176,8 @@ const WidgetChartBase: React.FC = () => {
       return;
     }
 
+    setFormRefreseFlag((val) => !val);
+
     // 切换图表类型，merge 配置
     if (formData.chartStructure.chartType !== nextFormData.chartStructure.chartType) {
       const chartType = ChartMap[nextFormData.chartStructure.chartType];
