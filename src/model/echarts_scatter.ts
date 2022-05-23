@@ -1,7 +1,7 @@
 import { Field, Record } from '@vikadata/widget-sdk';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
-import { formatDatetime, formatterValue, getAggregationValue, getNumberBaseFieldPrecision, groupByDimensionValue, processChartDataSort, processRecords, sortSeries } from '../helper';
+import { formatDatetime, formatterValue, getAggregationValue, getNumberBaseFieldPrecision, groupByDimensionValue, maxRenderNum, processChartDataSort, processRecords, sortSeries } from '../helper';
 import { Strings, t } from "../i18n";
 import { METRICS_TYPES } from '../const';
 import { ChartType, StackType } from "./interface";

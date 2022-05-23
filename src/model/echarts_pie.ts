@@ -4,7 +4,7 @@ import { EchartsBase } from './echarts_base';
 import { ChartType, StackType } from './interface';
 import { Strings, t } from '../i18n';
 import { sortBy } from '../sortBy';
-import { guessNumberFieldPrecision, processChartData, processRecords } from '../helper';
+import { guessNumberFieldPrecision, maxRenderNum, processChartData, processRecords } from '../helper';
 
 export class EchartsPie extends EchartsBase {
   type = ChartType.EchartsPie;
@@ -152,7 +152,7 @@ export class EchartsPie extends EchartsBase {
       return angleValue;
     });
 
-    data = data.slice(0, 100);
+    data = data.slice(0, maxRenderNum);
 
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, data);
     const options = {

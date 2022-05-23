@@ -1,7 +1,7 @@
 import { LineSeriesOption } from 'echarts';
 import { ChartType, StackType } from "./interface";
 import { Strings, t } from '../i18n';
-import { formatterValue, processChartData, processRecords, sortSeries } from '../helper';
+import { formatterValue, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
 import { EchartsBase } from './echarts_base';
 import { Field } from '@vikadata/widget-sdk';
 
@@ -155,7 +155,7 @@ export class EchartsLine extends EchartsBase {
         series.push({
           ...styleOption.series,
           name: item.sortKey,
-          data: item.series,
+          data: item.series.slice(0, maxRenderNum),
         });
       }
     } else {

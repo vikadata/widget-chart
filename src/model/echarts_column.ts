@@ -1,7 +1,7 @@
 import { Field, Record } from '@vikadata/widget-sdk';
 import { ChartType, StackType } from "./interface";
 import { Strings, t } from "../i18n";
-import { formatterValue, processChartData, processRecords, sortSeries } from '../helper';
+import { formatterValue, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
 import { BarSeriesOption } from 'echarts';
 import { EchartsBase } from './echarts_base';
 
@@ -172,7 +172,7 @@ export class EchartsColumn extends EchartsBase {
         series.push({
           ...styleOption.series,
           name: item.sortKey,
-          data: item.series,
+          data: item.series.slice(0, maxRenderNum),
         });
       }
     } else {

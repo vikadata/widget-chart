@@ -718,7 +718,7 @@ export const processChartDataSort = ({ axisSortType, dimensionMetricsMap, dimens
   return data;
 };
 
-// const maxRenderNum = 100;
+export const maxRenderNum = 501;
 export const sortSeries = (props: {
   axisSortType: { axis: string; sortType: string };
   dimensionMetricsMap: IDimensionMetricsMap;
@@ -813,7 +813,7 @@ export const sortSeries = (props: {
       let property = paramField.property;
       let type = paramField.type;
 
-      // const start = Date.now();
+      const start = Date.now();
       const seriesArr: { sortKey: string; series: number[][] }[] = [];
       for (let i = 0; i < newData.length; i++) {
         const list = newData[i];
@@ -849,7 +849,7 @@ export const sortSeries = (props: {
           }
         }
       }
-      // console.log('cals series value need takes time ', Date.now() - start);
+      console.log('cals series value need takes time ', Date.now() - start);
       const canReplaceSymbol = [FieldType.Currency, FieldType.Percent, FieldType.Number].includes(type);
       const result = sortBy(seriesArr, (item) => {
         // 应当按值排序？
@@ -872,8 +872,12 @@ export const sortSeries = (props: {
       // 给标签排个序
       const sortedLegendNames = [...legendNames].sort((a, b) =>
         a.trim().localeCompare(b.trim())
-      );
-      return { axisNames: [...axisNames], legendNames: sortedLegendNames, sortedSeries: result };
+      ).slice(0, maxRenderNum);
+      return {
+        axisNames: [...axisNames].slice(0, maxRenderNum),
+        legendNames: sortedLegendNames,
+        sortedSeries: result.slice(0, maxRenderNum)
+      };
     }
   }
 
@@ -882,5 +886,9 @@ export const sortSeries = (props: {
     axisNames.push(newData[i][mainAxisName]);
   }
 
-  return { axisNames: [...axisNames], legendNames: [...legendNames], sortedSeries: newData };
+  return {
+    axisNames: [...axisNames].slice(0, maxRenderNum),
+    legendNames: [...legendNames].slice(0, maxRenderNum),
+    sortedSeries: newData.slice(0, maxRenderNum)
+  };
 };
