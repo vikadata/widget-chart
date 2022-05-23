@@ -4,7 +4,7 @@ import {
   useRecords, useViewsMeta, useViewport, useSettingsButton, useActiveViewId
 } from '@vikadata/widget-sdk';
 import isEqual from 'lodash/isEqual';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { WidgetChartCanvas } from './chart_canvas';
 import { CHART_TYPES, DATETIME_FORMATTER_TYPES, DATETIME_FORMATTER_TYPES_NAMES } from './const';
 import { EchartsColumn } from './model';
@@ -69,7 +69,6 @@ const WidgetChartBase: React.FC = () => {
   const [isShowingSettings] = useSettingsButton();
   const getDefaultFormData = useGetDefaultFormData(meta);
   const [formData, setFormData, editable] = useCloudStorage('FormData', getDefaultFormData);
-  const [init, setInit] = useState(true);
   const [formRefreshFlag, setFormRefreseFlag] = useState(false);
 
   const readOnly = !editable;
@@ -218,13 +217,14 @@ const WidgetChartBase: React.FC = () => {
     <div ref={containerRef} style={{ display: 'flex', height: '100%' }}>
       <ChartError hasError={false} isExpanded={isFullscreen} openSetting={isShowingSettings}>
         <WidgetChartCanvas
+          formRefreshFlag={formRefreshFlag}
           chartInstance={configChart}
           chartType={configChart.type}
           options={plotOptions}
           isExpanded={isFullscreen}
           isPartOfData={isPartOfDataRef.current}
           theme={chartOptions.chartStyle.theme}
-          formRefreshFlag={formRefreshFlag}
+          formData={formData}
         />
       </ChartError>
       <FormWrapper openSetting={isShowingSettings} readOnly={readOnly}>

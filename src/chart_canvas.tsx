@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { lightColors, darkColors } from '@vikadata/components';
 // import { useViewport } from '@vikadata/widget-sdk';
 import * as echarts from 'echarts/core';
@@ -32,6 +32,7 @@ interface IWidgetChartCanvas {
   isPartOfData?: boolean;
   theme: string;
   formRefreshFlag: boolean;
+  formData: any;
 }
 
 Object.keys(themesMap).forEach(key => {
@@ -41,34 +42,33 @@ Object.keys(themesMap).forEach(key => {
   });
 });
 
-export const WidgetChartCanvas: React.FC<IWidgetChartCanvas> = ({
-  chartType, chartInstance, options, isPartOfData, isExpanded, theme, formRefreshFlag }
-) => {
+const WidgetChart: React.FC<IWidgetChartCanvas> = ({
+  chartType, chartInstance, options, isPartOfData, isExpanded, theme, formRefreshFlag, formData
+}) => {
   const [clear, setClear] = useState(false);
-  const [saveOpts, setSaveOpts] = useState<string>();
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const { addListen, removeListen } = listenDOMSize(chartContainerRef);
 
+  useEffect(() => {
+    if (chartContainerRef.current) {
+      echarts.dispose(chartContainerRef.current);
+    }
+  }, [options, formData, chartContainerRef.current]);
+
   const renderEcharts = React.useCallback(({ width, height }) => {
-    const opts = JSON.stringify(options);
-    // 判断表单配置或者配置项是否已经更改，不一致需要清除上一次的绘制
-    if (
-      clear !== formRefreshFlag ||
-      saveOpts !== opts
-    ) {
-      // console.log('clear: ', clear, ' formRefreshFlag: ', formRefreshFlag);
+    // 判断表单配置是否已经更改，不一致需要清除上一次的绘制
+    if (clear !== formRefreshFlag) {
       echarts.dispose(chartContainerRef.current!);
       setClear(formRefreshFlag);
-      setSaveOpts(opts);
     }
     const myChart = echarts.init(chartContainerRef.current!, theme);
     const mergeOptions = chartInstance.getMergeOption(
-      { chartInstance, options, lightColors, darkColors, width, height }
+      { chartInstance, options: { ...options }, lightColors, darkColors, width, height }
     );
 
     myChart.setOption(mergeOptions);
     myChart.resize();
-  }, [options, theme, chartInstance.stackType, chartType, formRefreshFlag, clear]);
+  }, [options, formData, theme, chartInstance.stackType, chartType, formRefreshFlag, clear]);
 
   useEffect(() => {
     // 注册必须的组件
@@ -95,7 +95,7 @@ export const WidgetChartCanvas: React.FC<IWidgetChartCanvas> = ({
       addListen(renderEcharts);
     }
     return removeListen;
-  }, [chartContainerRef.current, clear, chartInstance.stackType, chartType, options, theme]);
+  }, [chartContainerRef.current, clear, formData, chartInstance.stackType, chartType, options, theme]);
 
   return (
     <div style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }} >
@@ -104,3 +104,5 @@ export const WidgetChartCanvas: React.FC<IWidgetChartCanvas> = ({
     </div>
   );
 };
+
+export const WidgetChartCanvas = memo(WidgetChart);
