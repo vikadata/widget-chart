@@ -157,7 +157,7 @@ const WidgetChartBase: React.FC = () => {
   // 图表样式相关的配置
   const plotOptions = useMemo(() => {
     const options = configChart.getChartOptions({
-      records: records.slice(0, 500),
+      records: records,
       fields,
       chartStructure: chartOptions.chartStructure,
       chartStyle: chartOptions.chartStyle,

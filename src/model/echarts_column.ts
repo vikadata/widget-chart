@@ -114,7 +114,6 @@ export class EchartsColumn extends EchartsBase {
     const { seriesField, dimension, metrics, metricsType, isSplitMultipleValue,
       isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
     
-    console.log('get options');
     const isColumn = this.type === ChartType.EchartsColumn;
     const isPercent = this.stackType === StackType.Percent
     const { axisSortType, isCountNullValue } = chartStyle;

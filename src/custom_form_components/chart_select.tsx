@@ -24,7 +24,7 @@ const ChartSelectWrapper = styled.div`
   box-shadow: 0px 8px 24px 0px rgba(38,38,38,0.16);
   width: 276px;
   height: 400px;
-  overflow: scroll;
+  overflow: auto;
   padding: 24px;
   border-radius: 4px;
 `;

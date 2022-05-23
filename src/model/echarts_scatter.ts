@@ -213,7 +213,7 @@ export class EchartsScatter extends EchartsBase {
       yAxis: { ...subAxis },
       series: [{
         ...styleOption.series,
-        data: seriesData.slice(0, 300)
+        data: seriesData
       }]
     }
   }

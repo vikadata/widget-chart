@@ -25,97 +25,97 @@ const numberFormatTypes = ['number', 'currency', 'percent'];
  */
 const isNull = (arg) => arg == null || arg === t(Strings.null);
 
-const getReferenceValue = (value, field) => {
-  const { basicValueType, property } = field;
-  if (isNull(value)) {
-    return t(Strings.null);
-  }
-  switch(basicValueType) {
-    case BasicValueType.Number:
-    case BasicValueType.String:
-    case BasicValueType.Boolean:
-      return value.toString();
-    case BasicValueType.Array:
-      return value.map((v) => {
-        if (isNull(v)) {
-          return t(Strings.null);
-        }
-        return property?.entityField?.field ? getValueByType(v, property.entityField.field) : v;
-      }).join(',');
-    case BasicValueType.DateTime:
-      if (typeof value === 'number') {
-        const { dateFormat, timeFormat } = property.format.format;
-        return formatDatetime(value, `${dateFormat} ${timeFormat}`);
-      }
-      return value;
-    default:
-      return value;
-  }
-}
+// const getReferenceValue = (value, field) => {
+//   const { basicValueType, property } = field;
+//   if (isNull(value)) {
+//     return t(Strings.null);
+//   }
+//   switch(basicValueType) {
+//     case BasicValueType.Number:
+//     case BasicValueType.String:
+//     case BasicValueType.Boolean:
+//       return value.toString();
+//     case BasicValueType.Array:
+//       return value.map((v) => {
+//         if (isNull(v)) {
+//           return t(Strings.null);
+//         }
+//         return property?.entityField?.field ? getValueByType(v, property.entityField.field) : v;
+//       }).join(',');
+//     case BasicValueType.DateTime:
+//       if (typeof value === 'number') {
+//         const { dateFormat, timeFormat } = property.format.format;
+//         return formatDatetime(value, `${dateFormat} ${timeFormat}`);
+//       }
+//       return value;
+//     default:
+//       return value;
+//   }
+// }
 
-/**
- * 获取处理图表分类后的 label
- * @param value 原始值
- * @param field 字段
- */
-export const getValueByType = (value, field: Field) => {
-  const { type, property } = field;
-  switch(type) {
-    case FieldType.Formula:
-    case FieldType.MagicLookUp:
-      return getReferenceValue(value, field);
-    case FieldType.MagicLink:
-      if (value == t(Strings.null)) {
-        return value;
-      }
-      return value.map((v) => v.title).join(',');
-    case FieldType.Text:
-    case FieldType.SingleText:
-    case FieldType.Rating:
-    case FieldType.URL:
-    case FieldType.Phone:
-    case FieldType.Email:
-    case FieldType.AutoNumber:
-        return value.toString() || t(Strings.null);
-    case FieldType.Percent:
-      return `${value} %`;
-    case FieldType.Number:
-      if (property.symbol) {
-        return `${value} ${property.symbol}`;
-      }
-      return value;
-    case FieldType.Currency:
-      if (property.symbol) {
-        return `${property.symbol} ${value}`;
-      }
-      return value || t(Strings.null);
-    case FieldType.MultiSelect:
-    case FieldType.Member:
-      if (value == t(Strings.null)) {
-        return value;
-      }
-      return value.map((v) => v.name).join(',');
-    case FieldType.DateTime:
-    case FieldType.CreatedTime:
-    case FieldType.LastModifiedTime:
-      const { dateFormat, timeFormat } = property;
-      if (typeof value === 'number') {
-        return formatDatetime(value, `${dateFormat} ${timeFormat}`);
-      }
-      return formatDatetime(value, dateFormat);;
-    case FieldType.Checkbox:
-      return value.toString();
-    case FieldType.SingleSelect:
-    case FieldType.CreatedBy:
-    case FieldType.LastModifiedBy:
-      if (value === t(Strings.null)) {
-        return value;
-      }
-      return value.name;
-    default:
-      return t(Strings.null);
-  }
-}
+// /**
+//  * 获取处理图表分类后的 label
+//  * @param value 原始值
+//  * @param field 字段
+//  */
+// export const getValueByType = (value, field: Field) => {
+//   const { type, property } = field;
+//   switch(type) {
+//     case FieldType.Formula:
+//     case FieldType.MagicLookUp:
+//       return getReferenceValue(value, field);
+//     case FieldType.MagicLink:
+//       if (value == t(Strings.null)) {
+//         return value;
+//       }
+//       return value.map((v) => v.title).join(',');
+//     case FieldType.Text:
+//     case FieldType.SingleText:
+//     case FieldType.Rating:
+//     case FieldType.URL:
+//     case FieldType.Phone:
+//     case FieldType.Email:
+//     case FieldType.AutoNumber:
+//         return value.toString() || t(Strings.null);
+//     case FieldType.Percent:
+//       return `${value} %`;
+//     case FieldType.Number:
+//       if (property.symbol) {
+//         return `${value} ${property.symbol}`;
+//       }
+//       return value;
+//     case FieldType.Currency:
+//       if (property.symbol) {
+//         return `${property.symbol} ${value}`;
+//       }
+//       return value || t(Strings.null);
+//     case FieldType.MultiSelect:
+//     case FieldType.Member:
+//       if (value == t(Strings.null)) {
+//         return value;
+//       }
+//       return value.map((v) => v.name).join(',');
+//     case FieldType.DateTime:
+//     case FieldType.CreatedTime:
+//     case FieldType.LastModifiedTime:
+//       const { dateFormat, timeFormat } = property;
+//       if (typeof value === 'number') {
+//         return formatDatetime(value, `${dateFormat} ${timeFormat}`);
+//       }
+//       return formatDatetime(value, dateFormat);;
+//     case FieldType.Checkbox:
+//       return value.toString();
+//     case FieldType.SingleSelect:
+//     case FieldType.CreatedBy:
+//     case FieldType.LastModifiedBy:
+//       if (value === t(Strings.null)) {
+//         return value;
+//       }
+//       return value.name;
+//     default:
+//       return t(Strings.null);
+//   }
+// }
 
 type SeriesValueType = string | number | { title?: string; name?: string };
 
@@ -127,7 +127,7 @@ type SeriesValueType = string | number | { title?: string; name?: string };
  * @param field 
  * @returns 
  */
-const getValueByType2 = (value, field) => {
+const getValueByType = (value, field) => {
   if (Array.isArray(value)) {
     const res: SeriesValueType[] = [];
     const dfs = (source) => {
@@ -141,7 +141,7 @@ const getValueByType2 = (value, field) => {
       }
     }
     dfs(value);
-    // // 存在 [price, null]，可以考虑是否过滤 null
+    // 存在 [price, null]，可以考虑是否过滤 null
     return value.map((v) => {
       if (v != null && typeof v === 'object') {
         return formatterValue(field, v.name || v.title || t(Strings.null), false);
@@ -724,7 +724,7 @@ export const processChartDataSort = ({ axisSortType, dimensionMetricsMap, dimens
   return data;
 };
 
-const maxRenderNum = 100;
+// const maxRenderNum = 100;
 export const sortSeries = (props: {
   axisSortType: { axis: string; sortType: string };
   dimensionMetricsMap: IDimensionMetricsMap;
@@ -819,6 +819,7 @@ export const sortSeries = (props: {
       let property = paramField.property;
       let type = paramField.type;
 
+      // const start = Date.now();
       const seriesArr: { sortKey: string; series: number[][] }[] = [];
       for (let i = 0; i < newData.length; i++) {
         const list = newData[i];
@@ -831,9 +832,9 @@ export const sortSeries = (props: {
             coordinateSaveIndex = axisNames.length;
             axisNames.push(item[mainAxisName]);
           }
-          const start = Date.now();
-          const seriesValue = getValueByType2(item[seriesField.id], { property, type });
-          console.log('cals series value need takes time ', Date.now() - start);
+          // const start = Date.now();
+          const seriesValue = getValueByType(item[seriesField.id], { type, property });
+          // console.log('cals series value need takes time ', Date.now() - start);
           const coordinate = isColumn ? [coordinateSaveIndex, item[yKey]] : [item[yKey], coordinateSaveIndex];
           const seriesItem = seriesArr.find((v) => v.sortKey === seriesValue);
           legendNames.add(seriesValue.toString());
@@ -877,8 +878,8 @@ export const sortSeries = (props: {
       // 给标签排个序
       const sortedLegendNames = [...legendNames].sort((a, b) =>
         a.trim().localeCompare(b.trim())
-      ).slice(0, maxRenderNum);
-      return { axisNames: [...axisNames].slice(0, maxRenderNum), legendNames: sortedLegendNames, sortedSeries: result.slice(0, maxRenderNum) };
+      );
+      return { axisNames: [...axisNames], legendNames: sortedLegendNames, sortedSeries: result };
     }
   }
 
@@ -887,5 +888,5 @@ export const sortSeries = (props: {
     axisNames.push(newData[i][mainAxisName]);
   }
 
-  return { axisNames: [...axisNames].slice(0, maxRenderNum), legendNames: [...legendNames].slice(0, maxRenderNum), sortedSeries: newData.slice(0, maxRenderNum) };
+  return { axisNames: [...axisNames], legendNames: [...legendNames], sortedSeries: newData };
 };
