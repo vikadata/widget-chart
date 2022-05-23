@@ -169,7 +169,7 @@ export abstract class EchartsBase {
   getCommonStyleOptions(): EChartsCoreOption {
     const isLight = this.theme !== 'dark';
     const legendStyle = {
-      textStyle: { color: isLight ? '#333' : '#fff' },
+      textStyle: { width: 200, overflow: 'truncate', color: isLight ? '#333' : '#fff' },
       itemStyle: { borderColor: 'transparent' },
       pageIconColor: isLight ? '#2f4554' : '#fff',
       pageIconInactiveColor: isLight ? '#aaa' : '#8d8d8d',
@@ -179,7 +179,14 @@ export abstract class EchartsBase {
     }
     return {
       tooltip: { trigger: 'item', appendToBody: true },
-      legend: { type: 'scroll', icon: 'circle', ...legendStyle },
+      legend: {
+        type: 'scroll',
+        icon: 'circle',
+        formatter: (value) => {
+          return value.split('\n').join(' ');
+        },
+        ...legendStyle
+      },
       grid: {
         left: 75,
         bottom: 75,
