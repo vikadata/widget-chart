@@ -427,7 +427,7 @@ export const processRecords = (
 ): IOutputRecordData[] => {
   const { records, dimensionField, metricsField, metricsType, seriesField, isSplitMultiValue } = data;
   if (!dimensionField || !checkMetrics(metricsType, metricsField)) return [];
-  const start = Date.now();
+  // const start = Date.now();
   const res = records.map(record => {
     const shouldSplitDimensionValue = isSplitMultiValue && dimensionField?.basicValueType === BasicValueType.Array;
     const recordData: IOutputRecordData = {};
@@ -435,13 +435,7 @@ export const processRecords = (
       recordData.metrics = record.getCellValue(metricsField?.id);
     }
     if (seriesField) {
-      // getCellValue 性能太差
-      // const start1 = new Date().valueOf();
       recordData.series = record.getCellValue(seriesField.id);
-      // console.log('old - ', new Date().valueOf() - start1);
-      // const start2 = new Date().valueOf();
-      // recordData.series = record.getCellValue(seriesField.id);
-      // console.log('new - ', new Date().valueOf() - start2);
     }
     const dimensionValue = record.getCellValueString(dimensionField.id) || t(Strings.null);
 
@@ -457,7 +451,7 @@ export const processRecords = (
     recordData.dimension = dimensionValue.trim();
     return [recordData];
   }).flat();
-  console.log('takes time: ', Date.now() - start);
+  // console.log('takes time: ', Date.now() - start);
   return res;
 };
 
