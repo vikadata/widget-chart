@@ -76,7 +76,6 @@ const WidgetChartBase: React.FC = () => {
   const viewId = formData.dataSource.view;
   const records = useRecords(viewId);
   const fields = useFields(viewId);
-  console.log(fields);
   const isPartOfDataRef = useRef(false);
 
   // 获取图表类型并实例化
