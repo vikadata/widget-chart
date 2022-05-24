@@ -4,7 +4,7 @@
   "spaceId": "spcGvC7cu3hQy",
   "entry": "./src/index.ts",
   "name": {
-    "zh-CN": "图表（Chart）",
+    "zh-CN": "antv 图表（Chart）",
     "en-US": "Chart"
   },
   "icon": "./package_icon.png",
