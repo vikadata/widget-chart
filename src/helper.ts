@@ -142,7 +142,7 @@ const getValueByType = (value, field) => {
     }
     dfs(value);
     // 存在 [price, null]，可以考虑是否过滤 null
-    return value.map((v) => {
+    return res.map((v) => {
       if (v != null && typeof v === 'object') {
         return formatterValue(field, v.name || v.title || t(Strings.null), false);
       }
@@ -369,7 +369,7 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   // 百分比，带单位的数字
   if (isPercent || isNumber) {
     const suffixSymbol = isPercent ? '%' : fieldSymbol;
-    return `${value} ${suffixSymbol}`;
+    return `${isPercent ? value * 100 : value} ${suffixSymbol}`;
   }
 
   // 智能公式日期 - value 为时间戳
@@ -440,7 +440,7 @@ export const processRecords = (
     if (seriesField) {
       recordData.series = record.getCellValue(seriesField.id);
     }
-    const dimensionValue = record.getCellValueString(dimensionField.id) || t(Strings.null);
+    let dimensionValue = record.getCellValueString(dimensionField.id) || t(Strings.null);
 
     if (shouldSplitDimensionValue) {
       if (dimensionValue == t(Strings.null)) {
@@ -448,10 +448,10 @@ export const processRecords = (
       }
       return dimensionValue.split(',').filter(item => item != null).map(item => ({
         ...recordData,
-        dimension: [item.trim()]
+        dimension: [item.trim().split('\n').join(' ')]
       }));
     }
-    recordData.dimension = dimensionValue.trim();
+    recordData.dimension = dimensionValue.trim().split('\n').join(' ');
     return [recordData];
   }).flat();
   // console.log('takes time: ', Date.now() - start);
@@ -873,9 +873,18 @@ export const sortSeries = (props: {
         return Number(key);
       });
       // 给标签排个序
-      const sortedLegendNames = [...legendNames].sort((a, b) =>
-        a.trim().localeCompare(b.trim())
-      ).slice(0, maxRenderNum);
+      const shouldReplaceSymbol = [FieldType.Percent, FieldType.Currency, FieldType.Number].includes(type);
+      let fieldSymbol = property?.symbol || (property?.format?.format?.symbol) || '';
+      if (type === FieldType.Percent) {
+        fieldSymbol = '%';
+      }
+      const sortedLegendNames = [...legendNames].sort((a, b) => {
+        if (shouldReplaceSymbol) {
+          return Number(a.replace(fieldSymbol, '').trim()) -
+            Number(b.replace(fieldSymbol, '').trim())
+        }
+        return a.trim().localeCompare(b.trim());
+      }).slice(0, maxRenderNum);
       return {
         axisNames: [...axisNames].slice(0, maxRenderNum),
         legendNames: sortedLegendNames,
@@ -886,7 +895,10 @@ export const sortSeries = (props: {
 
   newData = newData.flat();
   for (let i = 0; i < newData.length; i++) {
-    axisNames.push(newData[i][mainAxisName]);
+    const itemName = newData[i][mainAxisName];
+    if (axisNames.indexOf(itemName) < 0) {
+      axisNames.push(itemName);
+    }
   }
 
   return {

@@ -121,7 +121,7 @@ export class EchartsColumn extends EchartsBase {
     const yKey = dimensionMetricsMap.metrics.key;
     // 统计维度属性，统计数值属性，统计数值名称
     const dimensionField = fields.find(field => field.id === dimension) as Field;
-    const metricsField = fields.find(field => field.id === metrics.fieldId) as Field;
+    const metricsField = fields.find(field => field.id === metrics.fieldId) as Field || {};
     const isFormatDatetime = _isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
     const seriesFieldInstance = fields.find(field => field.id === seriesField);
     // 获取 y 轴的统计维度

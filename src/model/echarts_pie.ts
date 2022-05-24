@@ -121,7 +121,7 @@ export class EchartsPie extends EchartsBase {
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     // 统计维度属性，统计数值属性
     const dimensionField = fields.find(field => field.id === dimension);
-    const metricsField = fields.find(field => field.id === metrics.fieldId);
+    const metricsField = fields.find(field => field.id === metrics.fieldId) || {};
     const isFormatDatetime = _isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
 
     // 处理多选值分离

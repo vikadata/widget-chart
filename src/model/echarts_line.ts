@@ -102,7 +102,7 @@ export class EchartsLine extends EchartsBase {
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     // 统计维度属性，统计数值属性，统计数值名称
     const dimensionField = fields.find(field => field.id === dimension) as Field;
-    const metricsField = fields.find(field => field.id === metrics.fieldId);
+    const metricsField = fields.find(field => field.id === metrics.fieldId) || {};
     const isFormatDatetime = _isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
     const seriesFieldInstance: Field = fields.find(field => field.id === seriesField);
 

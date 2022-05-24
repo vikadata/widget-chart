@@ -118,7 +118,7 @@ export class EchartsScatter extends EchartsBase {
     const { dimension, metrics, metricsType, isSplitMultipleValue, seriesField, isFormatDatetime, datetimeFormatter } = chartStructure;
     const { axisSortType, isCountNullValue } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
-    const metricsField = fields.find(field => field.id === metrics.fieldId) as Field;
+    const metricsField = fields.find(field => field.id === metrics.fieldId) as Field || {};
     const dimensionField = fields.find(field => field.id === dimension) as Field;
     const seriesFieldInstance = fields.find(field => field.id === seriesField);
     const shouldFormatDatetime = isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
