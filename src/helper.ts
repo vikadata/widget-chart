@@ -428,11 +428,14 @@ export const processRecords = (
   const { records, dimensionField, metricsField, metricsType, seriesField, isSplitMultiValue } = data;
   if (!dimensionField || !checkMetrics(metricsType, metricsField)) return [];
   // const start = Date.now();
+  const metricsDataType = metricsField?.type === FieldType.Percent;
+  const multiScale = metricsDataType ? 100 : 1;
   const res = records.map(record => {
     const shouldSplitDimensionValue = isSplitMultiValue && dimensionField?.basicValueType === BasicValueType.Array;
     const recordData: IOutputRecordData = {};
     if (metricsField) {
-      recordData.metrics = record.getCellValue(metricsField?.id);
+      const metricsData = record.getCellValue(metricsField?.id);
+      recordData.metrics = metricsData != null ? metricsData * multiScale : metricsData;
     }
     if (seriesField) {
       recordData.series = record.getCellValue(seriesField.id);
@@ -813,7 +816,7 @@ export const sortSeries = (props: {
       let property = paramField.property;
       let type = paramField.type;
 
-      const start = Date.now();
+      // const start = Date.now();
       const seriesArr: { sortKey: string; series: number[][] }[] = [];
       for (let i = 0; i < newData.length; i++) {
         const list = newData[i];
@@ -849,7 +852,7 @@ export const sortSeries = (props: {
           }
         }
       }
-      console.log('cals series value need takes time ', Date.now() - start);
+      // console.log('cals series value need takes time ', Date.now() - start);
       const canReplaceSymbol = [FieldType.Currency, FieldType.Percent, FieldType.Number].includes(type);
       const result = sortBy(seriesArr, (item) => {
         // 应当按值排序？
