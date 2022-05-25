@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChartSelect, FieldSelect, ThemeSelect } from './custom_form_components';
-import { t, ViewPicker } from '@vikadata/widget-sdk';
-import { Strings } from './i18n';
+import { ViewPicker } from '@vikadata/widget-sdk';
+import { Strings, t } from './i18n';
 
 export const getUiSchema = (viewId: string) => {
   return {

@@ -1,12 +1,12 @@
-import { BasicValueType } from '@vikadata/core';
-import { Strings } from '../i18n';
-import { Field, Record, t } from '@vikadata/widget-sdk';
+import { Field, Record, BasicValueType } from '@vikadata/widget-sdk';
 import groupBy from 'lodash/groupBy'; 
+import sortBy from 'lodash/sortBy';
 import { PieChart, ScatterChart } from '.';
 import { AGGREGATION_TYPES, AGGREGATION_TYPES_NAMES, CHART_TYPES, METRICS_TYPES, METRICS_TYPES_NAMES } from '../const';
-import { getFieldFormEnum, getFormatter, getRightDimensionValue, processChartData, processChartDataSort, processRecords, sortBy } from '../helper';
+import { getFieldFormEnum, getFormatter, getRightDimensionValue, processChartData, processChartDataSort, processRecords } from '../helper';
 import { themesMap } from '../theme';
 import { ChartType, FormChatType, IDimensionMetricsMap, StackType } from './interface';
+import { t, Strings } from '../i18n';
 
 export abstract class Chart {
 

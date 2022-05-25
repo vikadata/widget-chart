@@ -13,9 +13,8 @@ import {
   ChartPieFilled,
   ChartScatterplotNormalFilled
 } from '@vikadata/icons';
-import { Strings } from '../i18n';
+import { Strings, t } from '../i18n';
 
-import { t } from '@vikadata/widget-sdk';
 import React, { Fragment, useState } from 'react';
 import styled from 'styled-components';
 import { CHART_TYPES } from '../const';
@@ -25,9 +24,8 @@ const ChartSelectWrapper = styled.div`
   box-shadow: 0px 8px 24px 0px rgba(38,38,38,0.16);
   width: 276px;
   height: 400px;
-  overflow: scroll;
+  overflow: auto;
   padding: 24px;
-  background: #ffffff;
   border-radius: 4px;
 `;
 // overflow: hidden; 会影响滚动，圆角被遮蔽的问题还是要从 select rc 入手 @sujian
@@ -68,72 +66,124 @@ export const ChartSelectBase = ({
 
   const chartList = [
     {
-      title: t(Strings.column_chart), // '柱状图',
+      title: t(Strings.echarts_column_chart), // '柱状图',
       icons: [
+        // {
+        //   name: t(Strings.column_chart), // '柱状图',
+        //   id: FormChatType.Column,
+        //   Icon: ChartColumnNormalFilled,
+        // },
+        // {
+        //   name: t(Strings.stacked_column_chart), // '堆叠柱状图',
+        //   id: FormChatType.StackColumn,
+        //   Icon: ChartColumnStackFilled,
+
+        // },
+        // {
+        //   name: t(Strings.percent_stacked_column_chart), // '百分比堆叠柱状图',
+        //   id: FormChatType.PercentStackColumn,
+        //   Icon: ChartColumnPercentFilled,
+        // },
+
         {
-          name: t(Strings.column_chart), // '柱状图',
-          id: FormChatType.Column,
+          name: t(Strings.echarts_column_chart), // '柱状图',
+          id: FormChatType.EchartsColumn,
           Icon: ChartColumnNormalFilled,
         },
         {
-          name: t(Strings.stacked_column_chart), // '堆叠柱状图',
-          id: FormChatType.StackColumn,
+          name: t(Strings.echarts_stack_column_chart), // '堆叠柱状图',
+          id: FormChatType.EchartsStackColumn,
           Icon: ChartColumnStackFilled,
 
         },
         {
-          name: t(Strings.percent_stacked_column_chart), // '百分比堆叠柱状图',
-          id: FormChatType.PercentStackColumn,
+          name: t(Strings.echarts_percent_column_chart), // '百分比堆叠柱状图',
+          id: FormChatType.EchartsPercentColumn,
           Icon: ChartColumnPercentFilled,
         },
       ],
     },
     {
-      title: t(Strings.bar_chart), // '条形图',
+      title: t(Strings.echarts_bar_chart), // '条形图',
       icons: [
+        // {
+        //   name: t(Strings.bar_chart), // '条形图',
+        //   id: FormChatType.Bar,
+        //   Icon: ChartBarNormalFilled,
+        // },
+        // {
+        //   name: t(Strings.stacked_bar_chart), // '堆叠条形图',
+        //   id: FormChatType.StackBar,
+        //   Icon: ChartBarStackFilled,
+        // },
+        // {
+        //   name: t(Strings.percent_stacked_bar_chart), //'百分比堆叠条形图',
+        //   id: FormChatType.PercentStackBar,
+        //   Icon: ChartBarPercentFilled,
+        // },
         {
-          name: t(Strings.bar_chart), // '条形图',
-          id: FormChatType.Bar,
+          name: t(Strings.echarts_bar_chart), // '条形图',
+          id: FormChatType.EchartsBar,
           Icon: ChartBarNormalFilled,
         },
         {
-          name: t(Strings.stacked_bar_chart), // '堆叠条形图',
-          id: FormChatType.StackBar,
+          name: t(Strings.echarts_stack_bar_chart), // '堆叠条形图',
+          id: FormChatType.EchartsStackBar,
           Icon: ChartBarStackFilled,
         },
         {
-          name: t(Strings.percent_stacked_bar_chart), //'百分比堆叠条形图',
-          id: FormChatType.PercentStackBar,
+          name: t(Strings.echarts_percent_bar_chart), //'百分比堆叠条形图',
+          id: FormChatType.EchartsPercentStackBar,
           Icon: ChartBarPercentFilled,
         },
       ],
     },
     {
-      title: t(Strings.pie_chart), // '饼状图',
+      title: t(Strings.echarts_pie_chart), // '饼状图',
       icons: [
+        // {
+        //   name: t(Strings.pie_chart), // '饼状图',
+        //   id: FormChatType.Pie,
+        //   Icon: ChartPieFilled,
+        // },
+        // {
+        //   name: t(Strings.donut_chart), // '环状图',
+        //   id: FormChatType.Donut,
+        //   Icon: ChartDountFilled,
+        // },
         {
-          name: t(Strings.pie_chart), // '饼状图',
-          id: FormChatType.Pie,
+          name: t(Strings.echarts_pie_chart), // '柱状图',
+          id: FormChatType.EchartsPie,
           Icon: ChartPieFilled,
         },
         {
-          name: t(Strings.donut_chart), // '环状图',
-          id: FormChatType.Donut,
+          name: t(Strings.echarts_donut_chart), // '柱状图',
+          id: FormChatType.EchartsDonut,
           Icon: ChartDountFilled,
         },
       ],
     },
     {
-      title: t(Strings.line_chart), // '折线图',
+      title: t(Strings.echarts_line_chart), // '折线图',
       icons: [
+        // {
+        //   name: t(Strings.line_chart), // '折线图',
+        //   id: FormChatType.Line,
+        //   Icon: ChartLineNormalFilled,
+        // },
+        // {
+        //   name: t(Strings.stacked_line_chart), // '堆叠折线图',
+        //   id: FormChatType.StackLine,
+        //   Icon: ChartLineStackFilled,
+        // },
         {
-          name: t(Strings.line_chart), // '折线图',
-          id: FormChatType.Line,
+          name: t(Strings.echarts_line_chart), // '折线图',
+          id: FormChatType.EchartsLine,
           Icon: ChartLineNormalFilled,
         },
         {
-          name: t(Strings.stacked_line_chart), // '堆叠折线图',
-          id: FormChatType.StackLine,
+          name: t(Strings.echarts_stack_line_chart), // '堆叠折线图',
+          id: FormChatType.EchartsStackLine,
           Icon: ChartLineStackFilled,
         },
         // {
@@ -144,11 +194,16 @@ export const ChartSelectBase = ({
       ],
     },
     {
-      title: t(Strings.scatter_chart), // '散点图',
+      title: t(Strings.echarts_scatter_chart), // '散点图',
       icons: [
+        // {
+        //   name: t(Strings.scatter_chart), // '散点图',
+        //   id: FormChatType.Scatter,
+        //   Icon: ChartScatterplotNormalFilled,
+        // },
         {
-          name: t(Strings.scatter_chart), // '散点图',
-          id: FormChatType.Scatter,
+          name: t(Strings.echarts_scatter_chart), // 'echarts 散点图',
+          id: FormChatType.EchartsScatter,
           Icon: ChartScatterplotNormalFilled,
         },
       ],
