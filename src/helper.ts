@@ -369,7 +369,7 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   // 百分比，带单位的数字
   if (isPercent || isNumber) {
     const suffixSymbol = isPercent ? '%' : fieldSymbol;
-    return `${isPercent ? value * 100 : value} ${suffixSymbol}`;
+    return `${Number(value).toFixed(1)} ${suffixSymbol}`;
   }
 
   // 智能公式日期 - value 为时间戳
@@ -428,28 +428,30 @@ export const processRecords = (
   const { records, dimensionField, metricsField, metricsType, seriesField, isSplitMultiValue } = data;
   if (!dimensionField || !checkMetrics(metricsType, metricsField)) return [];
   // const start = Date.now();
-  const metricsDataType = metricsField?.type === FieldType.Percent;
-  const multiScale = metricsDataType ? 100 : 1;
+  const scaleMetricsNum = metricsField?.type === FieldType.Percent ? 100 : 1;
+  const seriesIsPercent = seriesField?.type === FieldType.Percent;
   const res = records.map(record => {
     const shouldSplitDimensionValue = isSplitMultiValue && dimensionField?.basicValueType === BasicValueType.Array;
     const recordData: IOutputRecordData = {};
     if (metricsField) {
-      const metricsData = record.getCellValue(metricsField?.id);
-      recordData.metrics = metricsData != null ? metricsData * multiScale : metricsData;
+      recordData.metrics = record.getCellValue(metricsField?.id) * scaleMetricsNum;
     }
     if (seriesField) {
-      recordData.series = record.getCellValue(seriesField.id);
+      let val = record.getCellValue(seriesField.id);
+      if (seriesIsPercent) {
+        val *= 100;
+      }
+      recordData.series = val;
     }
     let dimensionValue = record.getCellValueString(dimensionField.id) || t(Strings.null);
-
     if (shouldSplitDimensionValue) {
-      if (dimensionValue == t(Strings.null)) {
-        return { ...recordData, dimension: [dimensionValue] };
+      if (dimensionValue.includes(',')) {
+        return dimensionValue.split(',').filter(item => item != null).map(item => ({
+          ...recordData,
+          dimension: item.trim().split('\n').join(' ')
+        }));
       }
-      return dimensionValue.split(',').filter(item => item != null).map(item => ({
-        ...recordData,
-        dimension: [item.trim().split('\n').join(' ')]
-      }));
+      return { ...recordData, dimension: dimensionValue };
     }
     recordData.dimension = dimensionValue.trim().split('\n').join(' ');
     return [recordData];

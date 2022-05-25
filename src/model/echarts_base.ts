@@ -60,8 +60,9 @@ export abstract class EchartsBase {
   /**
    * 获取旋转角度
    */
-  getRotate(texts: string[], isColumn = false, axisItemWidth, { width, height }) {
-    canvasUtilsIns.setCanvasSize(width * 0.8, height * 0.8);
+  getRotate(texts: string[], isColumn = false, axisItemWidth, { width, height, existLegend }) {
+    const scale = existLegend ? 0.8 : 0.9;
+    canvasUtilsIns.setCanvasSize(width * 0.8, height * scale);
     return canvasUtilsIns.calcSize(texts, isColumn, axisItemWidth);
   }
 
@@ -72,47 +73,50 @@ export abstract class EchartsBase {
    * @param dom echarts 渲染根节点
    */
   getGridOption(mergeOptions, chartInstance, { lightColors, darkColors, width, height }) {
-    const { grid, xAxis, yAxis } = mergeOptions;
+    const { grid, xAxis, yAxis, legend } = mergeOptions;
     const isColumn = this.type === ChartType.EchartsBar;
 
     const colors = this.theme === 'light' ? lightColors : darkColors;
+    const existLegend = legend.data?.length > 0;
+
+    grid.top = existLegend ? 50 : 30;
 
     // x 轴 - 主轴旋转角度，文字最大宽度，表格 n 等分后每一项的宽度
     let rotateMainAxis = 0, maxWidth = 0, xAxisItemWidth = 0, interval = 0;;
     if (xAxis && chartInstance.mainAxisLabels) {
       xAxisItemWidth = xAxis.axisLabel.width;
-      const result = this.getRotate(chartInstance.mainAxisLabels, isColumn, xAxisItemWidth, { width, height });
+      const result = this.getRotate(chartInstance.mainAxisLabels, isColumn, xAxisItemWidth, { width, height, existLegend });
       rotateMainAxis = isColumn ? -result.rotate : result.rotate;
       maxWidth = result.maxWidth;
       xAxisItemWidth = result.perSize; // 修正宽度
       interval = result.interval; // 获取间隔
     }
     // 是否不需要旋转
-    const isNormal = rotateMainAxis !== 0;
+    const isNormal = rotateMainAxis === 0;
 
     // 旋转坐标轴文字，配置坐标轴颜色, 校对间隔
     if (xAxis || yAxis) {
       const splitLine = { lineStyle: { show: true, color: colors.lineColor } };
       const axisLabel = mergeOptions[isColumn ? 'yAxis' : 'xAxis'].axisLabel;
-      axisLabel.width = isColumn ? 90 : xAxisItemWidth;
+      axisLabel.width = isColumn ? 100 : xAxisItemWidth;
       axisLabel.rotate = rotateMainAxis;
       axisLabel.interval = interval;
       mergeOptions.xAxis.splitLine = splitLine;
       mergeOptions.yAxis.splitLine = splitLine;
     }
 
+    // 是否超出宽度需要省略
     const isOverWidth = maxWidth > xAxisItemWidth;
     if (isColumn) {
-      grid.left = isNormal ? 90 : !isOverWidth ? 100 : 120;
+      grid.left = isNormal ? 90 : 110;
       grid.bottom = 60;
-      yAxis.nameTextStyle.padding = 60;
+      yAxis.nameTextStyle.padding = isNormal ? 60 : 70;
       xAxis.nameTextStyle.padding = 25;
     } else {
-      grid.bottom = isNormal ? 75 : !isOverWidth ? 90 : 100;
-      if (this.type === ChartType.EchartsScatter) {
-        grid.left = 90;
-        yAxis.nameTextStyle.padding = 60;
-      }
+      grid.bottom = isNormal ? 55 : !isOverWidth ? 90 : 100;
+      grid.left = 90;
+      xAxis.nameTextStyle.padding = isNormal ? 20 : 60;
+      yAxis.nameTextStyle.padding = 60;
     }
   }
 
@@ -221,7 +225,7 @@ export abstract class EchartsBase {
         },
         axisLabel: {
           interval: 0,
-          width: Math.sqrt(2) / 2 * 90, // cos 45 = sqrt(2) / 2
+          width: Math.sqrt(2) / 2 * 110, // cos 45 = sqrt(2) / 2
           ...axisStyle,
           overflow: 'truncate',
         }
@@ -284,7 +288,8 @@ export abstract class EchartsBase {
       enumNames: dimensionsEnum.enumNames,
     };
 
-    const metricsFormProperties = this.formChartType === FormChatType.EchartsScatter ? {
+    const scatter = [FormChatType.EchartsScatter, FormChatType.Scatter] as string[];
+    const metricsFormProperties = scatter.includes(this.formChartType) ? {
       openAggregation: {
         title: t(Strings.aggregate_values),
         type: 'boolean',
