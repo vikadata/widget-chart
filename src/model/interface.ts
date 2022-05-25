@@ -1,9 +1,9 @@
 export enum ChartType {
-  Column = 'Column', // 柱状图
-  Line = 'Line', // 折线图
-  Bar = 'Bar', // 条形图
-  Pie = 'Pie', // 饼状图
-  Scatter = 'Scatter', // 散点图
+  Column = 'EchartsPie', // 柱状图
+  Line = 'EchartsColumn', // 折线图
+  Bar = 'EchartsBar', // 条形图
+  Pie = 'EchartsLine', // 饼状图
+  Scatter = 'EchartsScatter', // 散点图
 
   EchartsPie = 'EchartsPie', // echarts 饼图
   EchartsColumn = 'EchartsColumn', // echarts 柱状图
@@ -13,18 +13,18 @@ export enum ChartType {
 }
 
 export enum FormChatType {
-  Line = 'Line', // 折线图
-  StackLine = 'StackLine', // 堆叠折线图
-  PercentStackLine = 'PercentStackLine',
-  Column = 'Column', // 柱状图
-  StackColumn = 'StackColumn', // 堆叠柱状图
-  PercentStackColumn = 'PercentStackColumn', // 百分比堆叠柱状图
-  Bar = 'Bar', // 条形图
-  StackBar = 'StackBar', // 堆叠条形图
-  PercentStackBar = 'PercentStackBar', // 百分比堆叠条形图
-  Pie = 'Pie', // 饼状图
-  Donut = 'Donut', // 环状图图
-  Scatter = 'Scatter', // 散点图
+  Line = 'EchartsLine', // 折线图
+  StackLine = 'EchartsStackLine', // 堆叠折线图
+  PercentStackLine = 'EchartsPercentStackLine',
+  Column = 'EchartsColumn', // 柱状图
+  StackColumn = 'EchartsStackColumn', // 堆叠柱状图
+  PercentStackColumn = 'EchartsPercentColumn', // 百分比堆叠柱状图
+  Bar = 'EchartsBar', // 条形图
+  StackBar = 'EchartsStackBar', // 堆叠条形图
+  PercentStackBar = 'EchartsPercentStackBar', // 百分比堆叠条形图
+  Pie = 'EchartsPie', // 饼状图
+  Donut = 'EchartsDonut', // 环状图图
+  Scatter = 'EchartsScatter', // 散点图
 
   // echarts
   EchartsPie = 'EchartsPie', // 饼图
