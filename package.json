@@ -18,8 +18,7 @@
   "license": "MIT",
   "scripts": {
     "start": "widget-cli start",
-    "release": "widget-cli release",
-    "release-global": "widget-cli release "
+    "release": "widget-cli release"
   },
   "peerDependencies": {
     "react": "*",
