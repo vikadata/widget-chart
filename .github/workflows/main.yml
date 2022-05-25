@@ -54,18 +54,18 @@ jobs:
       id: extract_branch
 
     # integration submit
-    - name: Submit Widget
+    - name: Submit Widget integration
       if: ${{ steps.extract_branch.outputs.branch == 'integration' }}
       run: |
         echo "Submit Widget integration"
-        npx -y @vikadata/widget-cli submit --version ${{steps.version.outputs.value}} --host ${{ secrets.VIKA_INTEGRATION_HOST }} --token ${{ secrets.VIKA_INTEGRATION_TOKEN }}
+        npx -y @vikadata/widget-cli submit --version ${{steps.version.outputs.value}} --host ${{ secrets.VIKA_INTEGRATION_HOST }} --token ${{ secrets.VIKA_INTEGRATION_API_TOKEN }}
 
     # production submit
-    - name: Submit Widget
+    - name: Submit Widget production
       if: ${{ steps.extract_branch.outputs.branch == 'master' }}
       run: |
         echo "Submit Widget production"
-        npx -y @vikadata/widget-cli submit --version ${{steps.version.outputs.value}} --host ${{ secrets.VIKA_PRODUCTION_HOST }} --token ${{ secrets.VIKA_PRODUCTION_TOKEN }}
+        npx -y @vikadata/widget-cli submit --version ${{steps.version.outputs.value}} --host ${{ secrets.VIKA_PRODUCTION_HOST }} --token ${{ secrets.VIKA_PRODUCTION_API_TOKEN }}
 
     - name: Push changes
       uses: ad-m/github-push-action@master
