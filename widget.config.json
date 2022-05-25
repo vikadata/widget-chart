@@ -1,7 +1,7 @@
 {
   "globalPackageId": "wpkCKtqGTjzM7",
-  "packageId": "wpkW2tti8b5zM",
-  "spaceId": "spcGvC7cu3hQy",
+  "packageId": "wpkf5Ul97CY0q",
+  "spaceId": "spczdmQDfBAn5",
   "entry": "./src/index.ts",
   "name": {
     "zh-CN": "图表（Chart）",
