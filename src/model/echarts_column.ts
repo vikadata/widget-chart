@@ -83,7 +83,7 @@ export class EchartsColumn extends EchartsBase {
           position: 'inside',
           formatter: (params) => {
             const value = Array.isArray(params.value) ? params.value[dataIndex] : params.value;
-            return formatterValue({ property, type }, value, noFormatMetric)
+            return formatterValue({ property, type }, value, noFormatMetric);
           }
         },
       },
@@ -153,6 +153,8 @@ export class EchartsColumn extends EchartsBase {
       isFormatDatetime,
       datetimeFormatter,
     });
+
+    console.log(data);
 
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { noFormatMetric, metricsField });
     const { axisNames, legendNames, sortedSeries } = sortSeries({

@@ -89,10 +89,10 @@ export class EchartsPie extends EchartsBase {
       };
       // 外
       styleOption.series = {
-        ...styleOption.stackSeries,
+        ...styleOption.series,
+        radius: ['50%', '70%'],
         label: {
-          ...color,
-          show: showDataTips,
+          ...styleOption.series.label,
           formatter: (params) => {
             return `${params.name}: ${params.percent}%`
           }
