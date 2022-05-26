@@ -154,8 +154,6 @@ export class EchartsColumn extends EchartsBase {
       datetimeFormatter,
     });
 
-    console.log(data);
-
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { noFormatMetric, metricsField });
     const { axisNames, legendNames, sortedSeries } = sortSeries({
       axisSortType,

@@ -428,7 +428,9 @@ export const processRecords = (
   const { records, dimensionField, metricsField, metricsType, seriesField, isSplitMultiValue } = data;
   if (!dimensionField || !checkMetrics(metricsType, metricsField)) return [];
   // const start = Date.now();
-  const scaleMetricsNum = metricsField?.type === FieldType.Percent ? 100 : 1;
+  const metricsIsPercent = metricsField?.type === FieldType.Percent ||
+    metricsField?.property?.format?.type === FieldType.Percent;
+  const scaleMetricsNum = metricsIsPercent ? 100 : 1;
   const seriesIsPercent = seriesField?.type === FieldType.Percent;
   const res = records.map(record => {
     const shouldSplitDimensionValue = isSplitMultiValue && dimensionField?.basicValueType === BasicValueType.Array;

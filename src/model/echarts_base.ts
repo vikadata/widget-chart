@@ -228,6 +228,10 @@ export abstract class EchartsBase {
           width: Math.sqrt(2) / 2 * 110, // cos 45 = sqrt(2) / 2
           ...axisStyle,
           overflow: 'truncate',
+        },
+        axisTick: {
+          show: true,
+          alignWithLabel: true,
         }
       },
       subAxis: {
