@@ -600,7 +600,10 @@ const getReferenceSeriesValue = (value, field: Field) => {
  * @param key xField、yField、fldxxxxxx(分组/堆叠字段的id)
  * @param field 
  */
-export const getSortFuncByField = (key: string, field: Field, isAxis = true) => {
+export const getSortFuncByField = (key: string, field?: Field, isAxis = true) => {
+  if (!field) {
+    return null;
+  }
   const { type, property } = field;
   if (!isAxis) {
     // 处理堆叠字段的排序
