@@ -41,7 +41,7 @@ export class EchartsPie extends EchartsBase {
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
 
     // 区分普通配置和series配置
-    const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
+    // const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
     const styleOption: any = {
       commonOption: { ...this.getCommonStyleOptions() },
       series: {
@@ -55,7 +55,8 @@ export class EchartsPie extends EchartsBase {
         label: {
           ...color,
           show: showDataTips,
-          formatter: (params) => `${params.name}: ${Number(params.value / dataSum * 100).toFixed(2)}%`
+          formatter: (params) => `${params.name}: ${params.percent.toFixed(1)} %`
+          // formatter: (params) => `${params.name}: ${Number(params.value / dataSum * 100).toFixed(2)}%`
         },
       },
     };
@@ -72,12 +73,17 @@ export class EchartsPie extends EchartsBase {
           position: 'center',
           overflow: 'truncate',
           width: 100,
-          formatter: () => {
-            const precision = guessNumberFieldPrecision(data.map(item => item.value).filter(Boolean));
-            const totalValue = sum(data.map(item => item.value)).toFixed(precision);
-            const totalContent = totalValue + '';
+          formatter: (params) => {
+            const totalContent = Math.round(params.value / (params.percent / 100));
+            // console.log(totalContent, params.value / (params.percent / 100));
             return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
           },
+          // formatter: () => {
+          //   const precision = guessNumberFieldPrecision(data.map(item => item.value).filter(Boolean));
+          //   const totalValue = sum(data.map(item => item.value)).toFixed(precision);
+          //   const totalContent = totalValue + '';
+          //   return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
+          // },
           rich: {
             a: { fontSize: 18, height: 24, },
             b: { fontSize: 24, fontWeight: 'bolder' }
@@ -94,7 +100,7 @@ export class EchartsPie extends EchartsBase {
         label: {
           ...styleOption.series.label,
           formatter: (params) => {
-            return `${params.name}: ${params.percent}%`
+            return `${params.name}: ${params.percent.toFixed(1)}%`
           }
         }
       };
