@@ -118,6 +118,17 @@ export abstract class EchartsBase {
       xAxis.nameTextStyle.padding = isNormal ? 20 : 60;
       yAxis.nameTextStyle.padding = 60;
     }
+
+    const axis = mergeOptions[isColumn ? 'yAxis' : 'xAxis'];
+    const isColumnChart = [ChartType.EchartsColumn, ChartType.Column, ChartType.EchartsBar, ChartType.Bar].includes(chartInstance.type);
+    const isNormalColumnChart = chartInstance.stackType === StackType.None && isColumnChart;
+    if (axis && axis.data && isNormalColumnChart) {
+      const length = axis.data.length;
+      const axisArrs = Array.from({ length }).map((cur, i) => {
+        return { ...axis, show: i === 0, offset: 0 };
+      });
+      mergeOptions[isColumn ? 'yAxis' : 'xAxis'] = axisArrs;
+    }
   }
 
   /**

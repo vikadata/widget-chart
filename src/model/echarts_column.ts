@@ -73,10 +73,25 @@ export class EchartsColumn extends EchartsBase {
     const styleOption: any = {
       commonOption: {
         ...this.getCommonStyleOptions(),
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, appendToBody: true },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+            // fix: 修复图表高亮时淡色消失问题
+            shadowStyle: {
+              z: 1,
+            }
+          },
+          appendToBody: true
+        },
       },
       series: {
         type: 'bar',
+        // fix: 修复图表高亮时淡色消失问题
+        zlevel: 10,
+        emphasis: {
+          disabled: true,
+        },
         label: {
           ...color,
           show: showDataTips,
@@ -155,7 +170,7 @@ export class EchartsColumn extends EchartsBase {
     });
 
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { noFormatMetric, metricsField });
-    const { axisNames, legendNames, sortedSeries } = sortSeries({
+    const { axisNames, legendNames, sortedSeries, max } = sortSeries({
       axisSortType,
       dimensionMetricsMap,
       dimensionField,
@@ -167,13 +182,26 @@ export class EchartsColumn extends EchartsBase {
 
     const series: BarSeriesOption[] = [];
     if (axisSortType && seriesFieldInstance) {
+      const dataIndex = isColumn ? 0 : 1;
+      const axisKey = isColumn ? 'xAxisIndex' : 'yAxisIndex';
+      const isNormal = this.stackType === StackType.None;
       for (let i = 0; i < sortedSeries.length; i++) {
         const item = sortedSeries[i];
-        series.push({
-          ...styleOption.series,
-          name: item.sortKey,
-          data: item.series.slice(0, maxRenderNum),
-        });
+        let len = item.series.length;
+        len = len > maxRenderNum ? maxRenderNum : len;
+        for (let j = 0; j < len; j++) {
+          const sereisItem = item.series[j];
+          const extraField = isNormal ? {
+            [axisKey]: sereisItem[dataIndex],
+            barWidth: `${60 / max}%`,
+          } : {};
+          series.push({
+            ...styleOption.series,
+            name: item.sortKey,
+            data: [sereisItem],
+            ...extraField,
+          });
+        }
       }
     } else {
       series.push({
