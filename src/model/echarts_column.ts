@@ -62,13 +62,26 @@ export class EchartsColumn extends EchartsBase {
    * @param chartStyle 
    * @returns 
    */
-  getChartStyleOptions(chartStructure: any, chartStyle: any, { noFormatMetric, metricsField }) {
+  getChartStyleOptions(chartStructure: any, chartStyle: any, { noFormatMetric, metricsField, axisLength }) {
     const { showDataTips } = chartStyle;
     const { property, type } = metricsField;
     const isColumn = this.type === ChartType.EchartsColumn;
     const dataIndex = isColumn ? 1 : 0;
     const isNormalChart = this.stackType === StackType.None;
-    const color = isNormalChart && this.theme === 'dark' ? { color: '#fff' } : { color: '#333' };
+    const isDark = this.theme === 'dark';
+    const color = isNormalChart && isDark ? { color: '#fff' } : { color: '#333' };
+    let base = axisLength > 10 ? 0.15 : 0.2;
+    // 默认 base / x 轴类目数量, axisLength = x 轴类目数量
+    // 浅色计算
+    let opacity = Math.min(base / axisLength, 0.15);
+
+    // 深色计算
+    if (isDark) {
+      base = axisLength > 10 ? 0.5 : 0.2;
+      opacity = Math.min(base / axisLength, 0.3);
+    }
+
+    opacity = Math.max(opacity, 0.01);
 
     // 区分普通配置和series配置
     const styleOption: any = {
@@ -81,7 +94,7 @@ export class EchartsColumn extends EchartsBase {
             // fix: 修复图表高亮时淡色消失问题
             shadowStyle: {
               z: 1,
-              color: `rgba(150, 150, 150, ${isNormalChart ? 0.03 : 0.15})`,
+              color: `rgba(150, 150, 150, ${isNormalChart ? opacity : 0.15})`,
             },
           },
           appendToBody: true
@@ -171,7 +184,6 @@ export class EchartsColumn extends EchartsBase {
       datetimeFormatter,
     });
 
-    const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { noFormatMetric, metricsField });
     const { axisNames, legendNames, sortedSeries, max } = sortSeries({
       axisSortType,
       dimensionMetricsMap,
@@ -181,12 +193,18 @@ export class EchartsColumn extends EchartsBase {
       isColumn,
       isPercent,
     });
+    const styleOption = this.getChartStyleOptions(
+      chartStructure,
+      chartStyle,
+      { noFormatMetric, metricsField, axisLength: axisNames.length }
+    );
 
     const series: BarSeriesOption[] = [];
     if (axisSortType && seriesFieldInstance) {
       const dataIndex = isColumn ? 0 : 1;
       const axisKey = isColumn ? 'xAxisIndex' : 'yAxisIndex';
       const isNormal = this.stackType === StackType.None;
+      const barWidth = `${60 / max}%`;
       for (let i = 0; i < sortedSeries.length; i++) {
         const item = sortedSeries[i];
         let len = item.series.length;
@@ -195,7 +213,7 @@ export class EchartsColumn extends EchartsBase {
           const sereisItem = item.series[j];
           const extraField = isNormal ? {
             [axisKey]: sereisItem[dataIndex],
-            barWidth: `${60 / max}%`,
+            barWidth,
           } : {};
           series.push({
             ...styleOption.series,
