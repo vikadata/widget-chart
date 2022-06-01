@@ -825,6 +825,8 @@ export const sortSeries = (props: {
 
       // const start = Date.now();
       const seriesArr: { sortKey: string; series: number[][] }[] = [];
+      const record = {};
+      let max = 0;
       for (let i = 0; i < newData.length; i++) {
         const list = newData[i];
         for (let j = 0; j < list.length; j++) {
@@ -836,6 +838,12 @@ export const sortSeries = (props: {
             coordinateSaveIndex = axisNames.length;
             axisNames.push(item[mainAxisName]);
           }
+          if (record[coordinateSaveIndex]) {
+            record[coordinateSaveIndex] += 1;
+          } else {
+            record[coordinateSaveIndex] = 1;
+          }
+          max = Math.max(max, record[coordinateSaveIndex]);
           // const start = Date.now();
           const seriesValue = getValueByType(item[seriesField.id], { type, property });
           // console.log('cals series value need takes time ', Date.now() - start);
@@ -892,10 +900,12 @@ export const sortSeries = (props: {
         }
         return a.trim().localeCompare(b.trim());
       }).slice(0, maxRenderNum);
+
       return {
         axisNames: [...axisNames].slice(0, maxRenderNum),
         legendNames: sortedLegendNames,
-        sortedSeries: result.slice(0, maxRenderNum)
+        sortedSeries: result.slice(0, maxRenderNum),
+        max,
       };
     }
   }
@@ -911,6 +921,7 @@ export const sortSeries = (props: {
   return {
     axisNames: [...axisNames].slice(0, maxRenderNum),
     legendNames: [...legendNames].slice(0, maxRenderNum),
-    sortedSeries: newData.slice(0, maxRenderNum)
+    sortedSeries: newData.slice(0, maxRenderNum),
+    max: 0,
   };
 };
