@@ -64,10 +64,11 @@ export class EchartsColumn extends EchartsBase {
    */
   getChartStyleOptions(chartStructure: any, chartStyle: any, { noFormatMetric, metricsField }) {
     const { showDataTips } = chartStyle;
+    const { property, type } = metricsField;
     const isColumn = this.type === ChartType.EchartsColumn;
     const dataIndex = isColumn ? 1 : 0;
-    const color = this.stackType === StackType.None && this.theme === 'dark' ? { color: '#fff' } : { color: '#333' };
-    const { property, type } = metricsField;
+    const isNormalChart = this.stackType === StackType.None;
+    const color = isNormalChart && this.theme === 'dark' ? { color: '#fff' } : { color: '#333' };
 
     // 区分普通配置和series配置
     const styleOption: any = {
@@ -80,7 +81,8 @@ export class EchartsColumn extends EchartsBase {
             // fix: 修复图表高亮时淡色消失问题
             shadowStyle: {
               z: 1,
-            }
+              color: `rgba(150, 150, 150, ${isNormalChart ? 0.03 : 0.15})`,
+            },
           },
           appendToBody: true
         },
