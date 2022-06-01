@@ -41,7 +41,7 @@ export class EchartsPie extends EchartsBase {
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
 
     // 区分普通配置和series配置
-    // const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
+    const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
     const styleOption: any = {
       commonOption: { ...this.getCommonStyleOptions() },
       series: {
@@ -73,10 +73,11 @@ export class EchartsPie extends EchartsBase {
           position: 'center',
           overflow: 'truncate',
           width: 100,
-          formatter: (params) => {
-            const totalContent = Math.round(params.value / (params.percent / 100));
+          formatter: () => {
+            // const totalContent = Math.round(params.value / (params.percent / 100));
             // console.log(totalContent, params.value / (params.percent / 100));
-            return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
+            // return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
+            return `{a|${t(Strings.total)}}\n{b|${dataSum}}`;
           },
           // formatter: () => {
           //   const precision = guessNumberFieldPrecision(data.map(item => item.value).filter(Boolean));
