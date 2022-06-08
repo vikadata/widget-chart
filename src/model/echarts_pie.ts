@@ -192,8 +192,6 @@ export class EchartsPie extends EchartsBase {
 
     data = data.slice(0, maxRenderNum);
 
-    console.log(metricsType);
-
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { metricsType, data, metricsField });
     const options = {
       ...styleOption.commonOption,
