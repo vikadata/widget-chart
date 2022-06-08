@@ -14,33 +14,33 @@ export class EchartsPie extends EchartsBase {
   }
 
   add(arg1, arg2) {
-    let r1, r2, m, c;
+    let len1, len2, expand, subLen;
     try {
-      r1 = arg1.toString().split(".")[1].length;
+      len1 = arg1.toString().split(".")[1].length;
     } catch (e) {
-      r1 = 0;
+      len1 = 0;
     }
     try {
-      r2 = arg2.toString().split(".")[1].length;
+      len2 = arg2.toString().split(".")[1].length;
     } catch (e) {
-      r2 = 0;
+      len2 = 0;
     }
-    c = Math.abs(r1 - r2);
-    m = Math.pow(10, Math.max(r1, r2));
-    if (c > 0) {
-      var cm = Math.pow(10, c);
-      if (r1 > r2) {
+    subLen = Math.abs(len1 - len2);
+    expand = Math.pow(10, Math.max(len1, len2));
+    if (subLen > 0) {
+      let scale = Math.pow(10, subLen);
+      if (len1 > len2) {
         arg1 = Number(arg1.toString().replace(".", ""));
-        arg2 = Number(arg2.toString().replace(".", "")) * cm;
+        arg2 = Number(arg2.toString().replace(".", "")) * scale;
       } else {
-        arg1 = Number(arg1.toString().replace(".", "")) * cm;
+        arg1 = Number(arg1.toString().replace(".", "")) * scale;
         arg2 = Number(arg2.toString().replace(".", ""));
       }
     } else {
       arg1 = Number(arg1.toString().replace(".", ""));
       arg2 = Number(arg2.toString().replace(".", ""));
     }
-    return (arg1 + arg2) / m;
+    return (arg1 + arg2) / expand;
   }
 
   getFormDimensionMetricsMap() {
