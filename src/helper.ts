@@ -436,7 +436,8 @@ export const processRecords = (
     const shouldSplitDimensionValue = isSplitMultiValue && dimensionField?.basicValueType === BasicValueType.Array;
     const recordData: IOutputRecordData = {};
     if (metricsField) {
-      recordData.metrics = record.getCellValue(metricsField?.id) * scaleMetricsNum;
+      const val = record.getCellValue(metricsField?.id);
+      recordData.metrics = val ? val * scaleMetricsNum : val;
     }
     if (seriesField) {
       let val = record.getCellValue(seriesField.id);
