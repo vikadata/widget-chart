@@ -1,16 +1,46 @@
 import { Field, Record } from '@vikadata/widget-sdk';
-import sum from 'lodash/sum';
 import { EchartsBase } from './echarts_base';
 import { ChartType, StackType } from './interface';
 import { Strings, t } from '../i18n';
 import { sortBy } from '../sortBy';
-import { guessNumberFieldPrecision, maxRenderNum, processChartData, processRecords } from '../helper';
+import { maxRenderNum, processChartData, processRecords } from '../helper';
+import { METRICS_TYPES } from '../const';
 
 export class EchartsPie extends EchartsBase {
   type = ChartType.EchartsPie;
 
   constructor(stackType: StackType, theme) {
     super(stackType, theme);
+  }
+
+  add(arg1, arg2) {
+    let r1, r2, m, c;
+    try {
+      r1 = arg1.toString().split(".")[1].length;
+    } catch (e) {
+      r1 = 0;
+    }
+    try {
+      r2 = arg2.toString().split(".")[1].length;
+    } catch (e) {
+      r2 = 0;
+    }
+    c = Math.abs(r1 - r2);
+    m = Math.pow(10, Math.max(r1, r2));
+    if (c > 0) {
+      var cm = Math.pow(10, c);
+      if (r1 > r2) {
+        arg1 = Number(arg1.toString().replace(".", ""));
+        arg2 = Number(arg2.toString().replace(".", "")) * cm;
+      } else {
+        arg1 = Number(arg1.toString().replace(".", "")) * cm;
+        arg2 = Number(arg2.toString().replace(".", ""));
+      }
+    } else {
+      arg1 = Number(arg1.toString().replace(".", ""));
+      arg2 = Number(arg2.toString().replace(".", ""));
+    }
+    return (arg1 + arg2) / m;
   }
 
   getFormDimensionMetricsMap() {
@@ -36,12 +66,13 @@ export class EchartsPie extends EchartsBase {
     };
   }
 
-  getChartStyleOptions(chartStructure: any, chartStyle: any, data) {
+  getChartStyleOptions(chartStructure: any, chartStyle: any, { metricsType, data, metricsField }) {
     const { showDataTips } = chartStyle;
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
 
     // 区分普通配置和series配置
-    const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
+    const dataSum = data.reduce((pre, cur) => pre = this.add(pre, cur.value), 0);
+    // const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
     const styleOption: any = {
       commonOption: { ...this.getCommonStyleOptions() },
       series: {
@@ -161,7 +192,9 @@ export class EchartsPie extends EchartsBase {
 
     data = data.slice(0, maxRenderNum);
 
-    const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, data);
+    console.log(metricsType);
+
+    const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { metricsType, data, metricsField });
     const options = {
       ...styleOption.commonOption,
       series: [{ ...styleOption.series, data }],
