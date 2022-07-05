@@ -1,4 +1,5 @@
-import { BasicValueType, Field, FieldType, ICurrencyFormat, INumberBaseFormatType, IPercentFormat, Record } from '@vikadata/widget-sdk';
+import { BasicValueType, Field, FieldType, ICurrencyFormat, INumberBaseFormatType,
+  IPercentFormat, Record } from '@vikadata/widget-sdk';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
@@ -17,6 +18,12 @@ import { IOutputChartData, IOutputRecordData } from '../interface';
 dayjs.extend(advancedFormat);
 dayjs.extend(weekOfYear);
 
+const NEED_FORMAT_DATE_TIME_TYPES = new Set([
+  FieldType.DateTime, 
+  FieldType.CreatedTime, 
+  FieldType.LastModifiedTime,
+]);
+
 const numberFormatTypes = ['number', 'currency', 'percent'];
 
 /**
@@ -25,97 +32,14 @@ const numberFormatTypes = ['number', 'currency', 'percent'];
  */
 const isNull = (arg) => arg == null || arg === t(Strings.null);
 
-// const getReferenceValue = (value, field) => {
-//   const { basicValueType, property } = field;
-//   if (isNull(value)) {
-//     return t(Strings.null);
-//   }
-//   switch(basicValueType) {
-//     case BasicValueType.Number:
-//     case BasicValueType.String:
-//     case BasicValueType.Boolean:
-//       return value.toString();
-//     case BasicValueType.Array:
-//       return value.map((v) => {
-//         if (isNull(v)) {
-//           return t(Strings.null);
-//         }
-//         return property?.entityField?.field ? getValueByType(v, property.entityField.field) : v;
-//       }).join(',');
-//     case BasicValueType.DateTime:
-//       if (typeof value === 'number') {
-//         const { dateFormat, timeFormat } = property.format.format;
-//         return formatDatetime(value, `${dateFormat} ${timeFormat}`);
-//       }
-//       return value;
-//     default:
-//       return value;
-//   }
-// }
-
-// /**
-//  * 获取处理图表分类后的 label
-//  * @param value 原始值
-//  * @param field 字段
-//  */
-// export const getValueByType = (value, field: Field) => {
-//   const { type, property } = field;
-//   switch(type) {
-//     case FieldType.Formula:
-//     case FieldType.MagicLookUp:
-//       return getReferenceValue(value, field);
-//     case FieldType.MagicLink:
-//       if (value == t(Strings.null)) {
-//         return value;
-//       }
-//       return value.map((v) => v.title).join(',');
-//     case FieldType.Text:
-//     case FieldType.SingleText:
-//     case FieldType.Rating:
-//     case FieldType.URL:
-//     case FieldType.Phone:
-//     case FieldType.Email:
-//     case FieldType.AutoNumber:
-//         return value.toString() || t(Strings.null);
-//     case FieldType.Percent:
-//       return `${value} %`;
-//     case FieldType.Number:
-//       if (property.symbol) {
-//         return `${value} ${property.symbol}`;
-//       }
-//       return value;
-//     case FieldType.Currency:
-//       if (property.symbol) {
-//         return `${property.symbol} ${value}`;
-//       }
-//       return value || t(Strings.null);
-//     case FieldType.MultiSelect:
-//     case FieldType.Member:
-//       if (value == t(Strings.null)) {
-//         return value;
-//       }
-//       return value.map((v) => v.name).join(',');
-//     case FieldType.DateTime:
-//     case FieldType.CreatedTime:
-//     case FieldType.LastModifiedTime:
-//       const { dateFormat, timeFormat } = property;
-//       if (typeof value === 'number') {
-//         return formatDatetime(value, `${dateFormat} ${timeFormat}`);
-//       }
-//       return formatDatetime(value, dateFormat);;
-//     case FieldType.Checkbox:
-//       return value.toString();
-//     case FieldType.SingleSelect:
-//     case FieldType.CreatedBy:
-//     case FieldType.LastModifiedBy:
-//       if (value === t(Strings.null)) {
-//         return value;
-//       }
-//       return value.name;
-//     default:
-//       return t(Strings.null);
-//   }
-// }
+/**
+ * 检查 DateTime 类型
+ * @param field 字段属性
+ */
+const checkDateTimeType = (field: Field) => {
+  const { entityType, basicValueType } = field || {};
+  return NEED_FORMAT_DATE_TIME_TYPES.has(entityType) || basicValueType === BasicValueType.DateTime;
+};
 
 type SeriesValueType = string | number | { title?: string; name?: string };
 
@@ -178,22 +102,37 @@ export const getNumberValueByReplaceSymbol = (value: string, symbol: string) => 
 }
 
 /**
+ * 根据是否为日期字段返回值
+ */
+const getDimenssionValue = (
+  dimension,
+  { toNumber, datetimeFormatter, shouldFormatDatetime, defaultTimeFormatter }
+) => {
+  const formatterStr = shouldFormatDatetime ? datetimeFormatter : defaultTimeFormatter;
+  return toNumber ? formatDatetime(Number(dimension), formatterStr) : dimension;
+};
+
+/**
  * 获取不同分类的维度值
  */
-export const groupByDimensionValue = ({ shouldFormatDatetime, datetimeFormatter, dimension }): string | number => {
+export const groupByDimensionValue = ({
+  shouldFormatDatetime, datetimeFormatter, dimension, toNumber
+}): string | number => {
   if (!dimension || dimension == t(Strings.null)) {
     return t(Strings.null);
   }
+  const defaultTimeFormatter = 'YYYY-MM-DD';
+  const config = { toNumber, datetimeFormatter, shouldFormatDatetime, defaultTimeFormatter };
   if (shouldFormatDatetime) {
     if (dimension.includes(',')) {
-      return dimension;
+      return dimension.split(',').map((v) => getDimenssionValue(v, config)).join(',')
     }
-    return formatDatetime(dimension, datetimeFormatter);
+    return getDimenssionValue(dimension, config);
   }
   if (Array.isArray(dimension)) {
-    return dimension.join(',');
+    return dimension.map((v) => getDimenssionValue(v, config)).join(',');
   }
-  return dimension;
+  return getDimenssionValue(dimension, config);
 }
 
 /**
@@ -432,6 +371,7 @@ export const processRecords = (
     metricsField?.property?.format?.type === FieldType.Percent;
   const scaleMetricsNum = metricsIsPercent ? 100 : 1;
   const seriesIsPercent = seriesField?.type === FieldType.Percent;
+  const isDateTime = checkDateTimeType(dimensionField);
   const res = records.map(record => {
     const shouldSplitDimensionValue = isSplitMultiValue && dimensionField?.basicValueType === BasicValueType.Array;
     const recordData: IOutputRecordData = {};
@@ -446,7 +386,9 @@ export const processRecords = (
       }
       recordData.series = val;
     }
-    let dimensionValue = record.getCellValueString(dimensionField.id) || t(Strings.null);
+    const dimensionValue = (isDateTime ? record._getCellValue(dimensionField.id)
+      : record.getCellValueString(dimensionField.id)
+    ) || t(Strings.null);
     if (shouldSplitDimensionValue) {
       if (dimensionValue.includes(',')) {
         return dimensionValue.split(',').filter(item => item != null).map(item => ({
@@ -456,7 +398,7 @@ export const processRecords = (
       }
       return { ...recordData, dimension: dimensionValue };
     }
-    recordData.dimension = dimensionValue.trim().split('\n').join(' ');
+    recordData.dimension = dimensionValue.toString().trim().split('\n').join(' ');
     return [recordData];
   }).flat();
   // console.log('takes time: ', Date.now() - start);
@@ -504,6 +446,7 @@ export const processChartData = (data: {
     return [];
   }
   let res: IOutputChartData[] = [];
+  const transformDateStr2Number = checkDateTimeType(dimensionField);
   const shouldFormatDatetime = isFormatDatetime && datetimeFormatter;
   // 分组处理 - 按分类维度，将表格数据分组。
   if (seriesFieldInstance) {
@@ -513,7 +456,8 @@ export const processChartData = (data: {
         groupByDimensionValue({
           dimension: row.dimension,
           shouldFormatDatetime,
-          datetimeFormatter
+          datetimeFormatter,
+          toNumber: transformDateStr2Number,
         }) || t(Strings.null),
         row.series || t(Strings.null)
       ])
@@ -541,7 +485,8 @@ export const processChartData = (data: {
       return groupByDimensionValue({
         dimension: row.dimension,
         shouldFormatDatetime,
-        datetimeFormatter
+        datetimeFormatter,
+        toNumber: transformDateStr2Number,
       });
     });
     // 未显示空维度值时，删除
