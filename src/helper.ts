@@ -386,9 +386,10 @@ export const processRecords = (
       }
       recordData.series = val;
     }
-    const dimensionValue = (isDateTime ? record._getCellValue(dimensionField.id)
+    let dimensionValue = (isDateTime ? record._getCellValue(dimensionField.id)
       : record.getCellValueString(dimensionField.id)
     ) || t(Strings.null);
+    dimensionValue = dimensionValue.toString();
     if (shouldSplitDimensionValue) {
       if (dimensionValue.includes(',')) {
         return dimensionValue.split(',').filter(item => item != null).map(item => ({
@@ -398,7 +399,7 @@ export const processRecords = (
       }
       return { ...recordData, dimension: dimensionValue };
     }
-    recordData.dimension = dimensionValue.toString().trim().split('\n').join(' ');
+    recordData.dimension = dimensionValue.trim().split('\n').join(' ');
     return [recordData];
   }).flat();
   // console.log('takes time: ', Date.now() - start);
