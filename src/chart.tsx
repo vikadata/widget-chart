@@ -1,7 +1,8 @@
 import { Form } from '@vikadata/components';
 import {
   BasicValueType, FieldType, useCloudStorage, useFields, useMeta, IMetaType,
-  useRecords, useViewsMeta, useViewport, useSettingsButton, useActiveViewId, useViewIds
+  useRecords, useViewsMeta, useViewport, useSettingsButton, useActiveViewId,
+  useViewIds, RuntimeEnv
 } from '@vikadata/widget-sdk';
 import isEqual from 'lodash/isEqual';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -228,7 +229,7 @@ const WidgetChartBase: React.FC = () => {
           formData={formData}
         />
       </ChartError>
-      <FormWrapper openSetting={isShowingSettings} readOnly={readOnly}>
+      <FormWrapper openSetting={isShowingSettings && meta.runtimeEnv == RuntimeEnv.Desktop} readOnly={readOnly}>
         <Form
           formData={formData}
           uiSchema={getUiSchema(viewId)}
