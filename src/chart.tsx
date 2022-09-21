@@ -27,8 +27,9 @@ CHART_TYPES.forEach(item => ChartMap[item.id] = item);
 
 const useGetDefaultFormData = (meta) => {
   // useActiveViewId 存在在仪表盘下新建获取为空，所以需要拿到所有表的第一个
-  const viewId = useActiveViewId() || useViewIds()[0];
-  const fields = useFields(viewId);
+  const defaultViewId = useViewIds()[0];
+  const viewId = useActiveViewId();
+  const fields = useFields(viewId || defaultViewId);
 
   // 默认表单配置
   return useCallback(() => {
