@@ -145,6 +145,7 @@ export class EchartsLine extends EchartsBase {
       dimensionField,
       seriesField: seriesFieldInstance!,
       data,
+      metricsField,
       isColumn: true,
     });
 

@@ -190,6 +190,7 @@ export class EchartsColumn extends EchartsBase {
       dimensionField,
       seriesField: seriesFieldInstance!,
       data,
+      metricsField,
       isColumn,
       isPercent,
     });
