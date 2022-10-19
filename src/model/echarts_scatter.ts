@@ -186,7 +186,7 @@ export class EchartsScatter extends EchartsBase {
       }
     }
 
-    const { sortedSeries, axisNames } = sortSeries({ axisSortType, dimensionMetricsMap, dimensionField, data });
+    const { sortedSeries, axisNames } = sortSeries({ axisSortType, dimensionMetricsMap, dimensionField, data, metricsField });
 
     const seriesData: string[][] = [];
     for (let i = 0; i < sortedSeries.length; i++) {

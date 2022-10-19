@@ -313,8 +313,9 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
 
   // 智能公式日期 - value 为时间戳
   if (isFomula && isDate) {
-    const { dateFormat, timeFormat } = property.format.format;
-    return formatDatetime(Number(value), `${dateFormat} ${timeFormat}`);
+    const { dateFormat, timeFormat, includeTime } = property.format.format;
+    const formatterDateStr = `${dateFormat} ` + (includeTime ? timeFormat : '' )
+    return formatDatetime(Number(value), formatterDateStr);
   }
   return value;
 }
@@ -682,6 +683,7 @@ export const sortSeries = (props: {
   dimensionField: Field;
   seriesField?: Field;
   data;
+  metricsField?: Field;
   isColumn?: boolean;
   isPercent?: boolean;
 }) => {
@@ -692,8 +694,11 @@ export const sortSeries = (props: {
     data,
     seriesField,
     isColumn,
+    metricsField,
     isPercent = false,
   } = props;
+
+  const metricsFieldPrecision = getNumberBaseFieldPrecision(metricsField);
 
   const yKey = dimensionMetricsMap.metrics.key;
 
@@ -804,7 +809,7 @@ export const sortSeries = (props: {
             const valueIndex = isColumn ? 1 : 0;
             const isEqualPrev =  coordinate[coordinateIndex] === lastItem[coordinateIndex];
             if (isEqualPrev) {
-              lastItem[valueIndex] += coordinate[valueIndex];
+              lastItem[valueIndex] = parseFloat((lastItem[valueIndex] + coordinate[valueIndex]).toFixed(metricsFieldPrecision))
             } else {
               seriesItem.series.push(coordinate);
             }
