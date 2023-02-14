@@ -28,9 +28,9 @@ CHART_TYPES.forEach(item => ChartMap[item.id] = item);
 const useGetDefaultFormData = (meta) => {
   // useActiveViewId 存在在仪表盘下新建获取为空，所以需要拿到所有表的第一个
   const defaultViewId = useViewIds()[0];
-  const viewId = useActiveViewId();
-  const fields = useFields(viewId || defaultViewId);
-
+  const activeViewId = useActiveViewId();
+  const viewId = activeViewId || defaultViewId
+  const fields = useFields(viewId);
   // 默认表单配置
   return useCallback(() => {
     // 分类维度 (附件不可以作为分类维度)
@@ -51,7 +51,7 @@ const useGetDefaultFormData = (meta) => {
     };
     // 因为只在第一次使用，所以不需要更新
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [viewId]);
 };
 
 /**

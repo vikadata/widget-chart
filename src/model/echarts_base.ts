@@ -75,7 +75,6 @@ export abstract class EchartsBase {
   getGridOption(mergeOptions, chartInstance, { lightColors, darkColors, width, height }) {
     const { grid, xAxis, yAxis, legend } = mergeOptions;
     const isColumn = this.type === ChartType.EchartsBar;
-
     const colors = this.theme === 'light' ? lightColors : darkColors;
     const existLegend = legend.data?.length > 0;
 
@@ -122,7 +121,7 @@ export abstract class EchartsBase {
     const axis = mergeOptions[isColumn ? 'yAxis' : 'xAxis'];
     const isColumnChart = [ChartType.EchartsColumn, ChartType.Column, ChartType.EchartsBar, ChartType.Bar].includes(chartInstance.type);
     const isNormalColumnChart = chartInstance.stackType === StackType.None && isColumnChart;
-    if (axis && axis.data && isNormalColumnChart) {
+    if (axis && axis.data?.length && isNormalColumnChart) {
       const length = axis.data.length;
       const axisArrs = Array.from({ length }).map((cur, i) => {
         return { ...axis, show: i === 0, offset: 0 };
