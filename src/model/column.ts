@@ -1,11 +1,12 @@
-import { Field, t } from '@vikadata/widget-sdk';
+import { Field, t } from '@apitable/widget-sdk';
 import { transformAnnotation } from '../helper';
 import { Chart } from './base';
 import { ChartType, StackType } from './interface';
 import { Strings } from '../i18n';
 
 /**
- * 柱状图相当于笛卡尔坐标系图形的基类。后续的条形图\折线图\散点都是基于这个图的。
+ * The bar chart is equivalent to the base class of Cartesian coordinate system graphs. 
+ * Subsequent bar graphs \ line graphs \ scatter are based on this graph.
  */
 export class ColumnChart extends Chart {
   type = ChartType.Column;
@@ -58,29 +59,6 @@ export class ColumnChart extends Chart {
       type: 'object',
       properties: {
         ...this.commonFormStyleConfig,
-        // 暂不支持标注线
-        // annotations: {
-        //   title: '标注线',
-        //   type: 'array',
-        //   items: {
-        //     type: 'object',
-        //     properties: {
-        //       title: {
-        //         title: '名称',
-        //         type: 'string',
-        //       },
-        //       value: {
-        //         title: '数值',
-        //         type: 'number',
-        //       },
-        //       color: {
-        //         title: '颜色',
-        //         type: 'string',
-        //         format: 'color',
-        //       },
-        //     },
-        //   },
-        // },
       },
     };
   }
@@ -111,7 +89,7 @@ export class ColumnChart extends Chart {
         }
       }
     } else {
-      styleOptions.label = null; // 需要显式地指定不展示 label
+      styleOptions.label = null; // Need to explicitly specify not to display label
     }
     switch (this.stackType) {
       case StackType.None:

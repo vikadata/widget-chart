@@ -1,4 +1,4 @@
-import { BasicValueType, Field, Record } from '@vikadata/widget-sdk';
+import { BasicValueType, Field, Record } from '@apitable/widget-sdk';
 import { EChartsCoreOption, EChartsOption } from 'echarts';
 import { ChartType, FormChatType, IDimensionMetricsMap, IFormConfig, IFormProperties, StackType } from "./interface";
 import { Strings, t } from '../i18n';
@@ -20,36 +20,37 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 不同类型的图表分类维度、统计指标的叫法不一样，对应的图表配置字段也不一样。
+   * Different types of chart classification dimensions and statistical indicators are called differently, 
+   * and the corresponding chart configuration fields are also different.
    */
   abstract getFormDimensionMetricsMap(): IDimensionMetricsMap;
 
   /**
-   * 生成图表用到的样式配置
-   * @param {Object} chartStructure 图表计算相关对象
-   * @param {Object} chartStyle 图表样式相关对象
-   * @param {Object} data 处理后的 row 数据
+   * Configuration of styles used to generate charts.
+   * @param {Object} chartStructure Graphical computing related objects.
+   * @param {Object} chartStyle Chart style related objects.
+   * @param {Object} data Processed row data.
    */
   abstract getChartStyleOptions(chartStructure, chartStyle, data);
 
   /**
-   * 图表实例化配置参数
-   * @param {Object} props 图表实例化参数对象
-   * @property {Record[]} props.records 字段行记录
-   * @property {Field[]} props.fields 字段列记录
-   * @property {Object} props.chartStructure 图表计算相关对象
-   * @property {Object} props.chartStyle 图表样式相关对象
+   * Chart instantiation configuration parameters.
+   * @param {Object} props Chart instantiation parameter object
+   * @property {Record[]} props.records Field Row Records
+   * @property {Field[]} props.fields Field column records
+   * @property {Object} props.chartStructure Graphical computing related objects
+   * @property {Object} props.chartStyle Chart style related objects
    */
   abstract getChartOptions(props: { records: Record[], fields: Field[], chartStructure, chartStyle }): EChartsOption;
 
   /**
-   * 获取不同图表类型的表单配置信息
+   * Get form configuration information for different chart types
    * @param {Field[]} fields 
    */
   abstract getChartStyleFormJSON(fields: Field[]): IFormConfig;
 
   /**
-   * 获取图表类型
+   * Get chart type.
    */
   get formChartType(): string {
     const chartType = CHART_TYPES.find(item => item.class === this.constructor && item.stackType === this.stackType);
@@ -58,7 +59,7 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 获取旋转角度
+   * Get rotation angle.
    */
   getRotate(texts: string[], isColumn = false, axisItemWidth, { width, height, existLegend }) {
     const scale = existLegend ? 0.8 : 0.9;
@@ -67,10 +68,10 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 获取网格化配置项
-   * @param mergeOptions 图表配置项
-   * @param chartInstance 图表实例
-   * @param dom echarts 渲染根节点
+   * Get grid configuration items.
+   * @param mergeOptions Chart configuration items
+   * @param chartInstance Chart Example
+   * @param dom echarts rendering the root node
    */
   getGridOption(mergeOptions, chartInstance, { lightColors, darkColors, width, height }) {
     const { grid, xAxis, yAxis, legend } = mergeOptions;
@@ -80,20 +81,21 @@ export abstract class EchartsBase {
 
     grid.top = existLegend ? 50 : 30;
 
-    // x 轴 - 主轴旋转角度，文字最大宽度，表格 n 等分后每一项的宽度
+    // x-axis - angle of rotation of the main axis, maximum width of the text, 
+    // width of each item in the table after n equal parts.
     let rotateMainAxis = 0, maxWidth = 0, xAxisItemWidth = 0, interval = 0;;
     if (xAxis && chartInstance.mainAxisLabels) {
       xAxisItemWidth = xAxis.axisLabel.width;
       const result = this.getRotate(chartInstance.mainAxisLabels, isColumn, xAxisItemWidth, { width, height, existLegend });
       rotateMainAxis = isColumn ? -result.rotate : result.rotate;
       maxWidth = result.maxWidth;
-      xAxisItemWidth = result.perSize; // 修正宽度
-      interval = result.interval; // 获取间隔
+      xAxisItemWidth = result.perSize; // Corrected width
+      interval = result.interval; // Get interval
     }
-    // 是否不需要旋转
+    // Does not need to be rotated
     const isNormal = rotateMainAxis === 0;
 
-    // 旋转坐标轴文字，配置坐标轴颜色, 校对间隔
+    // Rotate axis text, configure axis colors, calibrate intervals.
     if (xAxis || yAxis) {
       const splitLine = { lineStyle: { show: true, color: colors.lineColor } };
       const axisLabel = mergeOptions[isColumn ? 'yAxis' : 'xAxis'].axisLabel;
@@ -104,7 +106,7 @@ export abstract class EchartsBase {
       mergeOptions.yAxis.splitLine = splitLine;
     }
 
-    // 是否超出宽度需要省略
+    // Whether the width is exceeded needs to be omitted.
     const isOverWidth = maxWidth > xAxisItemWidth;
     if (isColumn) {
       grid.left = isNormal ? 90 : 110;
@@ -131,10 +133,10 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 获取饼状图配置项
-   * @param mergeOptions 图表配置项
-   * @param chartInstance 图表实例
-   * @param dom echarts 渲染根节点
+   * Get pie chart configuration items.
+   * @param mergeOptions Chart configuration items
+   * @param chartInstance Chart instance
+   * @param dom echarts renders the root node
    */
   getPieOption(mergeOptions, chartInstance, { width, height }) {
     const { series } = mergeOptions;
@@ -158,9 +160,9 @@ export abstract class EchartsBase {
     }
   }
   /**
-   * 对配置项进行渲染前的二次计算
-   * @param dom echarts 实例化 dom
-   * @param configs 首次计算后的配置项
+   * Secondary calculation of configuration items before rendering.
+   * @param dom echarts instantiates dom
+   * @param configs Configuration items after the first calculation
    */
   getMergeOption(configs) {
     const { options, chartInstance, lightColors, darkColors, width, height } = configs;
@@ -178,7 +180,7 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 获取图表公共样式相关的配置对象
+   * Get the configuration object related to the public style of the chart.
    */
   getCommonStyleOptions(): EChartsCoreOption {
     const isLight = this.theme !== 'dark';
@@ -209,7 +211,7 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 获取网格类图表公共样式相关配置对象
+   * Get the grid class chart public style related configuration object.
    */
   getCommonGridStyleOptions(props: {
     dimensionField: Field,
@@ -263,7 +265,7 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 获取表单的公共属性配置
+   * Get the public property configuration of the form.
    */
   getCommonFormConfigJson(): IFormProperties {
     return {
@@ -286,7 +288,8 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 分类维度、统计指标字段，生成表格结构的表单配置。
+   * Categorize dimensions, statistical indicator fields, 
+   * and generate form configurations for table structures.
    * @param {Field[]} dimensions 
    * @param {Field[]} metrics 
    */
@@ -324,7 +327,7 @@ export abstract class EchartsBase {
         default: 'SUM',
       },
     };
-    // 统计指标 by field
+    // Statistical indicators by field.
     const metricsFormJSON = {
       title: dimensionMetricsMap.metrics.title,
       type: 'object',
@@ -470,7 +473,7 @@ export abstract class EchartsBase {
   }
 
   /**
-   * 获取不同图表的初始化 formData
+   * Get the initialization of the different charts formData.
    * @param {Field[]} dimensions 
    * @param {Field[]} metrics 
    */

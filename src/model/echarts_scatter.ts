@@ -1,4 +1,4 @@
-import { Field, Record } from '@vikadata/widget-sdk';
+import { Field, Record } from '@apitable/widget-sdk';
 import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
 import { formatDatetime, formatterValue, getAggregationValue, getNumberBaseFieldPrecision, groupByDimensionValue, maxRenderNum, processChartDataSort, processRecords, sortSeries } from '../helper';
@@ -125,11 +125,11 @@ export class EchartsScatter extends EchartsBase {
 
     const countTotalRecords = metricsType === 'COUNT_RECORDS';
     
-    // 是否需要格式化 y 轴文本字段
+    // Whether the y-axis text field needs to be formatted.
     const noFormatMetric = metricsType === 'COUNT_RECORDS' || this.stackType === StackType.Percent;
 
     let data: any = [];
-    // 处理多选值分离
+    // Handling multiple choice value separation.
     const rows = processRecords({
       records,
       dimensionField,
@@ -138,7 +138,7 @@ export class EchartsScatter extends EchartsBase {
       seriesField: seriesFieldInstance,
       isSplitMultiValue: isSplitMultipleValue,
     });
-    // 未分组下的数据，按分类维度聚合。
+    // Data under ungrouped, aggregated by categorical dimension.
     const groupRows = groupBy(rows, row => {
       try {
         return groupByDimensionValue({ dimension: row.dimension, shouldFormatDatetime, datetimeFormatter });
@@ -150,14 +150,14 @@ export class EchartsScatter extends EchartsBase {
     if (!isCountNullValue) {
       delete groupRows[t(Strings.null)];
     }
-    // 记录总数作为统计指标。
+    // The total number of records is used as a statistical indicator.
     if (metricsType === 'COUNT_RECORDS') {
-      // 未分组下的数据，按分类维度聚合。
+      // Data under ungrouped, aggregated by categorical dimension.
       data = Object.keys(groupRows).map(key => ({
         [dimensionMetricsMap.dimension.key]: key,
         [dimensionMetricsMap.metrics.key]: groupRows[key].length,
       }));
-      // 字段作为统计指标
+      // Fields as statistical indicators.
     } else {
       if (metrics.openAggregation) {
         data = Object.keys(groupRows).map(key => {
@@ -171,7 +171,9 @@ export class EchartsScatter extends EchartsBase {
         data = rows.map(row => {
           let metricsValue = row.metrics;
           if (!isNumber(metricsValue)) {
-            metricsValue = 0; // 切换字段类型会造成这种结果。记数值为 0，图表不奔溃, form 表单会给出提示。
+            // Switching field types can cause this result. With a value of 0, 
+            // the chart does not crash, the form form will give a prompt.
+            metricsValue = 0;
           }
           let dimensionValue = shouldFormatDatetime ?
             formatDatetime(row.dimension, datetimeFormatter!) :

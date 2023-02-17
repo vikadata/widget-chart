@@ -1,6 +1,6 @@
 import { WidgetProps } from '@rjsf/core';
-import { applyDefaultTheme, ITheme, Select, IOption, useTheme } from '@vikadata/components';
-import { FieldType, Field, useFields, useField } from '@vikadata/widget-sdk';
+import { applyDefaultTheme, ITheme, Select, IOption, useTheme } from '@apitable/components';
+import { FieldType, Field, useFields, useField } from '@apitable/widget-sdk';
 import React from 'react';
 import {
   ColumnAttachmentFilled,
@@ -27,18 +27,18 @@ import {
   ColumnPhoneFilled,
   ColumnLookupFilled,
   ColumnRatingFilled,
-} from '@vikadata/icons';
+} from '@apitable/icons';
 import { SELECT_OPEN_SEARCH_COUNT } from '../const';
 import styled from 'styled-components';
 import { Strings, t } from '../i18n';
 
 const FieldIconMap = {
   // [FieldType.DeniedField]: LockFilled,
-  [FieldType.Text]: ColumnLongtextFilled, // FIXME: icon
-  [FieldType.Number]: ColumnFigureFilled, // FIXME: icon 命名有问题。
+  [FieldType.Text]: ColumnLongtextFilled, // FIXME: There is a problem with the icon naming.
+  [FieldType.Number]: ColumnFigureFilled, // FIXME: There is a problem with the icon naming.
   [FieldType.SingleSelect]: ColumnSingleFilled,
   [FieldType.MultiSelect]: ColumnMultipleFilled,
-  [FieldType.DateTime]: ColumnCalendarFilled, // FIXME: icon 命名有问题。
+  [FieldType.DateTime]: ColumnCalendarFilled, // FIXME: There is a problem with the icon naming.
   [FieldType.Attachment]: ColumnAttachmentFilled,
   [FieldType.MagicLink]: ColumnLinktableFilled, // ?
   [FieldType.URL]: ColumnUrlOutlined,
@@ -90,7 +90,7 @@ export const FieldSelect = ({ options: { enumOptions }, value: fieldId, onChange
   const fields = useFields(viewId);
   const field = useField(fieldId);
   const _options: IOption[] = transformOptions(enumOptions as any, theme as ITheme, fields);
-  // 字段选择的错误，只有已选字段被删除的情况
+  // Errors in field selection, only if the selected field is deleted.
   const hasError = Boolean(rawErrors?.length);
   const style = hasError ? { border: '1px solid red', width: '100%' } : { width: '100%' };
   return <>

@@ -13,7 +13,7 @@ interface IInnerSortArrayItem {
 }
 
 /**
- * 判断是否为合法排序对象
+ * Determine if it is a legal sorting object.
  * @param {any} condition 
  * @param {any} obj 
  */
@@ -25,10 +25,10 @@ const validSortObject = (condition, obj) => {
 }
 
 /**
- * 比较方法
- * @param {String | Number | Object} a 第一个参数
- * @param {String | Number | Object} b 第二个参数
- * @param {String} k 键 - 比较参数为对象时传入
+ * Comparison Method.
+ * @param {String | Number | Object} a
+ * @param {String | Number | Object} b
+ * @param {String} k Key - passed in when the comparison parameter is an object.
  */
 const compare = (a, b, k = '') => {
   if (!isString(a) && !isNumber(a) && !isObject(a)) {
@@ -50,24 +50,24 @@ const compare = (a, b, k = '') => {
 }
 
 /**
- * 分组
+ * Grouping.
  * @param {Array} data
  * @param {String | Function} conditions 
  */
 const compareToGroup = (data, condition) => {
   const tempArr: IInnerSortArrayItem[] = [];
 
-  // 获取要比较的值
+  // Get the value to compare.
   for (let i = 0; i < data.length; i++) {
     const item = data[i];
-    let value = item; // 默认为数字，字符串
+    let value = item; // Default is number, string.
 
-    // 获取有效的排序值
+    // Get a valid sort value.
     if (isString(condition) && validSortObject(condition, item)) {
       // k - v
       value = item[condition];
     } else if (isFunction(condition)) {
-      // 获取返回值
+      // Get return value.
       const res = condition(item);
       // k - v
       if (validSortObject(res, item)) {
@@ -78,24 +78,24 @@ const compareToGroup = (data, condition) => {
     tempArr.push({ index: i, source: item, value });
   }
 
-  // 排序
+  // Sort by
   tempArr.sort((a, b) => compare(a, b, 'value'));
 
-  // 分组
+  // Grouping
   const hashArr = new Map();
   for (let i = 0; i < tempArr.length; i++) {
     const item = tempArr[i];
-    const k = item.value; // 作为分组的 id 标识
+    const k = item.value; // Identified as the id of the group.
     const res = hashArr.get(k);
     hashArr.set(k, res ? [...res, item.source] : [item.source]);
   }
 
-  // 转数组
+  // Turning arrays
   return [...hashArr.values()];
 }
 
 /**
- * 深度遍历排序
+ * Deep traversal sorting.
  * @param {Array} params 
  * @param {Array} conditions 
  * @param {Number} index 
@@ -119,7 +119,7 @@ const dfs = (params, conditions, index) => {
 }
 
 /**
- * 排序
+ * Sort.
  * @param {Array} arr 
  * @param {String | String[] | Function | Function[]} conditions 
  */
@@ -127,13 +127,13 @@ export const sortBy = (arr, conditions, flat = true) => {
   if (!isArray(arr)) {
     return arr;
   }
-  // 没有条件 / 或者条件为数字时，进行自然排序
+  // No condition / or if condition is numeric, natural sorting.
   if (
     !conditions ||
     isNumber(conditions) ||
     (isArray(conditions) && conditions.findIndex(c => isNumber(c)) > -1)
   ) {
-    // 非数字或者字符串无法比较，直接抛出错误
+    // Non-numeric or string cannot be compared and an error is thrown directly.
     const firstItem = arr[0];
     if (!isNumber(firstItem) && !isString(firstItem)) {
       throw TypeError('array item type must be string or number if not have conditions');
@@ -141,17 +141,17 @@ export const sortBy = (arr, conditions, flat = true) => {
     return [...arr].sort(compare);
   }
 
-  // 条件为字符串
+  // The condition is a string.
   if (isString(conditions)) {
     return [...arr].sort((a, b) => compare(a, b, conditions));
   }
 
-  // 条件为函数
+  // The condition is the function.
   if (isFunction(conditions)) {
     return [...arr].sort((a, b) => compare(conditions(a), conditions(b)));
   }
 
-  // 条件为对象，直接抛出错误
+  // The condition is an object and throws an error directly.
   if (isObject(conditions)) {
     throw TypeError('conditions type cannot be object');
   }
@@ -163,20 +163,3 @@ export const sortBy = (arr, conditions, flat = true) => {
   }
   return result;
 }
-
-// const options = [1, 2];
-
-// const result = sortBy(
-//   [
-//     { name: '我', pinyin: 'wo', age: 12, level: 1, option: 3 },
-//     { name: '你', pinyin: 'ni', age: 11, level: 2, option: 1 },
-//     { name: '他', pinyin: 'ta', age: 10, level: 3, option: 1 },
-//     { name: '我时谁', pinyin: 'woshishui', age: 1, level: 1, option: 3 },
-//     { name: '他时', pinyin: 'tashi', age: 9, level: 2, option: 1 },
-//     { name: '怎么', pinyin: 'zenme', age: 4, level: 3, option: 1 },
-//     { name: '哈哈', pinyin: 'haha', age: 22, level: 1, option: 2 },
-//     { name: '哦耶', pinyin: 'ohye', age: 17, level: 2, option: 1 },
-//   ],
-//   [(item) => options.findIndex((o) => o === item.option), (item) => item.level, (item) => item.age]
-// );
-// console.log(result);

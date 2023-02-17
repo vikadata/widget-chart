@@ -1,5 +1,5 @@
 import { BasicValueType, Field, FieldType, ICurrencyFormat, INumberBaseFormatType,
-  IPercentFormat, Record } from '@vikadata/widget-sdk';
+  IPercentFormat, Record } from '@apitable/widget-sdk';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
@@ -27,14 +27,14 @@ const NEED_FORMAT_DATE_TIME_TYPES = new Set([
 const numberFormatTypes = ['number', 'currency', 'percent'];
 
 /**
- * 判断值是否为空或者字符串空
- * @param arg 判断值
+ * Determine if the value is null or string null.
+ * @param arg Judgment Value
  */
 const isNull = (arg) => arg == null || arg === t(Strings.null);
 
 /**
- * 检查 DateTime 类型
- * @param field 字段属性
+ * Check the DateTime type.
+ * @param field Field Properties
  */
 const checkDateTimeType = (field: Field) => {
   const { entityType, basicValueType } = field || {};
@@ -44,9 +44,9 @@ const checkDateTimeType = (field: Field) => {
 type SeriesValueType = string | number | { title?: string; name?: string };
 
 /**
- * 根据堆叠字段获取处理后的值
- *  - 根据字段类型区分 23 种类型存在性能问题，所以做暴力区分，将 value 总结为 数组，对象，基本类型
- *  - 然后按照文档罗列对象中可能出现的 key，直接枚举
+ * Get processed values based on stacked fields
+ *  - There are performance problems in distinguishing 23 types based on field types, so we do a brute force distinction and summarize the values as arrays, objects, and basic types.
+ *  - Then enumerate the possible keys in the object according to the document, directly.
  * @param value 
  * @param field 
  * @returns 
@@ -65,7 +65,7 @@ const getValueByType = (value, field) => {
       }
     }
     dfs(value);
-    // 存在 [price, null]，可以考虑是否过滤 null
+    // There is [price, null], you can consider whether to filter null.
     return res.map((v) => {
       if (v != null && typeof v === 'object') {
         return formatterValue(field, v.name || v.title || t(Strings.null), false);
@@ -80,9 +80,9 @@ const getValueByType = (value, field) => {
 }
 
 /**
- * 处理字符串中的特殊符号以及多选值，返回数字
- * @param value 处理值
- * @param symbol 特殊符号
+ * Handles special symbols in strings and multiple choice values, returning numbers.
+ * @param value Processing value
+ * @param symbol Special Symbols
  */
 export const getNumberValueByReplaceSymbol = (value: string, symbol: string) => {
   if (isNull(value)) {
@@ -102,7 +102,7 @@ export const getNumberValueByReplaceSymbol = (value: string, symbol: string) => 
 }
 
 /**
- * 根据是否为日期字段返回值
+ * Returns a value based on whether it is a date field or not.
  */
 const getDimenssionValue = (
   dimension,
@@ -113,7 +113,7 @@ const getDimenssionValue = (
 };
 
 /**
- * 获取不同分类的维度值
+ * Get dimensional values for different categories.
  */
 export const groupByDimensionValue = ({
   shouldFormatDatetime, datetimeFormatter, dimension, toNumber
@@ -136,7 +136,7 @@ export const groupByDimensionValue = ({
 }
 
 /**
- * 格式化日期时间
+ * Formatting Date Time.
  */
 export const formatDatetime = (cv: number | number[], format: string) => {
   return [cv].flat().map(value => {
@@ -146,22 +146,23 @@ export const formatDatetime = (cv: number | number[], format: string) => {
 };
 
 /**
- * - 只有输出为数值类型的字段才能做统计指标。这里需要处理百分比字段原始值的精度。
- * - 数值字段返回原始值。即百分比 10.12% 返回的是 0.1012
- * - 百分比字段的精度如果是 2，则实际原始值的精度应该是 4
- * - 百分比字段、计算字段格式化为百分比字段。都需要加 2 位精度。
+ * - Only fields whose output is of numeric type can be used as statistical indicators. 
+ * The precision of the original value of the percentage field needs to be handled here.
+ * - The Numeric field returns the original value. That is, the percentage 10.12% returns 0.1012.
+ * - If the precision of the percentage field is 2, the precision of the actual original value should be 4.
+ * - Percentage fields, calculated fields are formatted as percentage fields. All need to add 2 bits of precision.
  * @param field 
  * @returns 
  */
 export const getNumberBaseFieldPrecision = (field?: Field) => {
   let precision = 2;
   if (!field) return precision;
-  // 实体字段本身的 property 里面有精度时
+  // When there is precision in the property of the entity field itself.
   if (field.property?.precision != null) {
     precision = field.property?.precision;
     return field.type === FieldType.Percent ? precision + 2 : precision;
   }
-  // 存在格式化精度时
+  // When formatting accuracy exists.
   if (field.formatType?.type && numberFormatTypes.includes(field.formatType?.type)) {
     const _precision = (field.formatType.formatting as INumberBaseFormatType).precision;
     return field.formatType.type === FieldType.Percent.toLocaleLowerCase() ? _precision + 2 : _precision;
@@ -170,8 +171,8 @@ export const getNumberBaseFieldPrecision = (field?: Field) => {
 };
 
 /**
- * 获取不同统计维度的长度值
- * 支持 - 总长度，求和，最小值，最大值，平均值
+ * Get the length values of different statistical dimensions.
+ * Support - Total length, summation, minimum, maximum, average.
  */
 export const getAggregationValue = (dataList: number[], type: string, precision = 2) => {
   let res: number = dataList.length;
@@ -193,14 +194,14 @@ export const getAggregationValue = (dataList: number[], type: string, precision 
       break;
   }
   if (res != null) {
-    // console.warn('非数值字段汇总错误');
+    // console.warn('Non-numeric field summary error');
     return isNumber(res) ? parseFloat(res.toFixed(precision)) : 0;
   }
   return res;
 };
 
 /**
- * 获取数表列的枚举值
+ * Get the enumerated values of the number table columns.
  */
 export const getFieldFormEnum = (fields: Field[]) => {
   const _enum = fields.map(field => field.id);
@@ -259,12 +260,12 @@ export const getGroupOrStackFormJSON = (fields: Field[], stackType: StackType) =
   return groupOrStackConfig;
 };
 
-// 处理横纵坐标轴、数据标签文案展示，
+// Processing of horizontal and vertical axes, data labeling text presentation.
 export const getFormatter = (field?: Field, times = 1) => {
   const defaultFormatter = (val) => `${typeof val === 'string' ? val.split('\n').join(' ') : val}`;
   if (!field) return defaultFormatter;
   if (field.formatType?.type === 'datetime') return false;
-  // 货币/百分比需要加上符号
+  // Currency/percentage needs to be signed.
   if (field.formatType?.type === 'currency') {
     const formatting = field.formatType.formatting as ICurrencyFormat;
     return (val) => `${formatting.symbol} ${parseFloat(val).toFixed(formatting.precision)}`;
@@ -273,12 +274,12 @@ export const getFormatter = (field?: Field, times = 1) => {
     const formatting = field.formatType.formatting as IPercentFormat;
     return (val) => `${(parseFloat(val) * times).toFixed(formatting.precision)}%`;
   }
-  // val 中包含 \n 时候转化为空格。
+  // val is converted to a space when it contains '\n'.
   return defaultFormatter;
 };
 
 /**
- * 格式化数值
+ * Formatted Values.
  */
 export const formatterValue = (field, value, notFormatter = true): string | number => {
   if (value === t(Strings.null)) {
@@ -301,17 +302,16 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   const isDate = validType(FieldType.DateTime);
   const isFomula = validType(FieldType.Formula);
   const isNumber = validType(FieldType.Number) && fieldSymbol;
-  // 货币
   if (isCurrency) {
     return `${fieldSymbol} ${value}`;
   }
-  // 百分比，带单位的数字
+  // Percentages, numbers with units.
   if (isPercent || isNumber) {
     const suffixSymbol = isPercent ? '%' : fieldSymbol;
     return `${Number(value).toFixed(1)} ${suffixSymbol}`;
   }
 
-  // 智能公式日期 - value 为时间戳
+  // Smart Formula Date, value is timestamp.
   if (isFomula && isDate) {
     const { dateFormat, timeFormat, includeTime } = property.format.format;
     const formatterDateStr = `${dateFormat} ` + (includeTime ? timeFormat : '' )
@@ -320,12 +320,12 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   return value;
 }
 
-// 分类维度是数值的时候才会掉这个方法
+// This method is dropped only when the classification dimension is numerical.
 export const getRightDimensionValue = (value: string, field?: Field): string | number => {
   const dimension: string | number = value;
   if (typeof value === 'number') return value;
-  // 非计算字段都有 string 转化为 cv 的方法， 
-  // lookup 可以通过实体字段转换，formula 没有这种操作，lookup 了 formula 也没有这种操作。
+  // Non-computed fields all have string to cv conversion methods. 
+  // lookup can be converted by an entity field, which formula does not have, and lookup does not have for formula.
   if (field?.entityType !== FieldType.Formula) {
     return field?.convertStringToCellValue(value);
   }
@@ -344,7 +344,7 @@ export const getRightDimensionValue = (value: string, field?: Field): string | n
 };
 
 /**
- * 当前统计字表相关信息是否合理
+ * Whether the information related to the current statistical word list is reasonable.
  */
 export const checkMetrics = (metricsType: string, metricsField?: Field) => {
   if (metricsType === 'COUNT_RECORDS') return true;
@@ -352,7 +352,7 @@ export const checkMetrics = (metricsType: string, metricsField?: Field) => {
 };
 
 /**
- * 表数据按 x 轴进行分类预处理
+ * Table data pre-processed by x-axis classification.
  */
 export const processRecords = (
   data: {
@@ -408,17 +408,17 @@ export const processRecords = (
 };
 
 /**
- * 分组、空值、日期格式化
+ * Grouping, null values, date formatting.
  * @param {Object} data 
- * @property {IOutputRecordData[]} data.rows - 统计的记录
- * @property {dimensionMetricsMap[]} data.dimensionMetricsMap - 表单统计的维度字段{key, value}
- * @property {Field} data.dimensionField - 统计维度的属性
- * @property {string} data.metricsType - 统计数值的类型（总计/指定字段）
- * @property {Field} data.metricsField - 统计数值的属性
+ * @property {IOutputRecordData[]} data.rows - Records of statistics.
+ * @property {dimensionMetricsMap[]} data.dimensionMetricsMap - Dimensional fields for form statistics{key, value}.
+ * @property {Field} data.dimensionField - Properties of the statistical dimension.
+ * @property {string} data.metricsType - Type of statistical value (total/specified field).
+ * @property {Field} data.metricsField - Properties of statistical values.
  * @property {Field} data.seriesFieldInstance
- * @property {Boolean} data.isCountNullValue - 是否统计空值
- * @property {Boolean} data.isFormatDatetime - 是否格式化日期时间
- * @property {String} data.datetimeFormatter - 日期时间格式化的格式字符串
+ * @property {Boolean} data.isCountNullValue - Whether to count null values.
+ * @property {Boolean} data.isFormatDatetime - Whether to format the date and time.
+ * @property {String} data.datetimeFormatter - Date and time formatted format string.
  */
 export const processChartData = (data: {
   rows: IOutputRecordData[];
@@ -450,9 +450,9 @@ export const processChartData = (data: {
   let res: IOutputChartData[] = [];
   const transformDateStr2Number = checkDateTimeType(dimensionField);
   const shouldFormatDatetime = isFormatDatetime && datetimeFormatter;
-  // 分组处理 - 按分类维度，将表格数据分组。
+  // Grouping Process - Group table data by categorical dimensions.
   if (seriesFieldInstance) {
-    // 分类维度[分组维度] 统计指标
+    // Categorical dimensions [grouping dimensions] Statistical indicators.
     const groupData = groupBy(rows, row => (
       JSON.stringify([
         groupByDimensionValue({
@@ -482,7 +482,7 @@ export const processChartData = (data: {
       res = res.filter(item => item[dimensionMetricsMap.dimension.key] !== t(Strings.null));
     }
   } else {
-    // 未分组下的数据，按 x 轴维度聚合。
+    // Data under ungrouped, aggregated by x-axis dimension.
     const groupRows = groupBy(rows, row => {
       return groupByDimensionValue({
         dimension: row.dimension,
@@ -491,7 +491,7 @@ export const processChartData = (data: {
         toNumber: transformDateStr2Number,
       });
     });
-    // 未显示空维度值时，删除
+    // Delete when no empty dimension value is displayed.
     if (!isCountNullValue) {
       delete groupRows['null'];
       delete groupRows[t(Strings.null)];
@@ -511,9 +511,9 @@ export const processChartData = (data: {
 };
 
 /**
- * 处理堆叠分组的神奇引用字段
- * @param value 原始值
- * @param field 最终引用的字段
+ * Magical reference fields for handling stacked groups.
+ * @param value Original value
+ * @param field The final referenced field
  */
 const getReferenceSeriesValue = (value, field: Field) => {
   const { type, property } = field;
@@ -544,8 +544,8 @@ const getReferenceSeriesValue = (value, field: Field) => {
 }
 
 /**
- * 返回分类维度字段、分组/堆叠字段对应的排序函数
- * @param key xField、yField、fldxxxxxx(分组/堆叠字段的id)
+ * Return the sort function corresponding to the sort dimension field, grouping/stacking field.
+ * @param key xField、yField、fldxxxxxx(Grouping/stacking fields of id)
  * @param field 
  */
 export const getSortFuncByField = (key: string, field?: Field, isAxis = true) => {
@@ -554,7 +554,7 @@ export const getSortFuncByField = (key: string, field?: Field, isAxis = true) =>
   }
   const { type, property } = field;
   if (!isAxis) {
-    // 处理堆叠字段的排序
+    // Handling sorting of stacked fields.
     // console.log(type, property);
     switch(type) {
       case FieldType.MagicLink:
@@ -584,7 +584,7 @@ export const getSortFuncByField = (key: string, field?: Field, isAxis = true) =>
         };
     }
   }
-  // 处理轴维度的排序 - 字符串
+  // Handling sorting of axis dimensions - strings.
   switch(type) {
     case FieldType.MultiSelect:
     case FieldType.SingleSelect:
@@ -614,7 +614,7 @@ export const getSortFuncByField = (key: string, field?: Field, isAxis = true) =>
 };
 
 /**
- * 从一组数字中获取最大精度
+ * Obtain maximum precision from a set of numbers.
  * @example guessNumberFieldPrecision([1.22, 1.23, 1, 2, 3.555]) => 3
  */
 export const guessNumberFieldPrecision = (numbers: number[]) => {
@@ -636,7 +636,7 @@ export const processChartDataSort = ({ axisSortType, dimensionMetricsMap, dimens
   const axisItem = Object.entries(dimensionMetricsMap).find(item => item[1].key === axis);
 
   if (axisItem) {
-    // 按维度排序，还是按指标排序
+    // Sort by dimension, or sort by metrics.
     const axisType = axisItem[0];
     const axisName = axisType === 'dimension' ? dimensionMetricsMap.dimension.key : dimensionMetricsMap.metrics.key;
     const isDESC = sortType === 'DESC';
@@ -644,19 +644,19 @@ export const processChartDataSort = ({ axisSortType, dimensionMetricsMap, dimens
 
     switch (axisType) {
       case 'dimension':
-        // 获取分类维度的排序函数。
+        // Get the sort function for the classification dimension.
         sortFuncs.push(getSortFuncByField(dimensionMetricsMap.dimension.key, dimensionField));
-        // 如果存在分类/堆叠字段，获取二次分类维度的排序函数。
+        // Get the sort function for the secondary sort dimension if a sort/stack field exists.
         if (seriesField) {
           sortFuncs.push(getSortFuncByField(seriesField.id, seriesField, false));
         }
         break;
       case 'metrics':
-        // 存在分组堆叠字段
+        // Grouping stacking fields exist.
         if (seriesField) {
-          // 按分类维度分组
+          // Grouping by Category Dimension.
           const groupData = groupBy(data, dimensionMetricsMap.dimension.key);
-          // 按每组的统计指标总值排序。
+          // Sorted by the total value of statistical indicators in each group.
           const groupBySeries = Object.keys(groupData).map(dimension => ({
             key: dimension,
             value: sumBy(groupData[dimension], axisName)
@@ -715,15 +715,15 @@ export const sortSeries = (props: {
     const sortByXaxis = axisType === 'dimension';
     const isDESC = sortType === 'DESC';
 
-    // x 轴排序
+    // x-axis sorting
     const commonSortFunc = getSortFuncByField(mainAxisName, dimensionField);
     if (sortByXaxis) {
       newData = sortBy(newData, [commonSortFunc], false);
     } else {
-      // y 轴排序
-      // 按分类维度分组
+      // y-axis sorting
+      // Grouping by Category Dimension
       const groupData = groupBy(newData, mainAxisName);
-      // 按每组的统计指标总值排序。
+      // Sorted by the total value of statistical indicators in each group.
       const groupBySeries = Object.keys(groupData).map(dimension => ({
         key: dimension,
         value: sumBy(groupData[dimension], axisName)
@@ -743,10 +743,10 @@ export const sortSeries = (props: {
       newData.reverse();
     }
 
-    // 百分比处理
+    // Percentage processing
     if (isPercent) {
       const sums: number[] = [];
-      // 求和
+      // Summation
       for (let i = 0; i < newData.length; i++) {
         const sortList = newData[i];
         for (let j = 0; j < sortList.length; j++) {
@@ -756,7 +756,7 @@ export const sortSeries = (props: {
           sums[i] += sortList[j][yKey];
         }
       }
-      // 百分比化处理
+      // Percentage processing
       for (let i = 0; i < newData.length; i++) {
         const sortList = newData[i];
         for (let j = 0; j < sortList.length; j++) {
@@ -767,7 +767,8 @@ export const sortSeries = (props: {
     }
 
     if (seriesField) {
-      // 直接读取 seriesField 的属性存在问题，性能过低，每次链式调用一次 seriesField 的属性需要花费 20 - 40毫秒不等
+      // Direct reading of seriesField properties is problematic, 
+      // performance is too low, each chained call to a seriesField property takes between 20 - 40 milliseconds.
       let paramField = seriesField;
       if (seriesField.type === FieldType.MagicLookUp) {
         paramField = paramField.property.entityField.field;
@@ -785,7 +786,7 @@ export const sortSeries = (props: {
           const item = list[j];
           const mainAxisIndex = axisNames.findIndex((v) => v === item[mainAxisName]);
           let coordinateSaveIndex = mainAxisIndex;
-          // 查询是否存在对应的主轴项，没有则新增
+          // Query whether the corresponding spindle item exists, and if not, add it.
           if (mainAxisIndex < 0) {
             coordinateSaveIndex = axisNames.length;
             axisNames.push(item[mainAxisName]);
@@ -803,7 +804,7 @@ export const sortSeries = (props: {
           const seriesItem = seriesArr.find((v) => v.sortKey === seriesValue);
           legendNames.add(seriesValue.toString());
           if (seriesItem) {
-            // 合并同类项
+            // Combining like items.
             const lastItem = seriesItem.series[seriesItem.series.length - 1];
             const coordinateIndex = isColumn ? 0 : 1;
             const valueIndex = isColumn ? 1 : 0;
@@ -822,7 +823,7 @@ export const sortSeries = (props: {
       // console.log('cals series value need takes time ', Date.now() - start);
       const canReplaceSymbol = [FieldType.Currency, FieldType.Percent, FieldType.Number].includes(type);
       const result = sortBy(seriesArr, (item) => {
-        // 应当按值排序？
+        // Should be sorted by value?
         let key = item.sortKey;
         if (isNull(key)) {
           return t(Strings.null);
@@ -839,7 +840,7 @@ export const sortSeries = (props: {
         key = key.replace(property.symbol || '', '').trim();
         return Number(key);
       });
-      // 给标签排个序
+      // Sorting the tags.
       const shouldReplaceSymbol = [FieldType.Percent, FieldType.Currency, FieldType.Number].includes(type);
       let fieldSymbol = property?.symbol || (property?.format?.format?.symbol) || '';
       if (type === FieldType.Percent) {
