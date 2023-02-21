@@ -1,43 +1,43 @@
 export enum ChartType {
-  Column = 'Column', // 柱状图
-  Line = 'Line', // 折线图
-  Bar = 'Bar', // 条形图
-  Pie = 'Pie', // 饼状图
-  Scatter = 'Scatter', // 散点图
+  Column = 'Column',
+  Line = 'Line',
+  Bar = 'Bar',
+  Pie = 'Pie',
+  Scatter = 'Scatter',
 
-  EchartsPie = 'EchartsPie', // echarts 饼图
-  EchartsColumn = 'EchartsColumn', // echarts 柱状图
-  EchartsBar = 'EchartsBar', // echarts 条形图
-  EchartsLine = 'EchartsLine', // echarts 折线图
-  EchartsScatter = 'EchartsScatter', // echarts 散点图
+  EchartsPie = 'EchartsPie',
+  EchartsColumn = 'EchartsColumn',
+  EchartsBar = 'EchartsBar',
+  EchartsLine = 'EchartsLine',
+  EchartsScatter = 'EchartsScatter',
 }
 
 export enum FormChatType {
-  Line = 'Line', // 折线图
-  StackLine = 'StackLine', // 堆叠折线图
+  Line = 'Line',
+  StackLine = 'StackLine',
   PercentStackLine = 'PercentStackLine',
-  Column = 'Column', // 柱状图
-  StackColumn = 'StackColumn', // 堆叠柱状图
-  PercentStackColumn = 'PercentStackColumn', // 百分比堆叠柱状图
-  Bar = 'Bar', // 条形图
-  StackBar = 'StackBar', // 堆叠条形图
-  PercentStackBar = 'PercentStackBar', // 百分比堆叠条形图
-  Pie = 'Pie', // 饼状图
-  Donut = 'Donut', // 环状图图
-  Scatter = 'Scatter', // 散点图
+  Column = 'Column',
+  StackColumn = 'StackColumn',
+  PercentStackColumn = 'PercentStackColumn',
+  Bar = 'Bar',
+  StackBar = 'StackBar',
+  PercentStackBar = 'PercentStackBar',
+  Pie = 'Pie',
+  Donut = 'Donut',
+  Scatter = 'Scatter',
 
   // echarts
-  EchartsPie = 'EchartsPie', // 饼图
-  EchartsDonut = 'EchartsDonut', // 环形饼图
-  EchartsLine = 'EchartsLine', // 折线图
-  EchartsStackLine = 'EchartsStackLine', // 堆叠折线图
-  EchartsColumn = 'EchartsColumn', // 柱状图
-  EchartsStackColumn = 'EchartsStackColumn', // 堆叠柱状图
-  EchartsPercentColumn = 'EchartsPercentColumn', // 百分比堆叠柱状图
-  EchartsBar = 'EchartsBar', // 条形图
-  EchartsStackBar = 'EchartsStackBar', // 堆叠条形图
-  EchartsPercentStackBar = 'EchartsPercentStackBar', // 百分比堆叠条形图
-  EchartsScatter = 'EchartsScatter', // 散点图
+  EchartsPie = 'EchartsPie',
+  EchartsDonut = 'EchartsDonut',
+  EchartsLine = 'EchartsLine',
+  EchartsStackLine = 'EchartsStackLine',
+  EchartsColumn = 'EchartsColumn',
+  EchartsStackColumn = 'EchartsStackColumn',
+  EchartsPercentColumn = 'EchartsPercentColumn',
+  EchartsBar = 'EchartsBar',
+  EchartsStackBar = 'EchartsStackBar',
+  EchartsPercentStackBar = 'EchartsPercentStackBar',
+  EchartsScatter = 'EchartsScatter',
 }
 
 export enum AggregationType {
@@ -50,9 +50,9 @@ export enum AggregationType {
 }
 
 export enum StackType {
-  None = 'None', // 不堆叠
-  Stack = 'Stack', // 正常堆叠
-  Percent = 'Percent', // 百分比堆叠
+  None = 'None',
+  Stack = 'Stack',
+  Percent = 'Percent',
 }
 export interface IXField {
   id: string;

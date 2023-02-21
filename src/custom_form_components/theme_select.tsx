@@ -1,4 +1,4 @@
-import { Select, applyDefaultTheme, ITheme, Typography } from '@vikadata/components';
+import { Select, applyDefaultTheme, ITheme, Typography } from '@apitable/components';
 import React, { useState } from 'react';
 import { themesMap, themesTransMap } from '../theme';
 import styled, { css } from 'styled-components';

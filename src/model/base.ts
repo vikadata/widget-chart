@@ -1,4 +1,4 @@
-import { Field, Record, BasicValueType } from '@vikadata/widget-sdk';
+import { Field, Record, BasicValueType } from '@apitable/widget-sdk';
 import groupBy from 'lodash/groupBy'; 
 import sortBy from 'lodash/sortBy';
 import { PieChart, ScatterChart } from '.';
@@ -17,13 +17,13 @@ export abstract class Chart {
   }
 
   /**
-   * 生成图表样式表单配置
+   * Generate chart style form configuration.
    * @param fields 
    */
   abstract getChartStyleFormJSON(fields: Field[]);
 
   /**
-   * 通用图表样式配置
+   * General chart style configuration.
    */
   get commonFormStyleConfig() {
     return {
@@ -47,7 +47,7 @@ export abstract class Chart {
   }
 
   /**
-   * 生成展示图表用到的数据和配置
+   * Data and configuration for generating display charts.
    */
   getChartOptions({ records, fields, chartStructure, chartStyle }: {
     records: Record[];
@@ -69,19 +69,20 @@ export abstract class Chart {
       metricsName = t(Strings.cout_records);
     }
     const seriesFieldInstance = fields.find(field => field.id === seriesField);
-    // 统计指标字段不格式化的情况
-    // 1. 统计类型为统计记录总数，相当于指定格式化为整数。
-    // 2. 百分比堆叠，相当于指定格式化为百分比。
+    // Statistical indicator fields that are not formatted.
+    // 1. The statistics type is the total number of statistical records, 
+    // which is equivalent to specifying formatting as an integer.
+    // 2. Percentage stacking, equivalent to specifying formatting as a percentage.
     const noFormatMetric = metricsType === 'COUNT_RECORDS' || this.stackType === StackType.Percent;
 
     let data: any = [];
-    // 数据预处理
+    // Data pre-processing.
     /**
-     * 1. 处理多选分离值
-     * 2. 处理分组，空值
-     * 3. 处理排序
+     * 1. Handles multiple choice separation values.
+     * 2. Process grouping, null values.
+     * 3. Handling sorting.
      */
-    // 处理多选值分离
+    // Handling multiple choice value separation.
     const rows = processRecords({
       records,
       dimensionField,
@@ -91,7 +92,7 @@ export abstract class Chart {
       isSplitMultiValue: isSplitMultipleValue,
     });
 
-    // 处理分组、空值、格式化
+    // Handling grouping, null values, formatting.
     data = processChartData({
       rows,
       dimensionMetricsMap,
@@ -104,7 +105,7 @@ export abstract class Chart {
       isFormatDatetime,
       datetimeFormatter,
     });
-    // 处理排序
+    // Handling sorting.
     if (axisSortType) {
       data = processChartDataSort({
         data,
@@ -115,30 +116,7 @@ export abstract class Chart {
       });
     }
 
-    // const singleColorCharts = [ChartType.Bar, ChartType.Column, ChartType.Line, ChartType.Scatter];
-    // const colorConfig: any = {};
-    // // 图形部分的情况下，切换主题时，选区首个颜色。
-    // const { theme } = chartStyle;
-    // if (singleColorCharts.includes(this.type)) {
-    //   if (!seriesField) {
-    //     colorConfig.color = themesMap[theme]?.defaultColor;
-    //   } else {
-
-    //     let allSeries = Object.keys(groupBy(data, seriesField));
-    //     allSeries = sortBy(allSeries, item => getRightDimensionValue(item, seriesFieldInstance));
-    //     // res.rawFields = ['xField', 'yField'],
-    //     const themeColors = themesMap[theme].colors20;
-    //     colorConfig.colorField = seriesField;
-    //     colorConfig.color = (item) => {
-    //       const seriesValue = item[seriesField];
-    //       const sortIndex = allSeries.findIndex(eachItem => eachItem == seriesValue);
-    //       console.debug({ sortIndex, themeColors, allSeries, item });
-    //       return themeColors[sortIndex % 20];
-    //     };
-    //   }
-    // }
-
-    // G2DOC: 分组图形组内排序 https://github.com/antvis/g2/issues/1556
+    // G2DOC: Sorting within grouped graphics groups https://github.com/antvis/g2/issues/1556
     let seriesSortOptions = {};
     if (seriesFieldInstance) {
       let allSeries = Object.keys(groupBy(data, seriesField));
@@ -153,11 +131,10 @@ export abstract class Chart {
 
     // options
     const options: any = {
-      // 数据
       data,
       [dimensionMetricsMap.dimension.key]: dimensionMetricsMap.dimension.key,
       [dimensionMetricsMap.metrics.key]: dimensionMetricsMap.metrics.key,
-      // 样式
+      // style
       marginRatio: 0,
       padding: 'auto',
       appendPadding: 20,
@@ -189,7 +166,7 @@ export abstract class Chart {
         layout: [{ type: 'limit-in-plot' }],
       },
       // limitInPlot: false,
-      // 更多样式
+      // More styles
       ...moreOptions,
       // ...colorConfig,
     };
@@ -197,17 +174,18 @@ export abstract class Chart {
   }
 
   /**
-   * 生成图表用到的样式配置
+   * Configuration of styles used to generate charts.
    * @param formData 
    */
   getChartStyleOptions(chartStructure: any, chartStyle: any) {
     const { theme } = chartStyle;
     const { seriesField } = chartStructure;
     const res: any = {
-      // TODO: 图形统一使用 brush 的效果不太好。需要针对不同的图表类型，定制不同的交互效果，待设计确定。
+      // TODO: Using brush for the graphs does not work well. Different interaction effects need to 
+      // be customized for different chart types, to be determined by design.
       // interactions: [{ type: 'brush' }],
       theme,
-      // FIXME: 这里对日期的处理会出问题，展示注释掉
+      // FIXME: Here the handling of the date will be problematic, show commented out.
       // legend: {
       //   itemName: { formatter: (text) => `${(text + '')?.split('\n').join(' ')}` },
       // }, 
@@ -229,7 +207,7 @@ export abstract class Chart {
     };
 
     const singleColorCharts = [ChartType.Bar, ChartType.Column, ChartType.Line, ChartType.Scatter];
-    // 图形部分的情况下，切换主题时，选区首个颜色。
+    // In the case of the graphics section, the first color of the selection when switching themes.
     if (singleColorCharts.includes(this.type) && !seriesField) {
       res.color = themesMap[theme]?.defaultColor;
     }
@@ -237,12 +215,14 @@ export abstract class Chart {
   }
 
   /**
-   * 不同类型的图表分类维度、统计指标的叫法不一样，对应的图表配置字段也不一样。
+   * Different types of chart classification dimensions and statistical indicators are called differently, 
+   * and the corresponding chart configuration fields are also different.
    */
   abstract getFormDimensionMetricsMap(): IDimensionMetricsMap;
 
   /**
-   * 分类维度、统计指标字段，生成表格结构的表单配置。
+   * Categorize dimensions, statistical indicator fields, 
+   * and generate form configurations for table structures.
    * @param dimensions 
    * @param metrics 
    */
@@ -268,18 +248,18 @@ export abstract class Chart {
     } : {
       fieldId: {
         type: 'string',
-        title: '统计字段',
+        title: 'Statistical fields',
         ...metricsEnum,
       },
       aggregationType: {
         type: 'string',
-        title: '聚合类型',
+        title: 'Aggregation Type',
         enum: AGGREGATION_TYPES,
         enumNames: AGGREGATION_TYPES_NAMES,
         default: 'SUM',
       },
     };
-    // 统计指标 by field
+    // Statistical indicators by field
     const metricsFormJSON = {
       title: dimensionMetricsMap.metrics.title,
       type: 'object',
@@ -294,12 +274,12 @@ export abstract class Chart {
                 },
                 fieldId: {
                   type: 'string',
-                  title: '统计字段',
+                  title: 'Statistical fields',
                   ...metricsEnum,
                 },
                 aggregationType: {
                   type: 'string',
-                  title: '聚合类型',
+                  title: 'Aggregation Type',
                   enum: AGGREGATION_TYPES,
                   enumNames: AGGREGATION_TYPES_NAMES,
                   default: 'SUM',
@@ -313,7 +293,7 @@ export abstract class Chart {
                 },
                 fieldId: {
                   type: 'string',
-                  title: '统计字段',
+                  title: 'Statistical fields',
                   ...metricsEnum,
                 },
               },
@@ -425,7 +405,7 @@ export abstract class Chart {
   }
 
   /**
-   * g2的图表类型 + stack => 图表类型
+   * g2's chart type + stack => chart type.
    */
   get formChartType() {
     const chartType = CHART_TYPES.find(item => item.class === this.constructor && item.stackType === this.stackType);
@@ -434,7 +414,7 @@ export abstract class Chart {
   }
 
   /**
-   * 获取不同图表的初始化 formData
+   * Get the initialization of the different charts formData.
    * @param dimensions 
    * @param metrics 
    */

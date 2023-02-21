@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import React from 'react';
-import { WarnFilled } from '@vikadata/icons';
+import { WarnFilled } from '@apitable/icons';
 
 export const FormWrapper = styled.div<{ openSetting: boolean, readOnly: boolean }>`
   box-shadow: -1px 0px 0px rgba(0, 0, 0, 0.1), 0px -1px 0px #F0F0F6;
@@ -38,7 +38,7 @@ const WarningAlertInner = styled.div`
   align-items: center;
   padding: 8px 16px;
   background: #fef6e5;
-  /* FC14（warn 用色） */
+  /* FC14 (warn with color) */
 
   border: 1px solid #FFAB00;
   box-sizing: border-box;
@@ -46,7 +46,7 @@ const WarningAlertInner = styled.div`
   z-index: 1;
 `;
 
-// TODO: 临时使用，alert 组件完工后替换掉这里
+// TODO: Temporary use, replace here when the alert component is finished.
 export const WarningAlert = ({ children }) => {
 
   return <ChartWarningWrapper>

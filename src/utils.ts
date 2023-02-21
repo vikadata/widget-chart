@@ -1,5 +1,5 @@
 /**
- * 监听元素尺寸变化
+ * Listening for element size changes.
  */
 export function listenDOMSize(dom: React.RefObject<HTMLElement>) {
   let size = { x: -1, y: -1, width: -1, height: -1 };
@@ -53,9 +53,9 @@ class CanvasUtils {
     const containerWidth = canvas.width;
     const containerHeight = canvas.height;
     const totalSize = isColumn ? containerHeight : containerWidth;
-    // 条形图直接读取宽度，不需要比较，perSize 仅用于是否需要旋转
+    // Bars read width directly, no need to compare, 'perSize' is only used if rotation is required.
     let perSize = isColumn ? axisItemWidth : totalSize / texts.length - 16;
-    // 12 为字体大小，表示最小也需要容纳一个字符
+    // 12 is the font size, indicating that the smallest character needs to be accommodated.
     if (perSize < MIN_CHAR_SIZE) {
       perSize = MIN_CHAR_SIZE;
     }
@@ -67,12 +67,12 @@ class CanvasUtils {
         maxWidth = Math.max(maxWidth, itemWidth);
       }
     }
-    // 获取间隔
+    // Get interval
     const interval = Math.round(texts.length * MIN_CHAR_SIZE / totalSize);
     return {
       rotate: maxWidth ? -45 : 0,
       maxWidth,
-      perSize: maxWidth ? axisItemWidth : perSize, // 需要旋转的话直接取设置的宽度
+      perSize: maxWidth ? axisItemWidth : perSize, // If you need to rotate, take the set width directly.
       interval
     };
   }

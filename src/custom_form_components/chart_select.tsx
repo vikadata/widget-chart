@@ -1,4 +1,4 @@
-import { Select, Tooltip } from '@vikadata/components';
+import { Select, Tooltip } from '@apitable/components';
 import {
   ChartBarNormalFilled,
   ChartBarPercentFilled,
@@ -12,7 +12,7 @@ import {
   ChartLineStackFilled,
   ChartPieFilled,
   ChartScatterplotNormalFilled
-} from '@vikadata/icons';
+} from '@apitable/icons';
 import { Strings, t } from '../i18n';
 
 import React, { Fragment, useState } from 'react';
@@ -28,7 +28,6 @@ const ChartSelectWrapper = styled.div`
   padding: 24px;
   border-radius: 4px;
 `;
-// overflow: hidden; 会影响滚动，圆角被遮蔽的问题还是要从 select rc 入手 @sujian
 
 const ChartIconWrapper = styled.div<{ isActive: boolean }>`
   border-radius: 4px;
@@ -66,143 +65,81 @@ export const ChartSelectBase = ({
 
   const chartList = [
     {
-      title: t(Strings.echarts_column_chart), // '柱状图',
+      title: t(Strings.echarts_column_chart), // 'Histogram',
       icons: [
-        // {
-        //   name: t(Strings.column_chart), // '柱状图',
-        //   id: FormChatType.Column,
-        //   Icon: ChartColumnNormalFilled,
-        // },
-        // {
-        //   name: t(Strings.stacked_column_chart), // '堆叠柱状图',
-        //   id: FormChatType.StackColumn,
-        //   Icon: ChartColumnStackFilled,
-
-        // },
-        // {
-        //   name: t(Strings.percent_stacked_column_chart), // '百分比堆叠柱状图',
-        //   id: FormChatType.PercentStackColumn,
-        //   Icon: ChartColumnPercentFilled,
-        // },
-
         {
-          name: t(Strings.echarts_column_chart), // '柱状图',
+          name: t(Strings.echarts_column_chart), // 'normal',
           id: FormChatType.EchartsColumn,
           Icon: ChartColumnNormalFilled,
         },
         {
-          name: t(Strings.echarts_stack_column_chart), // '堆叠柱状图',
+          name: t(Strings.echarts_stack_column_chart), // 'Stacked Bar Chart',
           id: FormChatType.EchartsStackColumn,
           Icon: ChartColumnStackFilled,
 
         },
         {
-          name: t(Strings.echarts_percent_column_chart), // '百分比堆叠柱状图',
+          name: t(Strings.echarts_percent_column_chart), // 'Percentage stacked bar chart',
           id: FormChatType.EchartsPercentColumn,
           Icon: ChartColumnPercentFilled,
         },
       ],
     },
     {
-      title: t(Strings.echarts_bar_chart), // '条形图',
+      title: t(Strings.echarts_bar_chart), // 'Bar Chart',
       icons: [
-        // {
-        //   name: t(Strings.bar_chart), // '条形图',
-        //   id: FormChatType.Bar,
-        //   Icon: ChartBarNormalFilled,
-        // },
-        // {
-        //   name: t(Strings.stacked_bar_chart), // '堆叠条形图',
-        //   id: FormChatType.StackBar,
-        //   Icon: ChartBarStackFilled,
-        // },
-        // {
-        //   name: t(Strings.percent_stacked_bar_chart), //'百分比堆叠条形图',
-        //   id: FormChatType.PercentStackBar,
-        //   Icon: ChartBarPercentFilled,
-        // },
         {
-          name: t(Strings.echarts_bar_chart), // '条形图',
+          name: t(Strings.echarts_bar_chart), // 'Bar Chart',
           id: FormChatType.EchartsBar,
           Icon: ChartBarNormalFilled,
         },
         {
-          name: t(Strings.echarts_stack_bar_chart), // '堆叠条形图',
+          name: t(Strings.echarts_stack_bar_chart), // 'Stacked Bars',
           id: FormChatType.EchartsStackBar,
           Icon: ChartBarStackFilled,
         },
         {
-          name: t(Strings.echarts_percent_bar_chart), //'百分比堆叠条形图',
+          name: t(Strings.echarts_percent_bar_chart), //'Percentage Stacked Bar Chart',
           id: FormChatType.EchartsPercentStackBar,
           Icon: ChartBarPercentFilled,
         },
       ],
     },
     {
-      title: t(Strings.echarts_pie_chart), // '饼状图',
+      title: t(Strings.echarts_pie_chart), // 'Pie Chart',
       icons: [
-        // {
-        //   name: t(Strings.pie_chart), // '饼状图',
-        //   id: FormChatType.Pie,
-        //   Icon: ChartPieFilled,
-        // },
-        // {
-        //   name: t(Strings.donut_chart), // '环状图',
-        //   id: FormChatType.Donut,
-        //   Icon: ChartDountFilled,
-        // },
         {
-          name: t(Strings.echarts_pie_chart), // '柱状图',
+          name: t(Strings.echarts_pie_chart), // 'Pie Chart',
           id: FormChatType.EchartsPie,
           Icon: ChartPieFilled,
         },
         {
-          name: t(Strings.echarts_donut_chart), // '柱状图',
+          name: t(Strings.echarts_donut_chart), // 'Donut Chart',
           id: FormChatType.EchartsDonut,
           Icon: ChartDountFilled,
         },
       ],
     },
     {
-      title: t(Strings.echarts_line_chart), // '折线图',
+      title: t(Strings.echarts_line_chart), // 'Folding Line Chart',
       icons: [
-        // {
-        //   name: t(Strings.line_chart), // '折线图',
-        //   id: FormChatType.Line,
-        //   Icon: ChartLineNormalFilled,
-        // },
-        // {
-        //   name: t(Strings.stacked_line_chart), // '堆叠折线图',
-        //   id: FormChatType.StackLine,
-        //   Icon: ChartLineStackFilled,
-        // },
         {
-          name: t(Strings.echarts_line_chart), // '折线图',
+          name: t(Strings.echarts_line_chart), // 'Folding Line Chart',
           id: FormChatType.EchartsLine,
           Icon: ChartLineNormalFilled,
         },
         {
-          name: t(Strings.echarts_stack_line_chart), // '堆叠折线图',
+          name: t(Strings.echarts_stack_line_chart), // 'Stacked Line Chart',
           id: FormChatType.EchartsStackLine,
           Icon: ChartLineStackFilled,
         },
-        // {
-        //   name: '百分比折线图',
-        //   id: FormChatType.PercentStackLine,
-        //   Icon: ChartLinePercentFilled,
-        // },
       ],
     },
     {
-      title: t(Strings.echarts_scatter_chart), // '散点图',
+      title: t(Strings.echarts_scatter_chart), // 'Scatter Chart',
       icons: [
-        // {
-        //   name: t(Strings.scatter_chart), // '散点图',
-        //   id: FormChatType.Scatter,
-        //   Icon: ChartScatterplotNormalFilled,
-        // },
         {
-          name: t(Strings.echarts_scatter_chart), // 'echarts 散点图',
+          name: t(Strings.echarts_scatter_chart), // 'echarts Scatter Chart',
           id: FormChatType.EchartsScatter,
           Icon: ChartScatterplotNormalFilled,
         },
@@ -223,7 +160,7 @@ export const ChartSelectBase = ({
                 chartTypeObj.icons.map(chart => {
                   return (
                     <Tooltip content={chart.name} key={chart.id}>
-                      {/* FIXME: tooltip 会覆盖子元素的 onclick 事件，先把 onClick 放在内部。等 @dongdong 修复 */}
+                      {/* FIXME: tooltip will override the onclick event of the child element, putting the onClick inside first */}
                       <ChartIconWrapper isActive={value == chart.id} key={chart.id}>
                         <chart.Icon size={56} onClick={() => handleIconClick(chart.id)} />
                       </ChartIconWrapper>
