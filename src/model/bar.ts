@@ -1,5 +1,5 @@
 import { Strings } from '../i18n';
-import { t } from '@vikadata/widget-sdk';
+import { t } from '@apitable/widget-sdk';
 import { ColumnChart } from './column';
 import { ChartType } from './interface';
 

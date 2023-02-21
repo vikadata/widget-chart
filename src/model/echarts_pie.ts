@@ -1,4 +1,4 @@
-import { Field, Record } from '@vikadata/widget-sdk';
+import { Field, Record } from '@apitable/widget-sdk';
 import { EchartsBase } from './echarts_base';
 import { ChartType, StackType } from './interface';
 import { Strings, t } from '../i18n';
@@ -70,7 +70,7 @@ export class EchartsPie extends EchartsBase {
     const { showDataTips } = chartStyle;
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
 
-    // 区分普通配置和series配置
+    // Distinguish between normal configuration and series configuration.
     const dataSum = data.reduce((pre, cur) => pre = this.add(pre, cur.value), 0);
     // const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
     const styleOption: any = {
@@ -91,9 +91,9 @@ export class EchartsPie extends EchartsBase {
         },
       },
     };
-    // 环形饼图
+    // Ring Pie Chart
     if (this.stackType === StackType.Stack) {
-      // 内
+      // Inside
       styleOption.stackSeries = {
         ...styleOption.series,
         radius: ['50%', '70%'],
@@ -125,7 +125,7 @@ export class EchartsPie extends EchartsBase {
           label: { show: true }
         },
       };
-      // 外
+      // Outside
       styleOption.series = {
         ...styleOption.series,
         radius: ['50%', '70%'],
@@ -141,10 +141,10 @@ export class EchartsPie extends EchartsBase {
   }
 
   /**
-   * 获取 echarts 饼图配置的参数
-   * @param {Object} param 配置参数对象
-   * @property {Record[]} param.records 数据
-   * @property {Field[]} param.fields 表属性
+   * Get the parameters of the echarts pie chart configuration.
+   * @param {Object} param Configuration parameter objects.
+   * @property {Record[]} param.records
+   * @property {Field[]} param.fields
    * @property {} param.chartStructure 
    */
   getChartOptions({ records, fields, chartStructure, chartStyle }: {
@@ -153,16 +153,17 @@ export class EchartsPie extends EchartsBase {
     chartStructure: any,
     chartStyle: any,
   }) {
-    // 统计字段 id，统计指定字段的类型（求和，平均），统计数值类型，是否切割多选值，日期格式化
+    // Statistic field id, type of statistic specified field (sum, average), 
+    // type of statistic value, whether to cut multi-selected values, date formatting.
     const { dimension, metrics, metricsType, isSplitMultipleValue, isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
     const { isCountNullValue } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
-    // 统计维度属性，统计数值属性
+    // Statistical dimensional attributes, statistical numerical attributes.
     const dimensionField = fields.find(field => field.id === dimension);
     const metricsField = fields.find(field => field.id === metrics.fieldId) || {};
     const isFormatDatetime = _isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
 
-    // 处理多选值分离
+    // Handling multiple choice value separation.
     const rows = processRecords({
       records,
       dimensionField,
@@ -183,10 +184,10 @@ export class EchartsPie extends EchartsBase {
       datetimeFormatter,
     }).filter(v => v.value > 0);
 
-    // 饼图默认按照统计指标从小到大顺时针排序渲染
+    // Pie charts are rendered clockwise from smallest to largest by default.
     data = sortBy(data, (item) => {
       const angleValue = item[dimensionMetricsMap.metrics.key];
-      if (angleValue == null) return 0; // FIXME: 看看能不能在上一步处理空值
+      if (angleValue == null) return 0; // FIXME: See if you can handle null values in the previous step.
       return angleValue;
     });
 

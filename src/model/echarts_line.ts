@@ -3,7 +3,7 @@ import { ChartType, StackType } from "./interface";
 import { Strings, t } from '../i18n';
 import { formatterValue, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
 import { EchartsBase } from './echarts_base';
-import { Field } from '@vikadata/widget-sdk';
+import { Field } from '@apitable/widget-sdk';
 
 export class EchartsLine extends EchartsBase {
   type = ChartType.EchartsLine;
@@ -66,7 +66,7 @@ export class EchartsLine extends EchartsBase {
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
     const { property, type } = metricsField;
 
-    // 区分普通配置和series配置
+    // Distinguish between normal configuration and series configuration.
     const styleOption: any = {
       commonOption: {
         ...this.getCommonStyleOptions(),
@@ -94,13 +94,15 @@ export class EchartsLine extends EchartsBase {
   }
 
   getChartOptions({ records, fields, chartStructure, chartStyle }) {
-    // 分组统计字段，统计字段 id，统计指定字段的类型（求和，平均），统计数值类型，是否切割多选值，日期格式化
+    // Grouping of statistical fields, statistical field id, statistical type of 
+    // specified field (sum, average), statistical value type, whether to cut multi-selected values, 
+    // date formatting.
     const { seriesField, dimension, metrics, metricsType, isSplitMultipleValue,
       isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
     
     const { axisSortType, isCountNullValue } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
-    // 统计维度属性，统计数值属性，统计数值名称
+    // Statistical dimension attribute, statistical value attribute, statistical value name.
     const dimensionField = fields.find(field => field.id === dimension) as Field;
     const metricsField = fields.find(field => field.id === metrics.fieldId) || {};
     const isFormatDatetime = _isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
@@ -111,10 +113,10 @@ export class EchartsLine extends EchartsBase {
 
     const countTotalRecords = metricsType === 'COUNT_RECORDS';
 
-    // 是否需要格式化 y 轴文本字段
+    // Whether the y-axis text field needs to be formatted.
     const noFormatMetric = countTotalRecords || this.stackType === StackType.Percent;
 
-    // 处理多选值分离
+    // Handling multiple choice value separation.
     const rows = processRecords({
       records,
       dimensionField,
@@ -124,7 +126,7 @@ export class EchartsLine extends EchartsBase {
       isSplitMultiValue: isSplitMultipleValue,
     });
 
-    // 处理分组、空值、格式化
+    // Handling grouping, null values, formatting.
     let data = processChartData({
       rows,
       dimensionMetricsMap,

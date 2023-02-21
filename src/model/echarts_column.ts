@@ -1,4 +1,4 @@
-import { Field, Record } from '@vikadata/widget-sdk';
+import { Field, Record } from '@apitable/widget-sdk';
 import { ChartType, StackType } from "./interface";
 import { Strings, t } from "../i18n";
 import { formatterValue, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
@@ -57,7 +57,7 @@ export class EchartsColumn extends EchartsBase {
   }
 
   /**
-   * 图表样式配置 - echarts 柱状图
+   * Chart Style Configuration - echarts Bar Chart.
    * @param {any} chartStructure 
    * @param chartStyle 
    * @returns 
@@ -71,11 +71,11 @@ export class EchartsColumn extends EchartsBase {
     const isDark = this.theme === 'dark';
     const color = isNormalChart && isDark ? { color: '#fff' } : { color: '#333' };
     let base = axisLength > 10 ? 0.15 : 0.2;
-    // 默认 base / x 轴类目数量, axisLength = x 轴类目数量
-    // 浅色计算
+    // Default base / x-axis category number, axisLength = x-axis category number.
+    // Light color calculation
     let opacity = Math.min(base / axisLength, 0.15);
 
-    // 深色计算
+    // Dark color calculation
     if (isDark) {
       base = axisLength > 10 ? 0.5 : 0.2;
       opacity = Math.min(base / axisLength, 0.3);
@@ -83,7 +83,7 @@ export class EchartsColumn extends EchartsBase {
 
     opacity = Math.max(opacity, 0.01);
 
-    // 区分普通配置和series配置
+    // Distinguish between normal configuration and series configuration.
     const styleOption: any = {
       commonOption: {
         ...this.getCommonStyleOptions(),
@@ -91,7 +91,7 @@ export class EchartsColumn extends EchartsBase {
           trigger: 'axis',
           axisPointer: {
             type: 'shadow',
-            // fix: 修复图表高亮时淡色消失问题
+            // fix: the problem of disappearing light color when the chart is highlighted.
             shadowStyle: {
               z: 1,
               color: `rgba(150, 150, 150, ${isNormalChart ? opacity : 0.15})`,
@@ -102,7 +102,7 @@ export class EchartsColumn extends EchartsBase {
       },
       series: {
         type: 'bar',
-        // fix: 修复图表高亮时淡色消失问题
+        // fix: the problem of disappearing light color when the chart is highlighted
         zlevel: 10,
         emphasis: {
           disabled: true,
@@ -140,7 +140,7 @@ export class EchartsColumn extends EchartsBase {
     chartStructure: any,
     chartStyle: any,
   }) {
-    // 堆叠字段
+    // Stacked Fields
     const { seriesField, dimension, metrics, metricsType, isSplitMultipleValue,
       isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
     
@@ -149,18 +149,18 @@ export class EchartsColumn extends EchartsBase {
     const { axisSortType, isCountNullValue } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     const yKey = dimensionMetricsMap.metrics.key;
-    // 统计维度属性，统计数值属性，统计数值名称
+    // Statistical dimension attribute, statistical value attribute, statistical value name.
     const dimensionField = fields.find(field => field.id === dimension) as Field;
     const metricsField = fields.find(field => field.id === metrics.fieldId) as Field || {};
     const isFormatDatetime = _isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
     const seriesFieldInstance = fields.find(field => field.id === seriesField);
-    // 获取 y 轴的统计维度
+    // Get the statistical dimension of the y-axis.
     const countTotalRecords = metricsType === 'COUNT_RECORDS';
 
-    // 是否需要格式化 y 轴文本字段
+    // Whether the y-axis text field needs to be formatted.
     const noFormatMetric = countTotalRecords || this.stackType === StackType.Percent;
 
-    // 处理多选值分离
+    // Handling multiple choice value separation.
     const rows = processRecords({
       records,
       dimensionField,
@@ -170,7 +170,7 @@ export class EchartsColumn extends EchartsBase {
       isSplitMultiValue: isSplitMultipleValue,
     });
 
-    // 处理分组、空值、格式化
+    // Handling grouping, null values, formatting.
     let data = processChartData({
       rows,
       dimensionMetricsMap,
@@ -252,11 +252,6 @@ export class EchartsColumn extends EchartsBase {
       xAxis: isColumn ? mainAxis : subAxis,
       yAxis: isColumn ? subAxis : mainAxis,
       series,
-      // 缩放 - 暂时不做
-      // dataZoom: [{
-      //   type: 'slider', [isColumn ? 'xAxisIndex' : 'yAxisIndex']: 0,
-      //   [isColumn ? 'bottom' : 'left']: 0,
-      // }]
     };
 
     return options;

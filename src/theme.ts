@@ -2,10 +2,10 @@
 import {
   purple, deepPurple, indigo, blue, teal,
   green, yellow, orange, tangerine, pink, red, brown,
-} from '@vikadata/components';
+} from '@apitable/components';
 import { Strings, t } from './i18n';
 
-// 内置的 4 套主题配色
+// Built-in 4 sets of theme color schemes.
 export const theme1 = {
   defaultColor: '#7B67EE',
   colors10: ['#7B67EE', '#5B8FF9', '#61DDAA', '#65789B', '#F6BD16', '#6F5EF9', '#78D3F8', '#9661BC', '#F6903D', '#F08BB4'],

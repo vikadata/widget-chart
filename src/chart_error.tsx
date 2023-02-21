@@ -98,7 +98,7 @@ export const ChartError = ({ isExpanded, openSetting, hasError, children }) => {
   const bgSize = isExpanded ? '320px 240px' : '160px 120px';
   const width = openSetting ? 'calc(100% - 320px)' : '100%';
   // return children;
-  // 暂时取消错误 handler
+  // Temporarily cancel the error handler.
   if (hasError) {
     return (
       <div
@@ -116,7 +116,7 @@ export const ChartError = ({ isExpanded, openSetting, hasError, children }) => {
             fontSize: 14,
           }}
         >
-          错误🙅
+          error🙅
         </p> */}
       </div>
     );

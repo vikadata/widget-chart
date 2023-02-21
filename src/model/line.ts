@@ -1,5 +1,5 @@
 import { Strings } from '../i18n';
-import { t } from '@vikadata/widget-sdk';
+import { t } from '@apitable/widget-sdk';
 import { ColumnChart } from './column';
 import { ChartType, StackType } from './interface';
 
@@ -25,7 +25,7 @@ export class LineChart extends ColumnChart {
     const { seriesField } = chartStructure;
     const smooth = chartStyle.smooth;
     const styleOptions: any = { isGroup: false, smooth, seriesField };
-    // 处理堆叠
+    // Handling stacking.
     switch (this.stackType) {
       case StackType.None:
         styleOptions.isGroup = Boolean(seriesField);

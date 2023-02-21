@@ -1,5 +1,5 @@
 import { Strings } from '../i18n';
-import { Field, Record, t } from '@vikadata/widget-sdk';
+import { Field, Record, t } from '@apitable/widget-sdk';
 import { themesMap } from '../theme';
 import groupBy from 'lodash/groupBy'; 
 import isNumber from 'lodash/isNumber';
@@ -23,7 +23,7 @@ export class ScatterChart extends ColumnChart {
   }
 
   getChartStyleOptions(chartStructure: any, chartStyle: any) {
-    // TODO: 散点分组考虑 0.7 再上，放开下面的配置即可。
+    // TODO: Scatter grouping consider 0.7 again on, just let go of the following configuration.
     const colorField = ''; //chartStructure.seriesField;
     const { theme, showDataTips } = chartStyle;
     const styleOptions: any = {
@@ -45,7 +45,7 @@ export class ScatterChart extends ColumnChart {
         };
       }
     } else {
-      styleOptions.label = null; // 需要显式地指定不展示 label
+      styleOptions.label = null; // Need to explicitly specify not to display label.
     }
 
     return styleOptions;
@@ -75,7 +75,7 @@ export class ScatterChart extends ColumnChart {
   }
 
   /**
-   * 生成展示图表用到的数据和配置
+   * Data and configuration for generating display charts.
    */
   getChartOptions({ records, fields, chartStructure, chartStyle }: {
     records: Record[];
@@ -97,7 +97,7 @@ export class ScatterChart extends ColumnChart {
     const seriesFieldInstance = fields.find(field => field.id === seriesField);
     const shouldFormatDatetime = isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
     let data: any = [];
-    // 处理多选值分离
+    // Handling multiple choice value separation.
     const rows = processRecords({
       records,
       dimensionField,
@@ -106,7 +106,7 @@ export class ScatterChart extends ColumnChart {
       seriesField: seriesFieldInstance,
       isSplitMultiValue: isSplitMultipleValue,
     });
-    // 未分组下的数据，按分类维度聚合。
+    // Data under ungrouped, aggregated by categorical dimension.
     const groupRows = groupBy(rows, row => {
       try {
         const _dimension = shouldFormatDatetime ? formatDatetime(row.dimension, datetimeFormatter!)
@@ -119,9 +119,9 @@ export class ScatterChart extends ColumnChart {
     if (!isCountNullValue) {
       delete groupRows[t(Strings.null)];
     }
-    // 记录总数作为统计指标。
+    // The total number of records is used as a statistical indicator.
     if (metricsType === 'COUNT_RECORDS') {
-      // 未分组下的数据，按分类维度聚合。
+      // Data under ungrouped, aggregated by categorical dimension.
       data = Object.keys(groupRows).map(key => {
         const x = key;
         // const y = groupRows[key].map(record => record._getCellValue(metrics.fieldId));
@@ -131,7 +131,7 @@ export class ScatterChart extends ColumnChart {
         };
       });
 
-      // 字段作为统计指标
+      // Fields as statistical indicators.
     } else {
       if (metrics.openAggregation) {
         data = Object.keys(groupRows).map(key => {
@@ -147,7 +147,9 @@ export class ScatterChart extends ColumnChart {
         data = rows.map(row => {
           let metricsValue = row.metrics;
           if (!isNumber(metricsValue)) {
-            metricsValue = 0; // 切换字段类型会造成这种结果。记数值为 0，图表不奔溃, form 表单会给出提示。
+            // Switching field types can cause this result. With a value of 0, the chart does not crash, 
+            // the form form will give a prompt.
+            metricsValue = 0;
           }
           let dimensionValue = shouldFormatDatetime ? formatDatetime(row.dimension, datetimeFormatter!)
             : dimensionField?.convertCellValueToString(row.dimension);
@@ -161,7 +163,7 @@ export class ScatterChart extends ColumnChart {
         }).filter(item => item != null);
       }
     }
-    // 处理排序
+    // Handling sorting
     if (axisSortType) {
       data = processChartDataSort({
         data,
@@ -173,11 +175,10 @@ export class ScatterChart extends ColumnChart {
 
     // options
     const options: any = {
-      // 数据
       data,
       [dimensionMetricsMap.dimension.key]: dimensionMetricsMap.dimension.key,
       [dimensionMetricsMap.metrics.key]: dimensionMetricsMap.metrics.key,
-      // 样式
+      // style
       marginRatio: 0,
       padding: 'auto',
       meta: {
@@ -204,7 +205,7 @@ export class ScatterChart extends ColumnChart {
       yAxis: {
         title: { text: metricsName },
       },
-      // 更多样式
+      // more style
       ...moreOptions,
     };
     return options;

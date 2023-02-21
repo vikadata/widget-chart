@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
-import { lightColors, darkColors } from '@vikadata/components';
-// import { useViewport } from '@vikadata/widget-sdk';
+import { lightColors, darkColors } from '@apitable/components';
+// import { useViewport } from '@apitable/widget-sdk';
 import * as echarts from 'echarts/core';
 import { EChartsOption } from 'echarts';
 import { BarChart, PieChart, LineChart, ScatterChart } from 'echarts/charts';
@@ -17,9 +17,9 @@ import {
   LegendComponent,
   // DataZoomComponent,
 } from 'echarts/components';
-// 标签自动布局，全局过渡动画等特性
+// Automatic label layout, global transition animation and other features.
 import { LabelLayout, UniversalTransition } from 'echarts/features';
-// 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
+// Introduce the Canvas renderer, note that introducing the CanvasRenderer or SVGRenderer is a required step.
 import { CanvasRenderer } from 'echarts/renderers';
 import { listenDOMSize } from './utils';
 import { EchartsBase } from 'model/echarts_base';
@@ -56,7 +56,7 @@ const WidgetChart: React.FC<IWidgetChartCanvas> = ({
   }, [options, formData, chartContainerRef.current]);
 
   const renderEcharts = React.useCallback(({ width, height }) => {
-    // 判断表单配置是否已经更改，不一致需要清除上一次的绘制
+    // Determine whether the form configuration has been changed, inconsistent need to clear the last drawing.
     if (clear !== formRefreshFlag) {
       echarts.dispose(chartContainerRef.current!);
       setClear(formRefreshFlag);
@@ -71,7 +71,7 @@ const WidgetChart: React.FC<IWidgetChartCanvas> = ({
   }, [options, formData, theme, chartInstance.stackType, chartType, formRefreshFlag, clear]);
 
   useEffect(() => {
-    // 注册必须的组件
+    // Register required components.
     echarts.use([
       TitleComponent,
       TooltipComponent,
