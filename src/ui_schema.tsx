@@ -2,13 +2,15 @@ import React from 'react';
 import { ChartSelect, FieldSelect, ThemeSelect } from './custom_form_components';
 import { ViewPicker } from '@apitable/widget-sdk';
 import { Strings, t } from './i18n';
+import settings from '../settings.json';
+
 
 export const getUiSchema = (viewId: string) => {
   return {
     'ui:options': {
       help: {
         text: t(Strings.chart_widget_setting_help_tips),
-        url: t(Strings.chart_widget_setting_help_url),
+        url: settings.chart_widget_setting_help_url,
       },
     },
     dataSource: {

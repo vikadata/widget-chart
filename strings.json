@@ -60,10 +60,6 @@
             "zh_CN": "配置教程",
             "en_US": "Manual"
         },
-        "chart_widget_setting_help_url": {
-            "zh_CN": "https://help.vika.cn/docs/guide/intro-widget-chart",
-            "en_US": "https://help.vika.cn/docs/guide/intro-widget-chart"
-        },
         "colorful_theme": {
             "zh_CN": "多色主题",
             "en_US": "Multi-color theme"
