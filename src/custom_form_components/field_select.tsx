@@ -23,10 +23,10 @@ import {
   ColumnUrlOutlined,
   ColumnLastmodifiedbyFilled,
   ColumnLongtextFilled,
-  LockFilled,
   ColumnPhoneFilled,
   ColumnLookupFilled,
   ColumnRatingFilled,
+  CascadeOutlined
 } from '@apitable/icons';
 import { SELECT_OPEN_SEARCH_COUNT } from '../const';
 import styled from 'styled-components';
@@ -57,6 +57,7 @@ const FieldIconMap = {
   [FieldType.LastModifiedTime]: ColumnLastmodifiedtimeFilled,
   [FieldType.CreatedBy]: ColumnCreatedbyFilled,
   [FieldType.LastModifiedBy]: ColumnLastmodifiedbyFilled,
+  [FieldType.Cascader]: CascadeOutlined
 };
 
 const transformOptions = (enumOptions: { label: string, value: any }[], theme: ITheme, fields: Field[]) => {

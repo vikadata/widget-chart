@@ -517,7 +517,6 @@ export const processChartData = (data: {
  */
 const getReferenceSeriesValue = (value, field: Field) => {
   const { type, property } = field;
-  // console.log(value.flat(), property, field.type);
   let deep = 2;
   if ([FieldType.SingleSelect, FieldType.CreatedBy, FieldType.LastModifiedBy].includes(type)) {
     deep = 1;
