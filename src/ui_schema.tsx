@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChartSelect, FieldSelect, ThemeSelect } from './custom_form_components';
+import { ChartSelect, FieldSelect, ThemeSelect, FilterSelect } from './custom_form_components';
 import { ViewPicker } from '@apitable/widget-sdk';
 import { Strings, t } from './i18n';
 import settings from '../settings.json';
@@ -18,7 +18,15 @@ export const getUiSchema = (viewId: string) => {
         'ui:widget': (props) => {
           return <ViewPicker controlJump viewId={props.value} onChange={option => props.onChange(option.value)} />;
         },
-      }
+      },
+      filter: {
+        'ui:options': {
+          showTitle: false,
+        },
+        'ui:widget': (props) => {
+          return <FilterSelect value={props.value} onChange={filter => props.onChange(filter)}/>;
+        },
+      },
     },
     chartStructure: {
       'ui:order': ['chartType', 'dimension', 'isSplitMultipleValue', 'isFormatDatetime', 'datetimeFormatter', 'metricsType', 'metrics', 'seriesField'],

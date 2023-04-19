@@ -44,7 +44,7 @@ const useGetDefaultFormData = (meta) => {
     // Statistical indicators (only numeric fields can be used as statistical indicators).
     const metrics = fields.filter(field => field.basicValueType === BasicValueType.Number);
     return {
-      dataSource: { view: viewId },
+      dataSource: { view: viewId, filter: null },
       ...new EchartsColumn(StackType.None, meta.theme).getDefaultFormData(dimensions, metrics),
     };
     // Since it is only used for the first time, there is no need to update.
@@ -74,7 +74,7 @@ const WidgetChartBase: React.FC = () => {
 
   const readOnly = !editable;
   const viewId = formData.dataSource.view;
-  const records = useRecords(viewId);
+  const records = useRecords(viewId, { filter: formData.dataSource.filter});
   const fields = useFields(viewId);
   const isPartOfDataRef = useRef(false);
 
@@ -146,6 +146,9 @@ const WidgetChartBase: React.FC = () => {
               title: t(Strings.select_view),
               enum: viewIds,
               enumNames: viewNames,
+            },
+            filter: {
+              type: 'string',
             },
           },
         },
