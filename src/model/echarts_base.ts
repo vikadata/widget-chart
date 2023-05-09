@@ -239,7 +239,13 @@ export abstract class EchartsBase {
           interval: 0,
           width: Math.sqrt(2) / 2 * 110, // cos 45 = sqrt(2) / 2
           ...axisStyle,
-          overflow: 'truncate',
+          formatter: (value) => {
+            const charList = Array.from(value);
+            if (charList.length > 8) {
+              return charList.slice(0, 8).join('') + '...';
+            }
+            return value;
+          }
         },
         axisTick: {
           show: true,
