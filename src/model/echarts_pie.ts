@@ -78,7 +78,6 @@ export class EchartsPie extends EchartsBase {
       series: {
         type: 'pie',
         radius: '70%',
-        minShowLabelAngle: 2,
         itemStyle: {
           borderColor: '#fff',
           borderWidth: 1,
