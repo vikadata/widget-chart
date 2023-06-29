@@ -70,10 +70,7 @@ export class EchartsLine extends EchartsBase {
     const styleOption: any = {
       commonOption: {
         ...this.getCommonStyleOptions(),
-        tooltip: {
-          trigger: 'axis', axisPointer: {type: 'shadow'}, appendToBody: true,
-          valueFormatter: (value) => formatterValue({property, type}, value, noFormatMetric),
-        },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, appendToBody: true },
       },
       series: {
         type: 'line',

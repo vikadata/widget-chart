@@ -1,7 +1,8 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { lightColors, darkColors } from '@apitable/components';
+// import { useViewport } from '@apitable/widget-sdk';
 import * as echarts from 'echarts/core';
-import { ECharts, EChartsOption } from 'echarts';
+import { EChartsOption } from 'echarts';
 import { BarChart, PieChart, LineChart, ScatterChart } from 'echarts/charts';
 import { ChartType } from './model/interface';
 import { WarningAlert } from './sc';
@@ -22,7 +23,6 @@ import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import { listenDOMSize } from './utils';
 import { EchartsBase } from 'model/echarts_base';
-import { useUnmount } from "ahooks";
 
 interface IWidgetChartCanvas {
   chartInstance: EchartsBase,
@@ -55,21 +55,13 @@ const WidgetChart: React.FC<IWidgetChartCanvas> = ({
     }
   }, [options, formData, chartContainerRef.current]);
 
-  useUnmount(
-      () => {
-          echartsInstanceRef.current?.dispose();
-      }
-  )
-
-  const echartsInstanceRef: React.MutableRefObject<ECharts|undefined> = useRef<ECharts|undefined>()
   const renderEcharts = React.useCallback(({ width, height }) => {
     // Determine whether the form configuration has been changed, inconsistent need to clear the last drawing.
     if (clear !== formRefreshFlag) {
       echarts.dispose(chartContainerRef.current!);
       setClear(formRefreshFlag);
     }
-    const myChart = echarts.init(chartContainerRef.current!, theme) as unknown as ECharts;
-    echartsInstanceRef.current = myChart;
+    const myChart = echarts.init(chartContainerRef.current!, theme);
     const mergeOptions = chartInstance.getMergeOption(
       { chartInstance, options: { ...options }, lightColors, darkColors, width, height }
     );
@@ -77,7 +69,6 @@ const WidgetChart: React.FC<IWidgetChartCanvas> = ({
     myChart.setOption(mergeOptions);
     myChart.resize();
   }, [options, formData, theme, chartInstance.stackType, chartType, formRefreshFlag, clear]);
-
 
   useEffect(() => {
     // Register required components.
