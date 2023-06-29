@@ -305,10 +305,13 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   if (isCurrency) {
     return `${fieldSymbol} ${value}`;
   }
+
+  const precision = property?.format?.format?.precision ?? 1
+
   // Percentages, numbers with units.
   if (isPercent || isNumber) {
     const suffixSymbol = isPercent ? '%' : fieldSymbol;
-    return `${Number(value).toFixed(1)} ${suffixSymbol}`;
+    return `${Number(value).toFixed(precision)} ${suffixSymbol}`;
   }
 
   // Smart Formula Date, value is timestamp.
