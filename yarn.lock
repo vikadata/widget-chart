@@ -305,23 +305,23 @@
   dependencies:
     clsx "^1.1.1"
 
-"@apitable/widget-sdk@latest":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@apitable/widget-sdk/-/widget-sdk-0.0.1.tgz#a4dcdcab7cd4f5a6b2e10193da22a86bbd7c327f"
-  integrity sha512-iMSHdLY9tMTiCAlG9Fxc7G6+QKYjYHh9iWNw2G5S/y/L6o9gPCNxAbvpVspZenv5aVA68ja29BnY+a3OiPc8ug==
+"@apitable/widget-sdk@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@apitable/widget-sdk/-/widget-sdk-0.0.2.tgz#a231f0aaaf27eaa2af414ab776ebb62380dbfed4"
+  integrity sha512-zDFU0WL1E+FAL3Pf4IsT/D3RhEZEmW8IcsfOLvIjizgN0cGwrhaqr4mWYGYMLnvWJiNeUbErpxKmJOnkLE5jgg==
   dependencies:
     "@apitable/components" "*"
     "@apitable/core" "*"
-    "@types/localforage" "^0.0.34"
-    "@types/resize-observer-browser" "^0.1.5"
+    "@testing-library/react-hooks" "^7.0.1"
     ahooks "^3.5.0"
+    antd "4.23.5"
     attr-accept "^2.1.0"
     bowser "^2.11.0"
     emoji-mart "^3.0.0"
     fundebug-javascript "^2.1.2"
     loadjs "^4.2.0"
     localforage "^1.10.0"
-    lodash "^4.17.20"
+    lodash "^4.17.21"
     lodash.without "^4.4.0"
     mime-types "^2.1.29"
     re-reselect "^4.0.0"
@@ -701,6 +701,17 @@
     "@styled-system/core" "^5.1.2"
     "@styled-system/css" "^5.1.5"
 
+"@testing-library/react-hooks@^7.0.1":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/react-hooks/-/react-hooks-7.0.2.tgz#3388d07f562d91e7f2431a4a21b5186062ecfee0"
+  integrity sha512-dYxpz8u9m4q1TuzfcUApqi8iFfR6R0FaMbr2hjZJy1uC8z+bO/K4v8Gs9eogGKYQop7QsrBTFkv/BCF7MzD2Cg==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@types/react" ">=16.9.0"
+    "@types/react-dom" ">=16.9.0"
+    "@types/react-test-renderer" ">=16.9.0"
+    react-error-boundary "^3.1.0"
+
 "@types/d3-timer@^2.0.0":
   version "2.0.1"
   resolved "https://registry.npmmirror.com/@types/d3-timer/-/d3-timer-2.0.1.tgz#ffb6620d290624f3726aa362c0c8a4b44c8d7200"
@@ -724,13 +735,6 @@
   resolved "https://registry.npmmirror.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
-"@types/localforage@^0.0.34":
-  version "0.0.34"
-  resolved "https://registry.npmmirror.com/@types/localforage/-/localforage-0.0.34.tgz#5e31c32dd8791ec4b9ff3ef47c9cb55b2d0d9438"
-  integrity sha512-tJxahnjm9dEI1X+hQSC5f2BSd/coZaqbIl1m3TCl0q9SVuC52XcXfV0XmoCU1+PmjyucuVITwoTnN8OlTbEXXA==
-  dependencies:
-    localforage "*"
-
 "@types/lodash@4.14.161":
   version "4.14.161"
   resolved "https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.161.tgz#a21ca0777dabc6e4f44f3d07f37b765f54188b18"
@@ -741,12 +745,26 @@
   resolved "https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
+"@types/react-dom@>=16.9.0":
+  version "18.2.7"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.7.tgz#67222a08c0a6ae0a0da33c3532348277c70abb63"
+  integrity sha512-GRaAEriuT4zp9N4p1i8BDBYmEyfo+xQ3yHjJU4eiK5NDa1RmUZG+unZABUTK4/Ox/M+GaHwb6Ow8rUITrtjszA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@^16.9.8":
   version "16.9.17"
   resolved "https://registry.npmmirror.com/@types/react-dom/-/react-dom-16.9.17.tgz#29100cbcc422d7b7dba7de24bb906de56680dd34"
   integrity sha512-qSRyxEsrm5btPXnowDOs5jSkgT8ldAA0j6Qp+otHUh+xHzy3sXmgNfyhucZjAjkgpdAUw9rJe0QRtX/l+yaS4g==
   dependencies:
     "@types/react" "^16"
+
+"@types/react-test-renderer@>=16.9.0":
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-test-renderer/-/react-test-renderer-18.0.0.tgz#7b7f69ca98821ea5501b21ba24ea7b6139da2243"
+  integrity sha512-C7/5FBJ3g3sqUahguGi03O79b8afNeSD6T8/GU50oQrJCU0bVCCGQHaGKUbg2Ce8VQEEqTw8/HiS6lXHHdgkdQ==
+  dependencies:
+    "@types/react" "*"
 
 "@types/react-window@1.8.1":
   version "1.8.1"
@@ -764,6 +782,15 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+"@types/react@>=16.9.0":
+  version "18.2.15"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.15.tgz#14792b35df676c20ec3cf595b262f8c615a73066"
+  integrity sha512-oEjE7TQt1fFTFSbf8kkNuc798ahTUzn3Le67/PWjE8MAfYAD/qB7O8hSTcromLFqHCt9bcdOg5GXMokzTjJ5SA==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
 "@types/react@^16", "@types/react@^16.9.43":
   version "16.14.34"
   resolved "https://registry.npmmirror.com/@types/react/-/react-16.14.34.tgz#d129324ffda312044e1c47aab18696e4ed493282"
@@ -772,11 +799,6 @@
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
-
-"@types/resize-observer-browser@^0.1.5":
-  version "0.1.7"
-  resolved "https://registry.npmmirror.com/@types/resize-observer-browser/-/resize-observer-browser-0.1.7.tgz#294aaadf24ac6580b8fbd1fe3ab7b59fe85f9ef3"
-  integrity sha512-G9eN0Sn0ii9PWQ3Vl72jDPgeJwRWhv2Qk/nQkJuWmRmOB4HX3/BhD5SE1dZs/hzPZL/WKnvF0RHdTSG54QJFyg==
 
 "@types/scheduler@*":
   version "0.16.2"
@@ -1918,7 +1940,7 @@ loadjs@^4.2.0:
   resolved "https://registry.npmmirror.com/loadjs/-/loadjs-4.2.0.tgz#2a0336376397a6a43edf98c9ec3229ddd5abb6f6"
   integrity sha512-AgQGZisAlTPbTEzrHPb6q+NYBMD+DP9uvGSIjSUM5uG+0jG15cb8axWpxuOIqrmQjn6scaaH8JwloiP27b2KXA==
 
-localforage@*, localforage@^1.10.0:
+localforage@^1.10.0:
   version "1.10.0"
   resolved "https://registry.npmmirror.com/localforage/-/localforage-1.10.0.tgz#5c465dc5f62b2807c3a84c0c6a1b1b3212781dd4"
   integrity sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==
@@ -2612,6 +2634,13 @@ react-draggable@^4.0.3:
   dependencies:
     clsx "^1.1.1"
     prop-types "^15.8.1"
+
+react-error-boundary@^3.1.0:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-3.1.4.tgz#255db92b23197108757a888b01e5b729919abde0"
+  integrity sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 react-highlight-words@^0.16.0:
   version "0.16.0"

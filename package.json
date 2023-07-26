@@ -34,7 +34,7 @@
     "@apitable/components": "latest",
     "@apitable/core": "latest",
     "@apitable/icons": "latest",
-    "@apitable/widget-sdk": "latest",
+    "@apitable/widget-sdk": "^0.0.2",
     "dayjs": "^1.10.4",
     "echarts": "^5.3.1",
     "lodash": "^4.17.20",

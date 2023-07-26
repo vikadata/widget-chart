@@ -1,5 +1,5 @@
 import { WidgetProps } from '@rjsf/core';
-import { applyDefaultTheme, ITheme, Select, IOption, useTheme } from '@apitable/components';
+import { applyDefaultTheme, ITheme, DropdownSelect as Select, IOption, useTheme } from '@apitable/components';
 import { FieldType, Field, useFields, useField } from '@apitable/widget-sdk';
 import React from 'react';
 import {

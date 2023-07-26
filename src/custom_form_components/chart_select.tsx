@@ -1,4 +1,4 @@
-import { Select, Tooltip } from '@apitable/components';
+import { DropdownSelect as Select, Tooltip } from '@apitable/components';
 import {
   ChartBarNormalFilled,
   ChartBarPercentFilled,
