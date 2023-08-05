@@ -1,13 +1,20 @@
-import { BasicValueType, Field, FieldType, ICurrencyFormat, INumberBaseFormatType,
-  IPercentFormat, Record } from '@apitable/widget-sdk';
+import {
+  BasicValueType,
+  Field,
+  FieldType,
+  ICurrencyFormat,
+  INumberBaseFormatType,
+  IPercentFormat,
+  Record
+} from '@apitable/widget-sdk';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import groupBy from 'lodash/groupBy';
-import isNumber from 'lodash/isNumber'; 
+import isNumber from 'lodash/isNumber';
 import max from 'lodash/max';
-import mean from 'lodash/mean'; 
-import min from 'lodash/min'; 
+import mean from 'lodash/mean';
+import min from 'lodash/min';
 import sum from 'lodash/sum';
 import sumBy from 'lodash/sumBy';
 import { IDimensionMetricsMap, StackType } from './model/interface';
@@ -19,8 +26,8 @@ dayjs.extend(advancedFormat);
 dayjs.extend(weekOfYear);
 
 const NEED_FORMAT_DATE_TIME_TYPES = new Set([
-  FieldType.DateTime, 
-  FieldType.CreatedTime, 
+  FieldType.DateTime,
+  FieldType.CreatedTime,
   FieldType.LastModifiedTime,
 ]);
 
@@ -47,9 +54,9 @@ type SeriesValueType = string | number | { title?: string; name?: string };
  * Get processed values based on stacked fields
  *  - There are performance problems in distinguishing 23 types based on field types, so we do a brute force distinction and summarize the values as arrays, objects, and basic types.
  *  - Then enumerate the possible keys in the object according to the document, directly.
- * @param value 
- * @param field 
- * @returns 
+ * @param value
+ * @param field
+ * @returns
  */
 const getValueByType = (value, field) => {
   if (Array.isArray(value)) {
@@ -63,7 +70,7 @@ const getValueByType = (value, field) => {
           res.push(item);
         }
       }
-    }
+    };
     dfs(value);
     // There is [price, null], you can consider whether to filter null.
     return res.map((v) => {
@@ -77,7 +84,7 @@ const getValueByType = (value, field) => {
     return formatterValue(field, value.name || value.title || t(Strings.null), false);
   }
   return formatterValue(field, value.toString(), false);
-}
+};
 
 /**
  * Handles special symbols in strings and multiple choice values, returning numbers.
@@ -99,7 +106,7 @@ export const getNumberValueByReplaceSymbol = (value: string, symbol: string) => 
     .filter((v) => (v.trim() !== '' && v.trim() !== t(Strings.null)))
     .map((v) => v.replaceAll(/\,/g, '').trim())[0];
   return Number(result);
-}
+};
 
 /**
  * Returns a value based on whether it is a date field or not.
@@ -125,7 +132,7 @@ export const groupByDimensionValue = ({
   const config = { toNumber, datetimeFormatter, shouldFormatDatetime, defaultTimeFormatter };
   if (shouldFormatDatetime) {
     if (dimension.includes(',')) {
-      return dimension.split(',').map((v) => getDimenssionValue(v, config)).join(',')
+      return dimension.split(',').map((v) => getDimenssionValue(v, config)).join(',');
     }
     return getDimenssionValue(dimension, config);
   }
@@ -133,7 +140,7 @@ export const groupByDimensionValue = ({
     return dimension.map((v) => getDimenssionValue(v, config)).join(',');
   }
   return getDimenssionValue(dimension, config);
-}
+};
 
 /**
  * Formatting Date Time.
@@ -146,16 +153,15 @@ export const formatDatetime = (cv: number | number[], format: string) => {
 };
 
 /**
- * - Only fields whose output is of numeric type can be used as statistical indicators. 
+ * - Only fields whose output is of numeric type can be used as statistical indicators.
  * The precision of the original value of the percentage field needs to be handled here.
  * - The Numeric field returns the original value. That is, the percentage 10.12% returns 0.1012.
  * - If the precision of the percentage field is 2, the precision of the actual original value should be 4.
  * - Percentage fields, calculated fields are formatted as percentage fields. All need to add 2 bits of precision.
  * @param field 
- * @returns 
+ * @returns
  */
 export const getNumberBaseFieldPrecision = (field?: Field) => {
-
 
   let precision = 2;
   if (!field) return precision;
@@ -177,6 +183,7 @@ export const getNumberBaseFieldPrecision = (field?: Field) => {
  * Support - Total length, summation, minimum, maximum, average.
  */
 export const getAggregationValue = (dataList: number[], type: string, precision = 2) => {
+
   let res: number = dataList.length;
   switch (type) {
     case 'COUNT':
@@ -197,7 +204,7 @@ export const getAggregationValue = (dataList: number[], type: string, precision 
   }
   if (res != null) {
     // console.warn('Non-numeric field summary error');
-    return isNumber(res) ? res.toFixed(precision) : 0;
+    return isNumber(res) ? res : 0;
   }
 
   return res;
@@ -213,9 +220,9 @@ export const getFieldFormEnum = (fields: Field[]) => {
 };
 
 export const transformAnnotation: any = (annotation: {
-  title: string;
-  color: string;
-  value: number;
+    title: string;
+    color: string;
+    value: number;
 }) => {
   const { title, value, color } = annotation;
   return [
@@ -304,12 +311,11 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   const isPercent = validType(FieldType.Percent);
   const isDate = validType(FieldType.DateTime);
   const isFomula = validType(FieldType.Formula);
-  const isNumber = validType(FieldType.Number) && fieldSymbol;
+  const isNumber = validType(FieldType.Number) || property.valueType === FieldType.Number;
+  const precision = property?.precision ?? property?.format?.format?.precision ?? 1;
   if (isCurrency) {
-    return `${fieldSymbol} ${value}`;
+    return `${fieldSymbol} ${value.toFixed(precision)}`;
   }
-
-  const precision = property?.format?.format?.precision ?? 1
 
   // Percentages, numbers with units.
   if (isPercent || isNumber) {
@@ -320,17 +326,18 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   // Smart Formula Date, value is timestamp.
   if (isFomula && isDate) {
     const { dateFormat, timeFormat, includeTime } = property.format.format;
-    const formatterDateStr = `${dateFormat} ` + (includeTime ? timeFormat : '' )
+    const formatterDateStr = `${dateFormat} ` + (includeTime ? timeFormat : '');
     return formatDatetime(Number(value), formatterDateStr);
   }
+
   return value;
-}
+};
 
 // This method is dropped only when the classification dimension is numerical.
 export const getRightDimensionValue = (value: string, field?: Field): string | number => {
   const dimension: string | number = value;
   if (typeof value === 'number') return value;
-  // Non-computed fields all have string to cv conversion methods. 
+  // Non-computed fields all have string to cv conversion methods.
   // lookup can be converted by an entity field, which formula does not have, and lookup does not have for formula.
   if (field?.entityType !== FieldType.Formula) {
     return field?.convertStringToCellValue(value);
@@ -343,7 +350,7 @@ export const getRightDimensionValue = (value: string, field?: Field): string | n
       return parseFloat(dimension);
     }
   } catch (error) {
-    console.error('parseFloat Failed');
+    console.error('parseFloat Failed');
     return value;
   }
   return value;
@@ -362,20 +369,21 @@ export const checkMetrics = (metricsType: string, metricsField?: Field) => {
  */
 export const processRecords = (
   data: {
-    records: Record[];
-    dimensionField?: Field;
-    metricsField?: Field;
-    metricsType: string;
-    seriesField?: Field;
-    isSplitMultiValue?: boolean;
-    isCountNullValue?: boolean;
-  }
+        records: Record[];
+        dimensionField?: Field;
+        metricsField?: Field;
+        metricsType: string;
+        seriesField?: Field;
+        isSplitMultiValue?: boolean;
+        isCountNullValue?: boolean;
+    }
 ): IOutputRecordData[] => {
   const { records, dimensionField, metricsField, metricsType, seriesField, isSplitMultiValue } = data;
+
   if (!dimensionField || !checkMetrics(metricsType, metricsField)) return [];
   // const start = Date.now();
   const metricsIsPercent = metricsField?.type === FieldType.Percent ||
-    metricsField?.property?.format?.type === FieldType.Percent;
+        metricsField?.property?.format?.type === FieldType.Percent;
   const scaleMetricsNum = metricsIsPercent ? 100 : 1;
   const seriesIsPercent = seriesField?.type === FieldType.Percent || seriesField?.formatType?.type === 'percent';
   const isDateTime = checkDateTimeType(dimensionField);
@@ -388,6 +396,7 @@ export const processRecords = (
     }
     if (seriesField) {
       let val = record.getCellValue(seriesField.id);
+
       if (seriesIsPercent) {
         val *= 100;
       }
@@ -409,7 +418,7 @@ export const processRecords = (
     recordData.dimension = dimensionValue.trim().split('\n').join(' ');
     return [recordData];
   }).flat();
-  // console.log('takes time: ', Date.now() - start);
+    // console.log('takes time: ', Date.now() - start);
   return res;
 };
 
@@ -427,16 +436,16 @@ export const processRecords = (
  * @property {String} data.datetimeFormatter - Date and time formatted format string.
  */
 export const processChartData = (data: {
-  rows: IOutputRecordData[];
-  dimensionMetricsMap: IDimensionMetricsMap;
-  dimensionField?: Field;
-  metricsType: string;
-  metrics: any;
-  metricsField?: Field;
-  seriesFieldInstance?: Field;
-  isCountNullValue: boolean;
-  isFormatDatetime?: boolean;
-  datetimeFormatter?: string;
+    rows: IOutputRecordData[];
+    dimensionMetricsMap: IDimensionMetricsMap;
+    dimensionField?: Field;
+    metricsType: string;
+    metrics: any;
+    metricsField?: Field;
+    seriesFieldInstance?: Field;
+    isCountNullValue: boolean;
+    isFormatDatetime?: boolean;
+    datetimeFormatter?: string;
 }): IOutputChartData[] => {
   const {
     rows,
@@ -459,17 +468,19 @@ export const processChartData = (data: {
   // Grouping Process - Group table data by categorical dimensions.
   if (seriesFieldInstance) {
     // Categorical dimensions [grouping dimensions] Statistical indicators.
-    const groupData = groupBy(rows, row => (
-      JSON.stringify([
-        groupByDimensionValue({
-          dimension: row.dimension,
-          shouldFormatDatetime,
-          datetimeFormatter,
-          toNumber: transformDateStr2Number,
-        }) || t(Strings.null),
-        row.series || t(Strings.null)
-      ])
-    ));
+    const groupData = groupBy(rows, row => {
+      return (
+        JSON.stringify([
+          groupByDimensionValue({
+            dimension: row.dimension,
+            shouldFormatDatetime,
+            datetimeFormatter,
+            toNumber: transformDateStr2Number,
+          }) || t(Strings.null),
+          row.series || t(Strings.null)
+        ])
+      );
+    });
     res = Object.keys(groupData).map(key => {
       const [dimension, series] = JSON.parse(key);
       return {
@@ -527,7 +538,7 @@ const getReferenceSeriesValue = (value, field: Field) => {
   if ([FieldType.SingleSelect, FieldType.CreatedBy, FieldType.LastModifiedBy].includes(type)) {
     deep = 1;
   }
-  switch(type) {
+  switch (type) {
     case FieldType.Member:
     case FieldType.CreatedBy:
     case FieldType.LastModifiedBy:
@@ -546,12 +557,12 @@ const getReferenceSeriesValue = (value, field: Field) => {
     default:
       return value[0] || t(Strings.null);
   }
-}
+};
 
 /**
  * Return the sort function corresponding to the sort dimension field, grouping/stacking field.
  * @param key xField、yField、fldxxxxxx(Grouping/stacking fields of id)
- * @param field 
+ * @param field
  */
 export const getSortFuncByField = (key: string, field?: Field, isAxis = true) => {
   if (!field) {
@@ -561,14 +572,14 @@ export const getSortFuncByField = (key: string, field?: Field, isAxis = true) =>
   if (!isAxis) {
     // Handling sorting of stacked fields.
     // console.log(type, property);
-    switch(type) {
+    switch (type) {
       case FieldType.MagicLink:
         return (item) => {
           const value = item[key];
           if (isNull(value)) {
             return t(Strings.null);
           }
-          return value.map((v) => v.title).join(',')
+          return value.map((v) => v.title).join(',');
         };
       case FieldType.SingleSelect:
         return (item) => property.options.findIndex((v) => v.name === item[key].name);
@@ -594,7 +605,7 @@ export const getSortFuncByField = (key: string, field?: Field, isAxis = true) =>
     }
   }
   // Handling sorting of axis dimensions - strings.
-  switch(type) {
+  switch (type) {
     case FieldType.MultiSelect:
     case FieldType.SingleSelect:
       return (item) => property.options.findIndex((v) => v.name === item[key]);
@@ -638,11 +649,11 @@ export const guessNumberFieldPrecision = (numbers: number[]) => {
 };
 
 export const processChartDataSort = ({ axisSortType, dimensionMetricsMap, dimensionField, data, seriesField }: {
-  axisSortType: any;
-  dimensionMetricsMap: IDimensionMetricsMap;
-  dimensionField?: Field;
-  seriesField?: Field;
-  data: any[];
+    axisSortType: any;
+    dimensionMetricsMap: IDimensionMetricsMap;
+    dimensionField?: Field;
+    seriesField?: Field;
+    data: any[];
 }) => {
   if (!dimensionField) return [];
   const { axis, sortType } = axisSortType;
@@ -691,14 +702,14 @@ export const processChartDataSort = ({ axisSortType, dimensionMetricsMap, dimens
 
 export const maxRenderNum = 501;
 export const sortSeries = (props: {
-  axisSortType: { axis: string; sortType: string };
-  dimensionMetricsMap: IDimensionMetricsMap;
-  dimensionField: Field;
-  seriesField?: Field;
-  data;
-  metricsField?: Field;
-  isColumn?: boolean;
-  isPercent?: boolean;
+    axisSortType: { axis: string; sortType: string };
+    dimensionMetricsMap: IDimensionMetricsMap;
+    dimensionField: Field;
+    seriesField?: Field;
+    data;
+    metricsField?: Field;
+    isColumn?: boolean;
+    isPercent?: boolean;
 }) => {
   const {
     axisSortType,
@@ -780,14 +791,14 @@ export const sortSeries = (props: {
     }
 
     if (seriesField) {
-      // Direct reading of seriesField properties is problematic, 
+      // Direct reading of seriesField properties is problematic,
       // performance is too low, each chained call to a seriesField property takes between 20 - 40 milliseconds.
       let paramField = seriesField;
       if (seriesField.type === FieldType.MagicLookUp) {
         paramField = paramField.property.entityField.field;
       }
-      let property = paramField.property;
-      let type = paramField.type;
+      const property = paramField.property;
+      const type = paramField.type;
 
       // const start = Date.now();
       const seriesArr: { sortKey: string; series: number[][] }[] = [];
@@ -821,9 +832,9 @@ export const sortSeries = (props: {
             const lastItem = seriesItem.series[seriesItem.series.length - 1];
             const coordinateIndex = isColumn ? 0 : 1;
             const valueIndex = isColumn ? 1 : 0;
-            const isEqualPrev =  coordinate[coordinateIndex] === lastItem[coordinateIndex];
+            const isEqualPrev = coordinate[coordinateIndex] === lastItem[coordinateIndex];
             if (isEqualPrev) {
-              lastItem[valueIndex] = parseFloat((lastItem[valueIndex] + coordinate[valueIndex]).toFixed(metricsFieldPrecision))
+              lastItem[valueIndex] = parseFloat((lastItem[valueIndex] + coordinate[valueIndex]).toFixed(metricsFieldPrecision));
             } else {
               seriesItem.series.push(coordinate);
             }
@@ -862,7 +873,7 @@ export const sortSeries = (props: {
       const sortedLegendNames = [...legendNames].sort((a, b) => {
         if (shouldReplaceSymbol) {
           return Number(a.replace(fieldSymbol, '').trim()) -
-            Number(b.replace(fieldSymbol, '').trim())
+                        Number(b.replace(fieldSymbol, '').trim());
         }
         return a.trim().localeCompare(b.trim());
       }).slice(0, maxRenderNum);
