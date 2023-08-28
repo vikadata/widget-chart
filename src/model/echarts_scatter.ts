@@ -180,9 +180,10 @@ export class EchartsScatter extends EchartsBase {
             row.dimension;
           dimensionValue = dimensionValue || t(Strings.null);
           if (!isCountNullValue && dimensionValue === t(Strings.null)) return null;
+          const precision = metricsField?.property?.precision ?? metricsField?.fieldData?.property?.formatting?.precision
           return {
             [dimensionMetricsMap.dimension.key]: dimensionValue,
-            [dimensionMetricsMap.metrics.key]: parseFloat(metricsValue?.toFixed(metricsField?.property?.precision)),
+            [dimensionMetricsMap.metrics.key]: parseFloat(metricsValue?.toFixed(precision)),
           };
         }).filter(item => item != null);
       }
