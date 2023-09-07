@@ -3,8 +3,7 @@ import { EchartsBase } from './echarts_base';
 import { ChartType, StackType } from './interface';
 import { Strings, t } from '../i18n';
 import { sortBy } from '../sortBy';
-import { maxRenderNum, processChartData, processRecords } from '../helper';
-import { METRICS_TYPES } from '../const';
+import { getNumberBaseFieldPrecision, maxRenderNum, processChartData, processRecords } from '../helper';
 
 export class EchartsPie extends EchartsBase {
   type = ChartType.EchartsPie;
@@ -70,6 +69,8 @@ export class EchartsPie extends EchartsBase {
     const { showDataTips } = chartStyle;
     const color = { color: this.theme === 'dark' ? '#fff' : '#333' };
 
+    const fieldPrecision = getNumberBaseFieldPrecision(metricsField);
+
     // Distinguish between normal configuration and series configuration.
     const dataSum = data.reduce((pre, cur) => pre = this.add(pre, cur.value), 0);
     // const dataSum = data.reduce((pre, cur) => pre += cur.value, 0);
@@ -107,7 +108,7 @@ export class EchartsPie extends EchartsBase {
             // const totalContent = Math.round(params.value / (params.percent / 100));
             // console.log(totalContent, params.value / (params.percent / 100));
             // return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
-            return `{a|${t(Strings.total)}}\n{b|${dataSum}}`;
+            return `{a|${t(Strings.total)}}\n{b|${dataSum.toFixed(fieldPrecision)}}`;
           },
           // formatter: () => {
           //   const precision = guessNumberFieldPrecision(data.map(item => item.value).filter(Boolean));
@@ -144,7 +145,7 @@ export class EchartsPie extends EchartsBase {
    * @param {Object} param Configuration parameter objects.
    * @property {Record[]} param.records
    * @property {Field[]} param.fields
-   * @property {} param.chartStructure 
+   * @property {} param.chartStructure
    */
   getChartOptions({ records, fields, chartStructure, chartStyle }: {
     records: Record[];
@@ -152,7 +153,7 @@ export class EchartsPie extends EchartsBase {
     chartStructure: any,
     chartStyle: any,
   }) {
-    // Statistic field id, type of statistic specified field (sum, average), 
+    // Statistic field id, type of statistic specified field (sum, average),
     // type of statistic value, whether to cut multi-selected values, date formatting.
     const { dimension, metrics, metricsType, isSplitMultipleValue, isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
     const { isCountNullValue } = chartStyle;
