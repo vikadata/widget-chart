@@ -19,14 +19,15 @@ import {
   ColumnFigureFilled,
   ColumnMultipleFilled,
   ColumnCalendarFilled,
-  ColumnLinktableFilled,
   ColumnUrlOutlined,
   ColumnLastmodifiedbyFilled,
   ColumnLongtextFilled,
   ColumnPhoneFilled,
   ColumnLookupFilled,
   ColumnRatingFilled,
-  CascadeOutlined
+  CascadeOutlined,
+  OneWayLinkOutlined,
+  TwoWayLinkOutlined
 } from '@apitable/icons';
 import { SELECT_OPEN_SEARCH_COUNT } from '../const';
 import styled from 'styled-components';
@@ -40,7 +41,9 @@ const FieldIconMap = {
   [FieldType.MultiSelect]: ColumnMultipleFilled,
   [FieldType.DateTime]: ColumnCalendarFilled, // FIXME: There is a problem with the icon naming.
   [FieldType.Attachment]: ColumnAttachmentFilled,
-  [FieldType.MagicLink]: ColumnLinktableFilled, // ?
+  [FieldType.OneWayLink]: OneWayLinkOutlined,
+  [FieldType.TwoWayLink]: TwoWayLinkOutlined,
+  [FieldType.MagicLink]: TwoWayLinkOutlined, // ?
   [FieldType.URL]: ColumnUrlOutlined,
   [FieldType.Email]: ColumnEmailFilled,
   [FieldType.Phone]: ColumnPhoneFilled,
@@ -75,7 +78,7 @@ const transformOptions = (enumOptions: { label: string, value: any }[], theme: I
     return {
       ...res,
       // disabled: field.type === FieldType.DeniedField,
-      prefixIcon: <FieldIcon color={theme.palette.text.third} />,
+      prefixIcon: FieldIcon ? <FieldIcon color={theme.palette.text.third} /> : '',
     };
   });
 };
