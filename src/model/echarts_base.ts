@@ -285,6 +285,11 @@ export abstract class EchartsBase {
         type: 'boolean',
         description: t(Strings.show_data_tips_describle),
       },
+      excludeZeroPoint: {
+        title: t(Strings.exclude_zero_point),
+        type: 'boolean',
+        description: t(Strings.exclude_zero_point_describle),
+      },
       theme: {
         title: t(Strings.select_theme_color),
         type: 'string',

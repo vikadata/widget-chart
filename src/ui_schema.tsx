@@ -107,6 +107,11 @@ export const getUiSchema = (viewId: string) => {
           showTitle: false,
         },
       },
+      excludeZeroPoint: {
+        'ui:options': {
+          showTitle: false,
+        },
+      },
       theme: {
         'ui:widget': (props) => {
           return <ThemeSelect value={props.value} onChange={props.onChange} />;

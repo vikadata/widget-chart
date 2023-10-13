@@ -220,6 +220,14 @@
             "zh_CN": "显示数值标签",
             "en_US": "Show data labels"
         },
+        "exclude_zero_point": {
+            "zh_CN": "脱离零值比例",
+            "en_US": "Exclude zero point"
+        },
+        "exclude_zero_point_describle": {
+            "zh_CN": "脱离零值比例",
+            "en_US": "Exclude zero point"
+        },
         "show_empty_values": {
             "zh_CN": "显示维度空值",
             "en_US": "Show empty values"
