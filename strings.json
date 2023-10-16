@@ -228,6 +228,14 @@
             "zh_CN": "显示维度空值",
             "en_US": "Show empty values"
         },
+        "exclude_zero_point": {
+            "zh_CN": "脱离零值比例",
+            "en_US": "Exclude zero point"
+        },
+        "exclude_zero_point_describle": {
+            "zh_CN": "脱离零值比例",
+            "en_US": "Exclude zero point"
+        },
         "show_smooth_line": {
             "zh_CN": "开启平滑曲线",
             "en_US": "Show smooth line"

@@ -116,7 +116,7 @@ export class EchartsScatter extends EchartsBase {
     chartStyle: any,
   }) {
     const { dimension, metrics, metricsType, isSplitMultipleValue, seriesField, isFormatDatetime, datetimeFormatter } = chartStructure;
-    const { axisSortType, isCountNullValue } = chartStyle;
+    const { axisSortType, isCountNullValue, excludeZeroPoint } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     const metricsField = fields.find(field => field.id === metrics.fieldId) as Field || {};
     const dimensionField = fields.find(field => field.id === dimension) as Field;
@@ -213,7 +213,7 @@ export class EchartsScatter extends EchartsBase {
     return {
       ...styleOption.commonOption,
       xAxis: { ...mainAxis },
-      yAxis: { ...subAxis },
+      yAxis: { ...subAxis, scale: excludeZeroPoint },
       series: [{
         ...styleOption.series,
         data: seriesData

@@ -146,7 +146,7 @@ export class EchartsColumn extends EchartsBase {
     
     const isColumn = this.type === ChartType.EchartsColumn;
     const isPercent = this.stackType === StackType.Percent
-    const { axisSortType, isCountNullValue } = chartStyle;
+    const { axisSortType, isCountNullValue, excludeZeroPoint } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     const yKey = dimensionMetricsMap.metrics.key;
     // Statistical dimension attribute, statistical value attribute, statistical value name.
@@ -244,7 +244,7 @@ export class EchartsColumn extends EchartsBase {
     const subPercentAxis = isPercent ? { max: 100 } : {};
 
     const mainAxis = { ...mainAxisOption };
-    const subAxis = { ...subAxisOption, ...subPercentAxis };
+    const subAxis = { ...subAxisOption, ...subPercentAxis, scale: excludeZeroPoint };
 
     const options = {
       ...styleOption.commonOption,

@@ -103,7 +103,7 @@ export class EchartsLine extends EchartsBase {
     const { seriesField, dimension, metrics, metricsType, isSplitMultipleValue,
       isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
     
-    const { axisSortType, isCountNullValue } = chartStyle;
+    const { axisSortType, isCountNullValue, excludeZeroPoint } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     // Statistical dimension attribute, statistical value attribute, statistical value name.
     const dimensionField = fields.find(field => field.id === dimension) as Field;
@@ -185,7 +185,7 @@ export class EchartsLine extends EchartsBase {
       ...styleOption.commonOption,
       legend: { ...styleOption.commonOption.legend, data: legendNames },
       xAxis: { ...mainAxis },
-      yAxis: { ...subAxis },
+      yAxis: { ...subAxis, scale: excludeZeroPoint },
       series,
     };
 
