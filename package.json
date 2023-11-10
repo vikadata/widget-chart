@@ -1,5 +1,5 @@
 {
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "my apitable widget chart",
   "engines": {
     "node": ">=8.x"
@@ -36,10 +36,10 @@
   },
   "dependencies": {
     "@antv/g2plot": "^2.3.39",
-    "@apitable/components": "latest",
+    "@apitable/components": "^1.4.0",
     "@apitable/core": "latest",
-    "@apitable/icons": "latest",
-    "@apitable/widget-sdk": "^0.0.2",
+    "@apitable/icons": "^1.4.0",
+    "@apitable/widget-sdk": "^1.4.0",
     "@rjsf/core": "^2.4.0",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
