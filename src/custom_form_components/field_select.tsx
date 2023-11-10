@@ -1,67 +1,10 @@
 import { WidgetProps } from '@rjsf/core';
 import { applyDefaultTheme, ITheme, DropdownSelect as Select, IOption, useTheme } from '@apitable/components';
-import { FieldType, Field, useFields, useField } from '@apitable/widget-sdk';
+import { Field, useFields, useField, FieldIconMap} from '@apitable/widget-sdk';
 import React from 'react';
-import {
-  ColumnAttachmentFilled,
-  ColumnAutonumberFilled,
-  AccountFilled,
-  ColumnCheckboxFilled,
-  ColumnLastmodifiedtimeFilled,
-  ColumnTextFilled,
-  ColumnCreatedbyFilled,
-  ColumnCreatedtimeFilled,
-  ColumnSingleFilled,
-  ColumnCurrencyFilled,
-  ColumnEmailFilled,
-  ColumnFormulaFilled,
-  ColumnPercentFilled,
-  ColumnFigureFilled,
-  ColumnMultipleFilled,
-  ColumnCalendarFilled,
-  ColumnUrlOutlined,
-  ColumnLastmodifiedbyFilled,
-  ColumnLongtextFilled,
-  ColumnPhoneFilled,
-  ColumnLookupFilled,
-  ColumnRatingFilled,
-  CascadeOutlined,
-  OneWayLinkOutlined,
-  TwoWayLinkOutlined
-} from '@apitable/icons';
 import { SELECT_OPEN_SEARCH_COUNT } from '../const';
 import styled from 'styled-components';
 import { Strings, t } from '../i18n';
-
-const FieldIconMap = {
-  // [FieldType.DeniedField]: LockFilled,
-  [FieldType.Text]: ColumnLongtextFilled, // FIXME: There is a problem with the icon naming.
-  [FieldType.Number]: ColumnFigureFilled, // FIXME: There is a problem with the icon naming.
-  [FieldType.SingleSelect]: ColumnSingleFilled,
-  [FieldType.MultiSelect]: ColumnMultipleFilled,
-  [FieldType.DateTime]: ColumnCalendarFilled, // FIXME: There is a problem with the icon naming.
-  [FieldType.Attachment]: ColumnAttachmentFilled,
-  [FieldType.OneWayLink]: OneWayLinkOutlined,
-  [FieldType.TwoWayLink]: TwoWayLinkOutlined,
-  [FieldType.MagicLink]: TwoWayLinkOutlined, // ?
-  [FieldType.URL]: ColumnUrlOutlined,
-  [FieldType.Email]: ColumnEmailFilled,
-  [FieldType.Phone]: ColumnPhoneFilled,
-  [FieldType.Checkbox]: ColumnCheckboxFilled,
-  [FieldType.Rating]: ColumnRatingFilled,
-  [FieldType.Member]: AccountFilled,
-  [FieldType.MagicLookUp]: ColumnLookupFilled,
-  [FieldType.Formula]: ColumnFormulaFilled,
-  [FieldType.Currency]: ColumnCurrencyFilled,
-  [FieldType.Percent]: ColumnPercentFilled,
-  [FieldType.SingleText]: ColumnTextFilled,
-  [FieldType.AutoNumber]: ColumnAutonumberFilled,
-  [FieldType.CreatedTime]: ColumnCreatedtimeFilled,
-  [FieldType.LastModifiedTime]: ColumnLastmodifiedtimeFilled,
-  [FieldType.CreatedBy]: ColumnCreatedbyFilled,
-  [FieldType.LastModifiedBy]: ColumnLastmodifiedbyFilled,
-  [FieldType.Cascader]: CascadeOutlined
-};
 
 const transformOptions = (enumOptions: { label: string, value: any }[], theme: ITheme, fields: Field[]) => {
   const fieldMap = new Map(fields.map(field => [field.id, field]));
@@ -74,7 +17,7 @@ const transformOptions = (enumOptions: { label: string, value: any }[], theme: I
     if (!field) {
       return res;
     }
-    const FieldIcon = FieldIconMap[field.type];
+    const FieldIcon = FieldIconMap[field.type] ?? '';
     return {
       ...res,
       // disabled: field.type === FieldType.DeniedField,
