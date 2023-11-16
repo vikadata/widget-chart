@@ -311,14 +311,20 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   const isPercent = validType(FieldType.Percent);
   const isDate = validType(FieldType.DateTime);
   const isFomula = validType(FieldType.Formula);
-  const isNumber = validType(FieldType.Number) || property.valueType === FieldType.Number;
+  const isNumberType = validType(FieldType.Number) || property.valueType === FieldType.Number;
   const precision = property?.precision ?? property?.format?.format?.precision ?? 1;
   if (isCurrency) {
-    return `${fieldSymbol} ${value.toFixed(precision)}`;
+    try {
+      const textValue = isNumber(value) ? value.toFixed(precision) : parseFloat(value).toFixed(precision);
+      return `${fieldSymbol} ${textValue}`;
+    }catch (e) {
+      console.error('parse currency' , e);
+      return `${fieldSymbol} ${String(value)}`;
+    }
   }
 
   // Percentages, numbers with units.
-  if (isPercent || isNumber) {
+  if (isPercent || isNumberType) {
     const suffixSymbol = isPercent ? '%' : fieldSymbol;
     return `${Number(value).toFixed(precision)} ${suffixSymbol}`;
   }
