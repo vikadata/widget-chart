@@ -16,8 +16,8 @@ export function listenDOMSize(dom: React.RefObject<HTMLElement>) {
       }
     }
     handle = requestAnimationFrame(() => listen(callback));
-  };
-  
+  }
+
   function addListen(callback) {
     handle = requestAnimationFrame(() => listen(callback));
   }
@@ -26,7 +26,7 @@ export function listenDOMSize(dom: React.RefObject<HTMLElement>) {
     cancelAnimationFrame(handle);
   }
 
-  return { addListen, removeListen }
+  return { addListen, removeListen };
 }
 
 const MIN_CHAR_SIZE = 12;
@@ -46,7 +46,7 @@ class CanvasUtils {
   setCanvasSize = (width, height) => {
     this.canvas.width = width;
     this.canvas.height = height;
-  }
+  };
 
   calcSize = (texts: string[], isColumn: boolean, axisItemWidth: number) => {
     const { canvas, ctx } = this;
@@ -75,7 +75,19 @@ class CanvasUtils {
       perSize: maxWidth ? axisItemWidth : perSize, // If you need to rotate, take the set width directly.
       interval
     };
-  }
+  };
 }
 
 export const canvasUtilsIns = new CanvasUtils();
+
+export const safeParseNumberOrText = (num : number | string | undefined, precision: number) => {
+  if(!num) {
+    return '';
+  }
+
+  const a = Number(num);
+  if(isNaN(a)) {
+    return '';
+  }
+  return a.toFixed(precision);
+};

@@ -6,6 +6,7 @@ import sum from 'lodash/sum';
 import { processChartData, processRecords, guessNumberFieldPrecision } from '../helper';
 import { Chart } from './base';
 import { ChartType, StackType } from './interface';
+import { safeParseNumberOrText } from '../utils';
 
 export class PieChart extends Chart {
   type = ChartType.Pie;
@@ -49,7 +50,8 @@ export class PieChart extends Chart {
           style: { display: 'unset' },
           customHtml: (container: HTMLElement, view, datum: object, data: object[]) => {
             const precision = guessNumberFieldPrecision(data.map(item => (item as any).angleField).filter(Boolean));
-            const totalValue = sum(data.map(item => (item as any).angleField)).toFixed(precision);
+            const totalValue = safeParseNumberOrText(sum(data.map(item => (item as any).angleField)), precision);
+            // .toFixed(precision);
             const totalContent = totalValue + '';
             // const containerWidth = parseInt(container.style.width);
             // const fontSize = containerWidth / totalContent.length * 0.7;
@@ -144,7 +146,7 @@ export class PieChart extends Chart {
       return angleValue;
     });
     /**
-     * Sorting from smallest to largest will cause the labels to squeeze on the top border of 
+     * Sorting from smallest to largest will cause the labels to squeeze on the top border of
      * the chart because the smaller categories are displayed centrally in the 12-point direction.
      * The largest category needs to be rotated to 12 o'clock. Achieve a better visual display.
      * [0,1,2,20,30,100] => [100,0,1,2,20,30]
@@ -167,7 +169,8 @@ export class PieChart extends Chart {
         [dimensionMetricsMap.metrics.key]: {
           alias: metricsName,
           formatter: v => {
-            return v?.toFixed(isCountRecords ? 0 : getNumberBaseFieldPrecision(metricsField))
+            return safeParseNumberOrText(v, isCountRecords ? 0 : getNumberBaseFieldPrecision(metricsField));
+            // v?.toFixed()
           },
         },
         COUNT_RECORDS: {

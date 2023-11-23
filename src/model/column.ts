@@ -3,9 +3,10 @@ import { transformAnnotation } from '../helper';
 import { Chart } from './base';
 import { ChartType, StackType } from './interface';
 import { Strings } from '../i18n';
+import {safeParseNumberOrText} from "../utils";
 
 /**
- * The bar chart is equivalent to the base class of Cartesian coordinate system graphs. 
+ * The bar chart is equivalent to the base class of Cartesian coordinate system graphs.
  * Subsequent bar graphs \ line graphs \ scatter are based on this graph.
  */
 export class ColumnChart extends Chart {
@@ -84,7 +85,7 @@ export class ColumnChart extends Chart {
         };
         if (this.stackType === StackType.Percent) {
           styleOptions.label.content = (item) => {
-            return `${(100 * item[dimensionMetricsMap.metrics.key])?.toFixed(2)}%`;
+            return `${safeParseNumberOrText((100 * item[dimensionMetricsMap.metrics.key]), 2) }%`;
           };
         }
       }

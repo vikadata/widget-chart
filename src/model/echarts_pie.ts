@@ -4,6 +4,7 @@ import { ChartType, StackType } from './interface';
 import { Strings, t } from '../i18n';
 import { sortBy } from '../sortBy';
 import { getNumberBaseFieldPrecision, maxRenderNum, processChartData, processRecords } from '../helper';
+import { safeParseNumberOrText } from '../utils';
 
 export class EchartsPie extends EchartsBase {
   type = ChartType.EchartsPie;
@@ -15,29 +16,29 @@ export class EchartsPie extends EchartsBase {
   add(arg1, arg2) {
     let len1, len2, expand, subLen;
     try {
-      len1 = arg1.toString().split(".")[1].length;
+      len1 = arg1.toString().split('.')[1].length;
     } catch (e) {
       len1 = 0;
     }
     try {
-      len2 = arg2.toString().split(".")[1].length;
+      len2 = arg2.toString().split('.')[1].length;
     } catch (e) {
       len2 = 0;
     }
     subLen = Math.abs(len1 - len2);
     expand = Math.pow(10, Math.max(len1, len2));
     if (subLen > 0) {
-      let scale = Math.pow(10, subLen);
+      const scale = Math.pow(10, subLen);
       if (len1 > len2) {
-        arg1 = Number(arg1.toString().replace(".", ""));
-        arg2 = Number(arg2.toString().replace(".", "")) * scale;
+        arg1 = Number(arg1.toString().replace('.', ''));
+        arg2 = Number(arg2.toString().replace('.', '')) * scale;
       } else {
-        arg1 = Number(arg1.toString().replace(".", "")) * scale;
-        arg2 = Number(arg2.toString().replace(".", ""));
+        arg1 = Number(arg1.toString().replace('.', '')) * scale;
+        arg2 = Number(arg2.toString().replace('.', ''));
       }
     } else {
-      arg1 = Number(arg1.toString().replace(".", ""));
-      arg2 = Number(arg2.toString().replace(".", ""));
+      arg1 = Number(arg1.toString().replace('.', ''));
+      arg2 = Number(arg2.toString().replace('.', ''));
     }
     return (arg1 + arg2) / expand;
   }
@@ -86,8 +87,7 @@ export class EchartsPie extends EchartsBase {
         label: {
           ...color,
           show: showDataTips,
-          formatter: (params) => `${params.name}: ${params.percent.toFixed(1)} %`
-          // formatter: (params) => `${params.name}: ${Number(params.value / dataSum * 100).toFixed(2)}%`
+          formatter: (params) => `${params.name}: ${safeParseNumberOrText(params.percent, 1)} %`
         },
       },
     };
@@ -108,7 +108,7 @@ export class EchartsPie extends EchartsBase {
             // const totalContent = Math.round(params.value / (params.percent / 100));
             // console.log(totalContent, params.value / (params.percent / 100));
             // return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
-            return `{a|${t(Strings.total)}}\n{b|${dataSum.toFixed(fieldPrecision)}}`;
+            return `{a|${t(Strings.total)}}\n{b|${safeParseNumberOrText(dataSum, fieldPrecision)}}`;
           },
           // formatter: () => {
           //   const precision = guessNumberFieldPrecision(data.map(item => item.value).filter(Boolean));
@@ -117,7 +117,7 @@ export class EchartsPie extends EchartsBase {
           //   return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
           // },
           rich: {
-            a: { fontSize: 18, height: 24, },
+            a: { fontSize: 18, height: 24 },
             b: { fontSize: 24, fontWeight: 'bolder' }
           }
         },
@@ -132,7 +132,7 @@ export class EchartsPie extends EchartsBase {
         label: {
           ...styleOption.series.label,
           formatter: (params) => {
-            return `${params.name}: ${params.percent.toFixed(1)}%`
+            return `${params.name}: ${safeParseNumberOrText(params.percent, 1)}%`;
           }
         }
       };
@@ -203,7 +203,7 @@ export class EchartsPie extends EchartsBase {
       return {
         ...options,
         series: [
-          {  ...styleOption.series, data},
+          { ...styleOption.series, data },
           { ...styleOption.stackSeries, data }
         ]
       };

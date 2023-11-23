@@ -6,6 +6,7 @@ import { Strings, t } from "../i18n";
 import { METRICS_TYPES } from '../const';
 import { ChartType, StackType } from "./interface";
 import { EchartsBase } from './echarts_base';
+import {safeParseNumberOrText} from "../utils";
 
 export class EchartsScatter extends EchartsBase {
   type = ChartType.EchartsScatter;
@@ -124,7 +125,7 @@ export class EchartsScatter extends EchartsBase {
     const shouldFormatDatetime = isFormatDatetime && dimensionField?.formatType?.type === 'datetime';
 
     const countTotalRecords = metricsType === 'COUNT_RECORDS';
-    
+
     // Whether the y-axis text field needs to be formatted.
     const noFormatMetric = metricsType === 'COUNT_RECORDS' || this.stackType === StackType.Percent;
 
@@ -171,7 +172,7 @@ export class EchartsScatter extends EchartsBase {
         data = rows.map(row => {
           let metricsValue = row.metrics;
           if (!isNumber(metricsValue)) {
-            // Switching field types can cause this result. With a value of 0, 
+            // Switching field types can cause this result. With a value of 0,
             // the chart does not crash, the form form will give a prompt.
             metricsValue = 0;
           }
@@ -183,7 +184,7 @@ export class EchartsScatter extends EchartsBase {
           const precision = metricsField?.property?.precision ?? metricsField?.fieldData?.property?.formatting?.precision
           return {
             [dimensionMetricsMap.dimension.key]: dimensionValue,
-            [dimensionMetricsMap.metrics.key]: parseFloat(metricsValue?.toFixed(precision)),
+            [dimensionMetricsMap.metrics.key]: parseFloat(safeParseNumberOrText(metricsValue, precision)),
           };
         }).filter(item => item != null);
       }

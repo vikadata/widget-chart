@@ -1,12 +1,13 @@
 import { Strings } from '../i18n';
 import { Field, Record, t } from '@apitable/widget-sdk';
 import { themesMap } from '../theme';
-import groupBy from 'lodash/groupBy'; 
+import groupBy from 'lodash/groupBy';
 import isNumber from 'lodash/isNumber';
 import { METRICS_TYPES } from '../const';
 import { formatDatetime, getAggregationValue, getFormatter, getNumberBaseFieldPrecision, processChartDataSort, processRecords } from '../helper';
 import { ColumnChart } from './column';
 import { ChartType, StackType } from './interface';
+import {safeParseNumberOrText} from "../utils";
 
 export class ScatterChart extends ColumnChart {
   type = ChartType.Scatter;
@@ -147,7 +148,7 @@ export class ScatterChart extends ColumnChart {
         data = rows.map(row => {
           let metricsValue = row.metrics;
           if (!isNumber(metricsValue)) {
-            // Switching field types can cause this result. With a value of 0, the chart does not crash, 
+            // Switching field types can cause this result. With a value of 0, the chart does not crash,
             // the form form will give a prompt.
             metricsValue = 0;
           }
@@ -157,8 +158,7 @@ export class ScatterChart extends ColumnChart {
           if (!isCountNullValue && dimensionValue === t(Strings.null)) return null;
           return {
             [dimensionMetricsMap.dimension.key]: dimensionValue,
-            [dimensionMetricsMap.metrics.key]: parseFloat(metricsValue?.toFixed(metricsField?.property?.precision)),
-            // [seriesField]: seriesFieldInstance?.convertCellValueToString(row.series) || t(Strings.null),
+            [dimensionMetricsMap.metrics.key]: parseFloat(safeParseNumberOrText(metricsValue, metricsField?.property?.precision)),
           };
         }).filter(item => item != null);
       }

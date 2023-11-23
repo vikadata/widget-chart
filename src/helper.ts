@@ -21,6 +21,7 @@ import { IDimensionMetricsMap, StackType } from './model/interface';
 import { Strings, t } from './i18n';
 import { sortBy } from './sortBy';
 import { IOutputChartData, IOutputRecordData } from '../interface';
+import {safeParseNumberOrText} from "./utils";
 
 dayjs.extend(advancedFormat);
 dayjs.extend(weekOfYear);
@@ -278,11 +279,11 @@ export const getFormatter = (field?: Field, times = 1) => {
   // Currency/percentage needs to be signed.
   if (field.formatType?.type === 'currency') {
     const formatting = field.formatType.formatting as ICurrencyFormat;
-    return (val) => `${formatting.symbol} ${parseFloat(val).toFixed(formatting.precision)}`;
+    return (val) => `${formatting.symbol} ${safeParseNumberOrText(val, formatting.precision)}`;
   }
   if (field.formatType?.type === 'percent') {
     const formatting = field.formatType.formatting as IPercentFormat;
-    return (val) => `${(parseFloat(val) * times).toFixed(formatting.precision)}%`;
+    return (val) => `${ safeParseNumberOrText((parseFloat(val) * times), formatting.precision)} %`;
   }
   // val is converted to a space when it contains '\n'.
   return defaultFormatter;
@@ -315,7 +316,7 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   const precision = property?.precision ?? property?.format?.format?.precision ?? 1;
   if (isCurrency) {
     try {
-      const textValue = isNumber(value) ? value.toFixed(precision) : parseFloat(value).toFixed(precision);
+      const textValue = isNumber(value) ? safeParseNumberOrText(value, precision) : safeParseNumberOrText(value, precision);
       return `${fieldSymbol} ${textValue}`;
     }catch (e) {
       console.error('parse currency' , e);
@@ -326,7 +327,7 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   // Percentages, numbers with units.
   if (isPercent || isNumberType) {
     const suffixSymbol = isPercent ? '%' : fieldSymbol;
-    return `${Number(value).toFixed(precision)} ${suffixSymbol}`;
+    return `${safeParseNumberOrText(value, precision)} ${suffixSymbol}`;
   }
 
   // Smart Formula Date, value is timestamp.
@@ -791,7 +792,7 @@ export const sortSeries = (props: {
         const sortList = newData[i];
         for (let j = 0; j < sortList.length; j++) {
           const val = sortList[j][yKey];
-          sortList[j][yKey] = (val / sums[i] * 100).toFixed(2);
+          sortList[j][yKey] = safeParseNumberOrText(val / sums[i] * 100, 2);
         }
       }
     }
@@ -840,7 +841,7 @@ export const sortSeries = (props: {
             const valueIndex = isColumn ? 1 : 0;
             const isEqualPrev = coordinate[coordinateIndex] === lastItem[coordinateIndex];
             if (isEqualPrev) {
-              lastItem[valueIndex] = parseFloat((lastItem[valueIndex] + coordinate[valueIndex]).toFixed(metricsFieldPrecision));
+              lastItem[valueIndex] = parseFloat(safeParseNumberOrText(lastItem[valueIndex] + coordinate[valueIndex], metricsFieldPrecision));
             } else {
               seriesItem.series.push(coordinate);
             }
