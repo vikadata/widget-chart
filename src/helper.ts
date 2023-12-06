@@ -205,7 +205,7 @@ export const getAggregationValue = (dataList: number[], type: string, precision 
   }
   if (res != null) {
     // console.warn('Non-numeric field summary error');
-    return isNumber(res) ? res : 0;
+    return isNumber(res) ? Number(res.toFixed(precision)) : 0;
   }
 
   return res;
