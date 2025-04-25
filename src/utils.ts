@@ -91,6 +91,7 @@ export const safeParseNumberOrText = (num : number | string | undefined, precisi
   }
   return a.toFixed(precision);
   
+}
 
 
 export const safeParseNumberOrTextWithSeparator = (num : number | string | undefined, precision: number) => {
