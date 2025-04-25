@@ -4,7 +4,7 @@ import { ChartType, StackType } from './interface';
 import { Strings, t } from '../i18n';
 import { sortBy } from '../sortBy';
 import { getNumberBaseFieldPrecision, maxRenderNum, processChartData, processRecords } from '../helper';
-import { safeParseNumberOrText } from '../utils';
+import { safeParseNumberOrText, safeParseNumberOrTextWithSeparator } from '../utils';
 
 export class EchartsPie extends EchartsBase {
   type = ChartType.EchartsPie;
@@ -108,7 +108,7 @@ export class EchartsPie extends EchartsBase {
             // const totalContent = Math.round(params.value / (params.percent / 100));
             // console.log(totalContent, params.value / (params.percent / 100));
             // return `{a|${t(Strings.total)}}\n{b|${totalContent}}`;
-            return `{a|${t(Strings.total)}}\n{b|${safeParseNumberOrText(dataSum, fieldPrecision)}}`;
+            return `{a|${t(Strings.total)}}\n{b|${safeParseNumberOrTextWithSeparator(dataSum, fieldPrecision)}}`;
           },
           // formatter: () => {
           //   const precision = guessNumberFieldPrecision(data.map(item => item.value).filter(Boolean));

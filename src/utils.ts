@@ -90,4 +90,22 @@ export const safeParseNumberOrText = (num : number | string | undefined, precisi
     return '';
   }
   return a.toFixed(precision);
+  
+
+
+export const safeParseNumberOrTextWithSeparator = (num : number | string | undefined, precision: number) => {
+  if(!num) {
+    return '';
+  }
+
+  const a = Number(num);
+  if(isNaN(a)) {
+    return '';
+  }
+  
+  // Format with thousand separator and fixed precision
+  return a.toLocaleString('en-US', {
+    minimumFractionDigits: precision,
+    maximumFractionDigits: precision
+  });
 };
