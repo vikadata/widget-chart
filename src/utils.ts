@@ -108,5 +108,4 @@ export const safeParseNumberOrTextWithSeparator = (num : number | string | undef
     minimumFractionDigits: precision,
     maximumFractionDigits: precision
   });
-}
 };
