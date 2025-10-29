@@ -91,6 +91,7 @@ export class EchartsLine extends EchartsBase {
 
     if (this.stackType !== StackType.None) {
       styleOption.series.stack = 'total';
+      styleOption.series.areaStyle = {};
     }
 
     return styleOption;

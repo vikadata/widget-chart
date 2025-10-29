@@ -50,5 +50,10 @@
     "react-custom-scrollbars": "^4.2.1",
     "styled-components": ">=5.2.1",
     "typescript": "4.1.2"
-  }
+  },
+  "browserslist": [
+    "defaults",
+    "not dead",
+    "not op_mini all"
+  ]
 }
